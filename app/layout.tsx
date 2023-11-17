@@ -1,9 +1,9 @@
 import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
 
-import { Analytics } from '@vercel/analytics/react'
+import { Analytics as VercelAnalytics } from '@vercel/analytics/react'
 import { Space_Grotesk } from 'next/font/google'
-import { AnalyticsConfig } from 'pliny/analytics'
+import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import Header from '@/components/Header'
 import SectionContainer from '@/components/SectionContainer'
@@ -87,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </SectionContainer>
         </ThemeProviders>
-        <Analytics />
+        <VercelAnalytics />
       </body>
     </html>
   )
