@@ -13,9 +13,7 @@ draft: true
 
 This is the guide I wish I had 2 days ago.
 
-I needed to setup my own Ethereum testnet node, for development purposes. This is something I've done before, but always in a haphazard way.
-
-Today I wanted to _get it right_.
+I needed to setup my own Ethereum testnet node, for development purposes. This is something I've done before, but always in a haphazard way. Today I wanted to _get it right_.
 
 Instead of going the usual route of setting up a `docker-compose.yml`, I want to keep it even simpler and rely on something I already use everyday: `systemd`, the service manager for Arch-based distros.
 
@@ -38,13 +36,13 @@ If you just want to see the final code, you can go directly to my dotfiles:
 [This article](https://blog.merkle.io/blog/run-a-reth-node) by [@merkle_mev](https://twitter.com/merkle_mev) was a big source of information for me, and provides a very similar setup.
 However, it didn't deal with some key points I wanted to include:
 
-- **Reusability** I want to run the same setup on multiple machines, and for different purses (e.g.: a testnet on my home server, and mainnet on a remote VPS);
-- **Security** I want it running as a separate user, for some extra security when it comes to filesystem access
+- **Reusability**: I want to run the same setup on multiple machines, and for different purses (e.g.: a testnet on my home server, and mainnet on a remote VPS);
+- **Security**: I want it running as a separate user, for some extra security when it comes to filesystem access
 
 ## Requirements
 
 Since all of these are available in Arch's repos, this was trivial:
-
+:
 ```bash
 paru -S reth lighthouse prometheus grafana
 ```
@@ -211,7 +209,7 @@ journalctl -u sepolia-reth -f
 Additionally, you can also clean up past logs if they start taking up too much space:
 
 ```bash
-journalctl
+sudo journalctl --vacuum-time=15d
 ```
 
 ## Adding metrics
