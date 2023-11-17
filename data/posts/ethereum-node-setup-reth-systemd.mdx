@@ -60,11 +60,8 @@ sudo chown -R eth:eth /mnt/data/eth
 
 To keep things simple and editor-friendly (syntax highlighting), instead of inlining the full commands in systemd units, we're going to use a script. This will also allow us to define shared parameters once, instead of duplicating these values across multiple units which is often error-prone:
 
-```bash
+```bash:/usr/local/bin/sepolia
 #!/bin/bash
-# /usr/local/bin/sepolia
-#
-# Usage:
 
 DIR=/mnt/data/eth/sepolia
 
@@ -132,9 +129,7 @@ I still committed them, for version-control purposes, but I had to manually syml
 
 Here are the full units for both Reth and Lighthouse:
 
-```systemd
-# /etc/systemd/system/sepolia-reth.target
-
+```systemd:/etc/systemd/system/sepolia-reth.service
 [Unit]
 Description=Sepolia - Reth
 After=network.target
@@ -154,9 +149,7 @@ ExecStart=/usr/local/bin/sepolia reth
 WantedBy=multi-user.target
 ```
 
-```systemd
-# /etc/systemd/system/sepolia-lighthouse.target
-
+```systemd:/etc/systemd/system/sepolia-lighthouse.service
 [Unit]
 Description=Sepolia - Lighthouse
 After=network.target
@@ -182,9 +175,7 @@ You'll notice that Lighthouse defines the Reth unit as a dependency. This is bec
 
 Finally, we can create a unified target to manage our entire sepolia setup:
 
-```systemd
-# /etc/systemd/system/sepolia.target
-
+```systemd:/etc/system/systemd/sepolia.target
 [Unit]
 Description=Sepolia local node
 Wants=sepolia-reth.service sepolia-lighthouse.service
@@ -227,9 +218,7 @@ journalctl
 
 We'll now add an additional unit for Prometheus, along with a configuration file that links it to both Reth and Lighthouse:
 
-```yml
-# /mnt/data/prometheus/prometheus.yml
-
+```yml:/mnt/data/prometheus/prometheus.yml
 scrape_configs:
   - job_name: reth
     metrics_path: '/'
@@ -250,7 +239,7 @@ scrape_configs:
 
 Be sure to use the same metrics ports that were used in the `sepolia` script!
 
-```systemd
+```systemd:/etc/systemd/system/prometheus.service
 [Unit]
 Description=Prometheus Server
 Documentation=https://prometheus.io/docs/introduction/overview/
@@ -273,9 +262,7 @@ As for grafana, it already comes with a bundled systemd unit, so no work needed 
 
 Let's now edit our target file to include these:
 
-```systemd
-# /etc/systemd/system/sepolia.target
-
+```systemd:/etc/systemd/systemd/sepolia.target
 [Unit]
 Description=Sepolia local node
 Wants=sepolia-reth.service sepolia-lighthouse.service prometheus.service lighthouse.service

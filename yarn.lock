@@ -10027,6 +10027,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"remark-mdx-code-meta@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "remark-mdx-code-meta@npm:2.0.0"
+  dependencies:
+    "@types/mdast": ^3.0.0
+    acorn: ^8.0.0
+    acorn-jsx: ^5.0.0
+    estree-util-is-identifier-name: ^2.0.0
+    hast-util-to-string: ^2.0.0
+    unified: ^10.0.0
+    unist-util-visit: ^4.0.0
+  checksum: 2f3dd0b7e312aa41fa8f80007c62d2a07353dd577811e60f391b157b7341e83b6ef40f2a6411ae1d9eb846a2f3288b8fc199fe7c8feb651cbce04610d92f0241
+  languageName: node
+  linkType: hard
+
 "remark-mdx-frontmatter@npm:^1.1.1":
   version: 1.1.1
   resolution: "remark-mdx-frontmatter@npm:1.1.1"
@@ -10872,6 +10887,7 @@ __metadata:
     remark: ^14.0.2
     remark-gfm: ^3.0.1
     remark-math: ^5.1.1
+    remark-mdx-code-meta: ^2.0.0
     tailwindcss: ^3.3.3
     typescript: ^5.1.3
     unist-util-visit: ^4.1.0
