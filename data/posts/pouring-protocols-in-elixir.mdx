@@ -1,0 +1,140 @@
+---
+title: "Pouring Protocols in Elixir"
+
+date: 2019-02-19
+tags: ["elixir"]
+canonicalUrl: "https://blog.appsignal.com/2019/02/19/elixir-alchemy-pouring-protocols.html"
+---
+
+*Note: This post was originally written on [AppSignal's Elixir Alchemy Blog](https://blog.appsignal.com/2019/02/19/elixir-alchemy-pouring-protocols.html)*
+
+Elixir has several mechanisms that allow us to write expressive and intuitive code. Pattern matching, for instance, is a powerful way of dealing with multiple scenarios without having to go into complicated branching. It allows each of our functions to be clear and concise.
+
+## What Are Protocols?
+
+In a way, Protocols are similar to pattern matching, but they allow us to write more meaningful and context-specific code based on the datatype we’re dealing with.
+
+Let’s take the example of a content-delivery website. This website has multiple types of content: audio clips, videos, texts, and whatever else you can think of.
+
+Each of these content types obviously has different attributes and metadata, so it makes sense for them to be represented by independent structs:
+
+Translating this into Elixir, you’d have the following structures:
+
+```elixir
+defmodule Content.Audio do
+  defstruct [:title, :album, :artist, :duration, :bitrate, :file]
+end
+
+defmodule Content.Video do
+  defstruct [:title, :cast, :release_date, :duration, :resolution, :file]
+end
+
+defmodule Content.Text do
+  defstruct [:title, :author, :word_count, :chapter_count, :format, :file]
+end
+```
+
+Each of these types has a few different fields, most of them unique to the type. We also have a common `:file` field which will point to the file keeping the actual data.
+
+Now, let’s say you want to make your content as accessible as possible. You may, for instance, want to allow your hearing-impaired users to view the transcripts of both your audio and video. For that, you’ll use your awesome `AudioTranscriber` and `VideoTranscriber` modules which provide `transcribe_audio/1` and `transcribe_video/1` functions, respectively.
+
+The implementation of those functions uses state-of-the-art machine learning and will be delegated to a future blog post. Let’s just assume they work and roll with it.
+
+Both transcriber modules are split up into separate modules. Aside from having different function names for transcribing content, they might be completely different libraries. To allow us to use both in a transparent manner, we’ll implement a protocol named `Content.Transcribe` that has a unified API that can handle both types of content.
+
+## Implementing the Protocol
+
+Using protocols, we can easily define what the act of transcribing something means to each of our data types. This is done by first defining a transcribing protocol:
+
+```elixir
+defprotocol Content.Transcribe do
+  def transcribe(content)
+end
+```
+
+and then implementing it separately for each of our types:
+
+```elixir
+defimpl Content.Transcribe, for: Content.Video do
+  def transcribe(video), do: VideoTranscriber.transcribe_video(video.file)
+end
+
+defimpl Content.Transcribe, for: Content.Audio do
+  def transcribe(audio), do: AudioTranscriber.transcribe_audio(audio.file)
+end
+
+defimpl Content.Transcribe, for: Content.Text do
+  def transcribe(text), do: File.read(text.file)
+end
+```
+
+We have separately defined implementations of the same function for all 3 content types.
+
+You may note that for text content, the implementation merely reads the corresponding file, as it’s already in text format, while for the other two, we call the corresponding machine-learning-magic function on the file.
+
+We’re then able to call `transcribe/1` for all the data types we have an implementation for:
+
+```elixir
+iex> %Content.Video{...} |> Content.Transcribe.transcribe()
+{:ok, "We're no strangers to love\nYou know the rules and so do I..."}
+
+iex> %Content.Audio{...} |> Content.Transcribe.transcribe()
+{:ok, "Imagine there's no heaven\nIt's easy if you try..."}
+
+iex> %Content.Text{...} |> Content.Transcribe.transcribe()
+{:ok, "in a hole in the ground there lived a hobbit..."}
+```
+
+## Fallback Implementations
+
+Now, let’s say we add a new type of media to our platform: games
+
+What happens when we try to transcribe the newly-added content?
+
+```elixir
+iex> %Content.Game{...} |> Content.Transcribe.transcribe()
+** (Protocol.UndefinedError) protocol Content.Transcribe is not implemented for %Content.Game{...}. This protocol is implemented for: Content.Audio, Content.Text, Content.Video
+```
+
+Whoops! We’ve hit an error. Which makes sense. We didn’t provide any transcription implementation for this type.
+
+But it doesn’t really make sense to do so, does it? Games are supposed to be interactive experiences, and there simply may be no way to make them accessible to everyone.
+
+So we could just provide an implementation that always fails:
+
+```elixir
+defimpl Content.Transcribe, for: Content.Game do
+  def transcribe(game), do: {:error, "not supported"}
+end
+```
+
+But this doesn’t seem very scalable, does it? If we keep adding new content types, we’ll end up having to duplicate this for every single type that we cannot transcribe.
+
+Instead, we can simply add a fallback implementation for any type we don’t specify. This is done precisely by providing an implementation for the Any type, and then stating in our protocol that we want to fall back to it when necessary.
+
+```elixir
+defimpl Content.Transcribe, for: Any do
+  def transcribe(_), do: {:error, "not supported"}
+end
+
+defprotocol Content.Transcribe do
+  @fallback_to_any true
+  def transcribe(content)
+end
+```
+
+The implementation for Any can usually be used by asking Elixir to automatically derive implementations from it (you can read more about this in the official [Elixir Getting Started guide](https://elixir-lang.org/getting-started/protocols.html#deriving)).
+
+But by adding @fallback_to_any true to our protocol, we’re stating that whenever a specific implementation is not found, the Any implementation should be used. This allows us to fail gracefully for any unsupported data type:
+
+```elixir
+iex> %Content.Game{...} |> Content.Transcribe.transcribe()
+{:error, "not supported"}
+
+iex> %{key: :value} |> Content.Transcribe.transcribe()
+{:error, "not supported"}
+```
+
+## Failed Gracefully
+
+Can we close off any better than with a graceful fail? We’ll leave you now that we’ve experimented with protocols and we gracefully haven’t broken any alembic today.
