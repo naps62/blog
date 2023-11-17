@@ -3,7 +3,7 @@ const siteMetadata = {
   title: 'Miguel Palhas | @naps62',
   author: 'Miguel Palhas',
   headerTitle: 'Miguel Palhas | @naps62',
-  description: 'Software Developer | Rust | Blockchain | Web',
+  description: 'Software | Rust | Blockchain | Web',
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://naps62.com',
