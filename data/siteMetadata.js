@@ -17,6 +17,9 @@ const siteMetadata = {
   youtube: null,
   linkedin: null,
   locale: 'en-US',
+  analytics: {
+    googleAnalytics: { googleAnalyticsId: '378417225' },
+  },
   newsletter: {
     // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus
     // Please add your .env file and modify it according to your selection

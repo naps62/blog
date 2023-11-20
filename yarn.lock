@@ -8480,17 +8480,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-goatcounter@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "next-goatcounter@npm:1.0.3"
-  peerDependencies:
-    next: ^13.4.3
-    react: ^18.2.0
-    react-dom: ^18.2.0
-  checksum: a20cc392dab708ae945f4ff31b2d6ce7bef81b4451f994e0bc5eae1c4d991b41476e75917f9846edd26a3a238185662567f62cf647d1aa7555831c134ccbebf4
-  languageName: node
-  linkType: hard
-
 "next-themes@npm:^0.2.1":
   version: 0.2.1
   resolution: "next-themes@npm:0.2.1"
@@ -10881,7 +10870,6 @@ __metadata:
     image-size: 1.0.0
     next: 13.5.6
     next-contentlayer: 0.3.4
-    next-goatcounter: ^1.0.3
     next-themes: ^0.2.1
     pliny: 0.1.4
     postcss: ^8.4.24
