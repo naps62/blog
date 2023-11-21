@@ -18,7 +18,9 @@ const siteMetadata = {
   linkedin: null,
   locale: 'en-US',
   analytics: {
-    googleAnalytics: { googleAnalyticsId: '378417225' },
+    googleAnalytics: {
+      googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
+    },
   },
   newsletter: {
     // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus
