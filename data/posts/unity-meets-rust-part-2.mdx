@@ -1,0 +1,377 @@
+---
+title: "Unity meets Rust - Building the Perfect Development Setup"
+draft: false
+date: 2025-07-04
+tags: ["rust", "unity", "gamedev", "tooling"]
+---
+
+*This is Part 2 of a 2-part series on hybrid game development. If you haven't read [Part 1](/posts/unity-meets-rust), I recommend starting there for the conceptual foundation.*
+
+---
+
+Alright, enough philosophy. Let's get our hands dirty.
+
+As I mentioned in Part 1, I spent way too much free time not building a game, but building the perfect development setup to maybe build a game someday. And honestly? I'm quite proud of what I've put together.
+
+The good news is that while I don't have anything resembling a finished game, I do have a working development environment that gives me the best of both worlds: the rapid iteration of Rust development with the visual power of Unity.
+
+Here's how I built it.
+
+## The core challenges
+
+Before diving into solutions, let's identify the main technical hurdles:
+
+1. **Unity doesn't support hot-reloading of native libraries**
+2. **Building for multiple platforms requires different compilation targets**
+3. **WebAssembly is especially tricky** (thanks, Rust 1.87)
+4. **The feedback loop needs to be fast** to maintain developer sanity
+
+The solution involves three main components that work together to create a seamless development experience.
+
+## Challenge 1: Auto-reloading DLLs
+
+Unity's limitation here is well-known: once it loads a native library, it holds onto it until the editor restarts. This kills the fast iteration cycle we want.
+
+My workaround is inspired by several existing solutions, but I took it a step further. The key insight is to generate a new library file with a timestamp for each build, tricking Unity into loading a "new" library each time.
+
+<!-- TODO: Add a diagram showing the library loading process -->
+
+Here's the core script that handles this:
+
+```bash
+#!/bin/bash
+# auto-reload-dll.sh
+
+TIMESTAMP=$(date +%s)
+RUST_PROJECT_PATH="./game-core"
+UNITY_PLUGINS_PATH="./unity-project/Assets/Plugins"
+
+# Build the Rust library
+cd $RUST_PROJECT_PATH
+cargo build --release
+
+# Copy with timestamp
+cp target/release/libgame_core.so $UNITY_PLUGINS_PATH/libgame_core_$TIMESTAMP.so
+
+# Update the C# wrapper to load the new library
+sed -i "s/libgame_core_[0-9]*/libgame_core_$TIMESTAMP/g" \
+    ../unity-project/Assets/Scripts/GameCoreWrapper.cs
+
+echo "Library reloaded: libgame_core_$TIMESTAMP.so"
+```
+
+The C# side looks like this:
+
+```csharp
+// GameCoreWrapper.cs
+using System;
+using System.Runtime.InteropServices;
+
+public class GameCoreWrapper
+{
+    // This gets automatically updated by the build script
+    private const string LIB_NAME = "libgame_core_1641234567";
+    
+    [DllImport(LIB_NAME)]
+    private static extern void initialize_game();
+    
+    [DllImport(LIB_NAME)]
+    private static extern void update_game(float deltaTime);
+    
+    [DllImport(LIB_NAME)]
+    private static extern IntPtr get_game_state();
+    
+    // Public interface
+    public static void Initialize() => initialize_game();
+    public static void Update(float deltaTime) => update_game(deltaTime);
+    public static GameState GetState() => ParseGameState(get_game_state());
+    
+    // Helper to parse the game state from Rust
+    private static GameState ParseGameState(IntPtr ptr)
+    {
+        // JSON deserialization or custom parsing
+        // depending on your data format
+    }
+}
+```
+
+Yes, this means that over a long development session, the Unity editor accumulates many loaded libraries. But in practice, a single editor restart every few hours is much better than restarting after every change.
+
+## Challenge 2: Multi-platform builds
+
+Different platforms require different compilation approaches. Here's my `Cargo.toml` setup:
+
+```toml
+[package]
+name = "game-core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[target.'cfg(target_os = "android")'.dependencies]
+jni = "0.21"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+```
+
+The build script handles each platform:
+
+```bash
+#!/bin/bash
+# build-all-platforms.sh
+
+set -e
+
+TARGETS=(
+    "x86_64-pc-windows-gnu"
+    "x86_64-apple-darwin"
+    "aarch64-apple-darwin"
+    "x86_64-unknown-linux-gnu"
+    "aarch64-linux-android"
+    "armv7-linux-androideabi"
+    "wasm32-unknown-unknown"
+)
+
+for target in "${TARGETS[@]}"; do
+    echo "Building for $target..."
+    
+    if [[ $target == "wasm32-unknown-unknown" ]]; then
+        # WebAssembly needs special handling
+        cargo build --target $target --release
+        wasm-bindgen --out-dir pkg --target web \
+            target/wasm32-unknown-unknown/release/game_core.wasm
+    else
+        cargo build --target $target --release
+    fi
+    
+    echo "✓ $target complete"
+done
+```
+
+## Challenge 3: WebAssembly gotchas
+
+WebAssembly deserves special mention because it's been particularly painful. Since Rust 1.87, the compiler generates WASM features that Unity's linker doesn't support yet.
+
+The workaround is to use an older target specification:
+
+```toml
+# In .cargo/config.toml
+[target.wasm32-unknown-unknown]
+rustflags = [
+    "-C", "target-feature=-simd128",
+    "-C", "target-feature=-bulk-memory",
+    "-C", "target-feature=-mutable-globals"
+]
+```
+
+<!-- TODO: Add a note about Unity's WebAssembly support roadmap -->
+
+## Challenge 4: The glue script
+
+The final piece is a bash script that ties everything together. I run this continuously in a terminal window, and it rebuilds the library in real-time as I make changes:
+
+```bash
+#!/bin/bash
+# watch-and-build.sh
+
+RUST_PROJECT_PATH="./game-core"
+UNITY_PROJECT_PATH="./unity-project"
+
+# Initial build
+./build-all-platforms.sh
+
+# Watch for changes and rebuild
+fswatch -o $RUST_PROJECT_PATH/src | while read num ; do
+    echo "Changes detected, rebuilding..."
+    ./auto-reload-dll.sh
+    echo "Ready for testing in Unity"
+done
+```
+
+This gives me the holy grail: I can work primarily in my Rust codebase with all my usual tools (LSP, tests, etc.), and whenever I want to see the visual result, I just tab over to Unity where the changes are already loaded.
+
+## The API boundary
+
+The interface between Rust and Unity is crucial. I keep it minimal and focused on data exchange:
+
+```rust
+// lib.rs
+use serde::{Deserialize, Serialize};
+use std::ffi::{CStr, CString};
+use std::os::raw::c_char;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct GameState {
+    pub score: u32,
+    pub level: u32,
+    pub entities: Vec<Entity>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Entity {
+    pub id: u32,
+    pub x: f32,
+    pub y: f32,
+    pub entity_type: EntityType,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum EntityType {
+    Player,
+    Enemy,
+    Projectile,
+}
+
+// The actual game logic
+static mut GAME_STATE: Option<GameState> = None;
+
+#[no_mangle]
+pub extern "C" fn initialize_game() {
+    unsafe {
+        GAME_STATE = Some(GameState {
+            score: 0,
+            level: 1,
+            entities: vec![],
+        });
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn update_game(delta_time: f32) {
+    unsafe {
+        if let Some(ref mut state) = GAME_STATE {
+            // Game logic here
+            update_entities(state, delta_time);
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn get_game_state() -> *mut c_char {
+    unsafe {
+        if let Some(ref state) = GAME_STATE {
+            let json = serde_json::to_string(state).unwrap();
+            CString::new(json).unwrap().into_raw()
+        } else {
+            std::ptr::null_mut()
+        }
+    }
+}
+
+// Don't forget to free the string!
+#[no_mangle]
+pub extern "C" fn free_string(ptr: *mut c_char) {
+    unsafe {
+        if !ptr.is_null() {
+            CString::from_raw(ptr);
+        }
+    }
+}
+
+fn update_entities(state: &mut GameState, delta_time: f32) {
+    // Your game logic here
+    for entity in &mut state.entities {
+        match entity.entity_type {
+            EntityType::Player => {
+                // Player update logic
+            }
+            EntityType::Enemy => {
+                // Enemy update logic
+            }
+            EntityType::Projectile => {
+                // Projectile update logic
+            }
+        }
+    }
+}
+```
+
+## The development workflow
+
+With all this in place, my typical workflow looks like:
+
+1. **Start the watch script** in a terminal
+2. **Work in Rust** with full IDE support, running tests as I go
+3. **Switch to Unity** when I want to see visual results
+4. **Changes are automatically loaded** – no manual steps needed
+
+The feedback loop is incredibly fast. I can make a change in Rust, hit save, and within seconds see the result in Unity. It's the best of both worlds: the development experience of Rust with the visual capabilities of Unity.
+
+## Testing the core
+
+One of the biggest advantages of this setup is that I can thoroughly test the game logic in isolation:
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_player_movement() {
+        let mut state = GameState {
+            score: 0,
+            level: 1,
+            entities: vec![Entity {
+                id: 1,
+                x: 0.0,
+                y: 0.0,
+                entity_type: EntityType::Player,
+            }],
+        };
+
+        // Test movement logic
+        update_entities(&mut state, 0.016); // 60 FPS
+        
+        // Assert expected state changes
+        assert_eq!(state.entities[0].x, 0.1);
+    }
+
+    #[test]
+    fn test_collision_detection() {
+        // Test collision logic without any rendering
+    }
+
+    #[test]
+    fn test_game_rules() {
+        // Test win/lose conditions
+    }
+}
+```
+
+I can run `cargo test` and get instant feedback on my game logic, completely separate from Unity.
+
+## What's next?
+
+This setup has been working great for me, but there are still improvements to make:
+
+- **Better error handling** between the Rust/Unity boundary
+- **Performance profiling** to identify bottlenecks
+- **More sophisticated state synchronization** for complex games
+- **Hot-reloading of game assets** (textures, sounds, etc.)
+
+The most important thing is that this approach has solved my original problem: I can now develop games with the tooling I love, while still having access to Unity's mature ecosystem for the visual aspects.
+
+## Final thoughts
+
+Is this overkill for most games? Probably. But for certain types of games – especially those with complex logic that benefits from thorough testing – this hybrid approach offers compelling advantages.
+
+The key is recognizing that you don't have to choose between Rust and Unity. Sometimes the best solution is to use both tools for what they're best at.
+
+---
+
+*Have you tried similar hybrid approaches? I'd love to hear about your experiences and improvements to this setup. Feel free to reach out!*
+
+<!-- TODO: Add links to the complete example project on GitHub -->
+<!-- TODO: Add discussion section or comments -->
