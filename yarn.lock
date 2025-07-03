@@ -3003,20 +3003,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tailwindcss/forms@npm:^0.5.4":
-  version: 0.5.4
-  resolution: "@tailwindcss/forms@npm:0.5.4"
+"@tailwindcss/forms@npm:^0.5.10":
+  version: 0.5.10
+  resolution: "@tailwindcss/forms@npm:0.5.10"
   dependencies:
     mini-svg-data-uri: "npm:^1.2.3"
   peerDependencies:
-    tailwindcss: ">=3.0.0 || >= 3.0.0-alpha.1"
-  checksum: 10/6f5fa7a2d4c2e22cf27fc3d2a79ce6b0f0ff2c169dc572bc3c2c03789606622bb28b91fc6b9bc668c2db27190d07130e4051ba131ff27396a27373512f3cbd15
+    tailwindcss: ">=3.0.0 || >= 3.0.0-alpha.1 || >= 4.0.0-alpha.20 || >= 4.0.0-beta.1"
+  checksum: 10/d67ea58d8e92a262455bafd1b88772f5d9dbdc034f70d37b31af3617d1505231ff485c1209467715d139f392cd2feb43e3cdb4656816594e97c1304054e121d6
   languageName: node
   linkType: hard
 
-"@tailwindcss/typography@npm:^0.5.9":
-  version: 0.5.9
-  resolution: "@tailwindcss/typography@npm:0.5.9"
+"@tailwindcss/typography@npm:^0.5.16":
+  version: 0.5.16
+  resolution: "@tailwindcss/typography@npm:0.5.16"
   dependencies:
     lodash.castarray: "npm:^4.4.0"
     lodash.isplainobject: "npm:^4.0.6"
@@ -3024,7 +3024,7 @@ __metadata:
     postcss-selector-parser: "npm:6.0.10"
   peerDependencies:
     tailwindcss: "*"
-  checksum: 10/c6eaf8c301b452c496d62cd29dfb58b9b8e1c29f998568640ca4133a55997c78224c0bf4fcc1cd97935ee990fd8526f35a08e21ea272f408ac5ac12a4dff8a70
+  checksum: 10/ca6cca2c824b4124223dd28d4bd5cc21dd261fe53a9654b9802bb958badd637313118d8e81978c3509df7dac1826317050fb034bc4357085b451371e31adff6d
   languageName: node
   linkType: hard
 
@@ -3138,10 +3138,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mdx@npm:^2.0.0, @types/mdx@npm:^2.0.5":
+"@types/mdx@npm:^2.0.0":
   version: 2.0.5
   resolution: "@types/mdx@npm:2.0.5"
   checksum: 10/1069baff0b2d0fb0bc724748e2386af626cc30f8ef99e680afb4dee566ed0aeabd31cea774212a7033f491e594a0acc234116078b252cba94ac413f91eb585a3
+  languageName: node
+  linkType: hard
+
+"@types/mdx@npm:^2.0.13":
+  version: 2.0.13
+  resolution: "@types/mdx@npm:2.0.13"
+  checksum: 10/b73ed5f08114879b9590dc6a9ee8b648643c57c708583cd24b2bc3cc8961361fc63139ac7e9291e7b3b6e6b45707749d01d6f9727ddec5533df75dc3b90871a4
   languageName: node
   linkType: hard
 
@@ -6043,7 +6050,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gray-matter@npm:^4.0.2, gray-matter@npm:^4.0.3":
+"gray-matter@npm:^4.0.3":
   version: 4.0.3
   resolution: "gray-matter@npm:4.0.3"
   dependencies:
@@ -10860,10 +10867,10 @@ __metadata:
   dependencies:
     "@next/bundle-analyzer": "npm:13.5.6"
     "@svgr/webpack": "npm:^8.0.1"
-    "@tailwindcss/forms": "npm:^0.5.4"
-    "@tailwindcss/typography": "npm:^0.5.9"
+    "@tailwindcss/forms": "npm:^0.5.10"
+    "@tailwindcss/typography": "npm:^0.5.16"
     "@types/github-slugger": "npm:^2.0.0"
-    "@types/mdx": "npm:^2.0.5"
+    "@types/mdx": "npm:^2.0.13"
     "@types/react": "npm:^18.2.14"
     "@typescript-eslint/eslint-plugin": "npm:^6.1.0"
     "@typescript-eslint/parser": "npm:^6.1.0"
@@ -10876,7 +10883,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.8.0"
     eslint-plugin-prettier: "npm:^5.0.0"
     github-slugger: "npm:^1.4.0"
-    gray-matter: "npm:^4.0.2"
+    gray-matter: "npm:^4.0.3"
     image-size: "npm:1.0.0"
     next: "npm:13.5.6"
     next-contentlayer: "npm:0.3.4"
