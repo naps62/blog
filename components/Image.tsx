@@ -1,5 +1,10 @@
-import NextImage, { ImageProps } from 'next/image'
+import { ImgHTMLAttributes } from 'react'
 
-const Image = ({ ...rest }: ImageProps) => <NextImage {...rest} />
+interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
+  src: string
+  alt: string
+}
+
+const Image = ({ ...rest }: ImageProps) => <img {...rest} />
 
 export default Image
