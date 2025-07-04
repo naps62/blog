@@ -5,19 +5,83 @@ date: 2025-07-04
 tags: ["rust", "unity", "gamedev", "tooling"]
 ---
 
-*This is Part 2 of a 2-part series on hybrid game development. If you haven't read [Part 1](/posts/unity-meets-rust), I recommend starting there for the conceptual foundation.*
+[s1]: https://rjgameiro.medium.com/let-fun-rust-unity-f7f62609ba49
+[s2]: https://www.youtube.com/watch?v=L7M_vbo1N2g&t=315s
+[s3]: https://testdouble.com/insights/integrating-rust-with-unity-for-better-performance
+[s4]: https://www.resolutiongames.com/blog/calling-rust-from-c-in-unity
 
----
+I spend a huge amount of time *not* building games. This includes time spent in my actual work (not games), as well as all those times I try to sneak into gamedev as a hobby, only to be quickly sidetracked to bikeshed the most niche of issues anyone could come up with.
 
-Alright, enough philosophy. Let's get our hands dirty.
+This time, I decided I wanted to *not* build a game, not just in a framework, but in two completely different stacks at the same time.
 
-As I mentioned in Part 1, I spent way too much free time not building a game, but building the perfect development setup to maybe build a game someday. And honestly? I'm quite proud of what I've put together.
+There are actually some high-level reasons why someone might want to do that, but I'll leave those for a future post. This one is for the misguided and purely technical timesinks.
 
 The good news is that while I don't have anything resembling a finished game, I do have a working development environment that gives me the best of both worlds: the rapid iteration of Rust development with the visual power of Unity.
 
 Here's how I built it.
 
-## The core challenges
+## The setup
+
+I was conflicted between Unity, where I'd have to deal with C# and a GUI-driven workflow, or Rust and Bevy, where I'd be in much more familiar territory, but without the prototyping flexiblity you typically want while trying to figure out what you're building.
+
+So naturally I picked both.
+
+I decided it would be fun to explore interop between the two sides: using Rust and Bevy to build the core game logic, completely abstracted away from any rendering and input devices, and plug that into Unity where I'd handle those details, which are the part I actually prever a GUI editor for.
+
+This works better for certain types of games, such as puzzle or turn-based, where everything is deterministic, and we don't have to deal with physics, real-time, and RNG to add noise to our system.
+
+<!-- TODO: images of patrick's parabox and other games -->
+
+But how can we achieve this?
+
+## FFI
+
+To get two languages to talk to each other, Foreign Function Interface (FFI) is the usual approach. For Rust -> Unity C#, this looks like this:
+
+```rust
+#[unsafe(no_mangle)]
+pub extern "C" fn add(u32 x, u32 y) -> u32 {
+    x + y
+}
+```
+
+```csharp
+using System.Runtime.InteropServices;
+
+// in windows, will look for "game_core.dll"
+// in macOS, will look for "libgame_core.dylib"
+// in Linux, will look for "libgame_core.so"
+[DllImport("game_core")]
+private static extern int add(int x, int y);
+```
+
+We need 3 key things:
+- `no_mangle` ensure the final symbol is called exactly `add`, without any mangling typically added by compilers to avoid name collisions
+- `extern "C"` tells Rust to ensure the function is compatible with C-style libraries, which is necessary for FFI
+- `DllImport` is the .NET side's way of importing a dynamically-linked library. Depending on the platform, a specific file will be loaded into memory, which is expected to contain the compile code for the linked functions
+
+## Building a multi-platform rust library
+
+For each platform, we need to compile for a different Rust target
+
+| Platform | Target | Crate type |
+|---|---|---|
+| WebGL | wasm32-unknown-emscripten|
+| Windows | x86_64-pc-windows-gnu |
+
+Android (ARM64) aarch64-linux-android
+
+rustup target add wasm32-unknown-emscripten # WebGL with EMScripten
+rustup target add aarch64-linux-android     # Android on ARM 64 bits
+rustup target add armv7-linux-androideabi   # Android on ARM 32 bits
+rustup target add aarch64-apple-darwin      # macOS on Apple Silicon
+rustup target add x86_64-apple-darwin       # macOS on Intel
+rustup target add aarch64-apple-ios         # iOS
+
+`
+
+In Unity, these libraries need to be placed into `Assets/Plugins`, to play nice with the asset pipeline. So let's :
+
 
 Before diving into solutions, let's identify the main technical hurdles:
 
