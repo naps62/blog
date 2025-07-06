@@ -17,7 +17,7 @@ export const Route = createFileRoute("/posts/$slug")({
       { name: "twitter:card", content: "summary_large_image" },
     ];
 
-    if (frontmatter.banner) {
+    if (frontmatter.banner && VITE_VERCEL_URL) {
       const absoluteImageUrl = new URL(
         frontmatter.banner,
         `https://${VITE_VERCEL_URL}`,
