@@ -16,7 +16,10 @@ export const Route = createFileRoute("/posts/$slug")({
     ];
 
     if (frontmatter.banner) {
-      const absoluteImageUrl = new URL(frontmatter.banner, window.location.origin).href;
+      const absoluteImageUrl = new URL(
+        frontmatter.banner,
+        window.location.origin,
+      ).href;
       meta.push(
         { property: "og:image", content: absoluteImageUrl },
         { name: "twitter:image", content: absoluteImageUrl },

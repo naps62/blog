@@ -1,6 +1,12 @@
-import { createRootRoute, Outlet, HeadContent } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  HeadContent,
+  Link,
+  Outlet,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactNode } from "react";
+import appCss from "../app.css?url";
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -17,6 +23,7 @@ function RootLayout({ children }: RootLayoutProps) {
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <title>Miguel Palhas | @naps62</title>
+        <link rel="stylesheet" href={appCss} />
         <HeadContent />
       </head>
       <body>
@@ -25,32 +32,32 @@ function RootLayout({ children }: RootLayoutProps) {
             <div className="max-w-4xl mx-auto px-6 py-4">
               <nav className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold">
-                  <a
-                    href="/"
+                  <Link
+                    to="/"
                     className="text-nav-title hover:text-nav-title-hover"
                   >
                     Miguel Palhas | @naps62
-                  </a>
+                  </Link>
                 </h1>
                 <div className="flex space-x-4 text-base">
-                  <a
-                    href="/"
+                  <Link
+                    to="/"
                     className="text-nav-text hover:text-nav-hover transition-colors"
                   >
                     Home
-                  </a>
-                  <a
-                    href="/posts"
+                  </Link>
+                  <Link
+                    to="/posts"
                     className="text-nav-text hover:text-nav-hover transition-colors"
                   >
                     Posts
-                  </a>
-                  <a
-                    href="/talks"
+                  </Link>
+                  <Link
+                    to="/talks"
                     className="text-nav-text hover:text-nav-hover transition-colors"
                   >
                     Talks
-                  </a>
+                  </Link>
                 </div>
               </nav>
             </div>

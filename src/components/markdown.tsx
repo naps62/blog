@@ -1,6 +1,6 @@
 import { MDXProvider } from "@mdx-js/react";
 import { clsx } from "clsx";
-import { ReactNode, HTMLAttributes } from "react";
+import { HTMLAttributes, ReactNode } from "react";
 
 interface MarkdownProps {
   children: ReactNode;
@@ -49,7 +49,9 @@ const components = {
       {...props}
     />
   ),
-  li: (props: HTMLAttributes<HTMLLIElement>) => <li className="leading-relaxed" {...props} />,
+  li: (props: HTMLAttributes<HTMLLIElement>) => (
+    <li className="leading-relaxed" {...props} />
+  ),
   blockquote: (props: HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
       className="border-l-4 border-border-accent pl-6 italic mb-6 text-nav-text bg-bg-accent py-4 rounded-r-lg"
@@ -82,7 +84,9 @@ const components = {
   hr: (props: HTMLAttributes<HTMLHRElement>) => (
     <hr className="my-12 border-border-secondary" {...props} />
   ),
-  em: (props: HTMLAttributes<HTMLElement>) => <em className="italic text-nav-text" {...props} />,
+  em: (props: HTMLAttributes<HTMLElement>) => (
+    <em className="italic text-nav-text" {...props} />
+  ),
   strong: (props: HTMLAttributes<HTMLElement>) => (
     <strong className="font-bold text-text-primary" {...props} />
   ),
