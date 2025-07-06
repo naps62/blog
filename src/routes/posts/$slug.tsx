@@ -17,16 +17,15 @@ export const Route = createFileRoute("/posts/$slug")({
       { name: "twitter:card", content: "summary_large_image" },
     ];
 
-    console.log(frontmatter);
     if (frontmatter.banner) {
-      console.log(frontmatter.banner);
-      console.log(VITE_VERCEL_URL);
-      //   const absoluteImageUrl = new URL(frontmatter.banner, VITE_VERCEL_URL)
-      //     .href;
-      //   meta.push(
-      //     { property: "og:image", content: absoluteImageUrl },
-      //     { name: "twitter:image", content: absoluteImageUrl },
-      //   );
+      const absoluteImageUrl = new URL(
+        frontmatter.banner,
+        `https://${VITE_VERCEL_URL}`,
+      ).href;
+      meta.push(
+        { property: "og:image", content: absoluteImageUrl },
+        { name: "twitter:image", content: absoluteImageUrl },
+      );
     }
 
     if (frontmatter.canonicalUrl) {
