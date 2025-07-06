@@ -22,7 +22,7 @@ export const Route = createFileRoute("/posts/$slug")({
       { name: "twitter:card", content: "summary_large_image" },
     ];
 
-    console.log(frontmatter);
+    console.log(frontmatter, BASE_URL, VERCEL_ENV);
     if (frontmatter.banner) {
       const absoluteImageUrl = new URL(frontmatter.banner, BASE_URL).href;
       meta.push(
