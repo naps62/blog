@@ -15,21 +15,22 @@ export const Route = createFileRoute("/posts/$slug")({
       { name: "twitter:card", content: "summary_large_image" },
     ];
 
-    if (frontmatter.banner) {
-      const absoluteImageUrl = new URL(
-        frontmatter.banner,
-        window.location.origin,
-      ).href;
-      meta.push(
-        { property: "og:image", content: absoluteImageUrl },
-        { name: "twitter:image", content: absoluteImageUrl },
-      );
-    }
+    // if (frontmatter.banner) {
+    //   const absoluteImageUrl = new URL(
+    //     frontmatter.banner,
+    //     window.location.origin,
+    //   ).href;
+    //   meta.push(
+    //     { property: "og:image", content: absoluteImageUrl },
+    //     { name: "twitter:image", content: absoluteImageUrl },
+    //   );
+    // }
 
     if (frontmatter.canonicalUrl) {
       meta.push({ property: "og:url", content: frontmatter.canonicalUrl });
     }
 
+    console.log("fin");
     return {
       meta,
       title: frontmatter.title,
