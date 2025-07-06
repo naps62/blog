@@ -45,15 +45,6 @@ export default defineConfig({
   optimizeDeps: {
     include: ["@mdx-js/react"],
   },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ["react", "react-dom"],
-        },
-      },
-    },
-  },
   preview: {
     port: 3000,
   },
