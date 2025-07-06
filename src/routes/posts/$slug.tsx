@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Markdown } from "../../components/markdown";
 import { getPostBySlugEnhanced } from "../../utils/manifest";
 
+const BASE_URL = import.meta.env.VERCEL_URL;
+
 export const Route = createFileRoute("/posts/$slug")({
   head: ({ params }) => {
     const post = getPostBySlugEnhanced(params.slug);
@@ -16,8 +18,7 @@ export const Route = createFileRoute("/posts/$slug")({
     ];
 
     if (frontmatter.banner) {
-      const absoluteImageUrl = new URL(frontmatter.banner, "https://naps62.com")
-        .href;
+      const absoluteImageUrl = new URL(frontmatter.banner, BASE_URL).href;
       meta.push(
         { property: "og:image", content: absoluteImageUrl },
         { name: "twitter:image", content: absoluteImageUrl },
