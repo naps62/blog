@@ -1,8 +1,8 @@
-@import "tailwindcss";
+@import "tailwindcss" source(".");
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --color-text-primary: #111827; /*  gray-900 */
+  --color-text-primary: #111826; /* gray-900 */
   --color-text-secondary: #1f2937; /* gray-800 */
   --color-text-muted: #6b7280; /* gray-500 */
   --color-text-subtle: #9ca3af; /* gray-400 */
