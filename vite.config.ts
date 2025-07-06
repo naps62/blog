@@ -1,5 +1,5 @@
 import mdx from "@mdx-js/rollup";
-import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeAddClasses from "rehype-class-names";
 import rehypeExternalLinks from "rehype-external-links";
@@ -38,12 +38,23 @@ export default defineConfig({
         rehypeMdxImportMedia,
       ],
     }),
-    tanstackRouter({
-      target: "react",
-      autoCodeSplitting: true,
+    tanstackStart({
+      target: "vercel",
     }),
   ],
   optimizeDeps: {
     include: ["@mdx-js/react"],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+        },
+      },
+    },
+  },
+  preview: {
+    port: 3000,
   },
 });
