@@ -16,10 +16,8 @@ export const Route = createFileRoute("/posts/$slug")({
     ];
 
     if (frontmatter.banner) {
-      const absoluteImageUrl = new URL(
-        frontmatter.banner,
-        import.meta.env.VERCEL_URL,
-      ).href;
+      const absoluteImageUrl = new URL(frontmatter.banner, "https://naps62.com")
+        .href;
       meta.push(
         { property: "og:image", content: absoluteImageUrl },
         { name: "twitter:image", content: absoluteImageUrl },
