@@ -11,6 +11,8 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 
+import tailwindcss from "@tailwindcss/vite";
+
 const classes = {
   "h1>a, h2>a, h3>a": "no-underline font-bold",
 };
@@ -41,6 +43,7 @@ export default defineConfig({
     tanstackStart({
       target: "vercel",
     }),
+    tailwindcss(),
   ],
   optimizeDeps: {
     include: ["@mdx-js/react"],

@@ -104,7 +104,7 @@ export const getPostBySlugEnhanced = (slug: string) => {
     ...post,
     frontmatter: {
       ...post.frontmatter,
-      banner: post.frontmatter.banner ? getBannerForSlug(slug) : undefined,
+      banner: getBannerForSlug(slug),
     },
   };
 };
