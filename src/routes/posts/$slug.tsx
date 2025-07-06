@@ -18,14 +18,14 @@ export const Route = createFileRoute("/posts/$slug")({
     ];
 
     console.log(frontmatter);
-    if (frontmatter.banner) {
-      const absoluteImageUrl = new URL(frontmatter.banner, VITE_VERCEL_URL)
-        .href;
-      meta.push(
-        { property: "og:image", content: absoluteImageUrl },
-        { name: "twitter:image", content: absoluteImageUrl },
-      );
-    }
+    // if (frontmatter.banner) {
+    //   const absoluteImageUrl = new URL(frontmatter.banner, VITE_VERCEL_URL)
+    //     .href;
+    //   meta.push(
+    //     { property: "og:image", content: absoluteImageUrl },
+    //     { name: "twitter:image", content: absoluteImageUrl },
+    //   );
+    // }
 
     if (frontmatter.canonicalUrl) {
       meta.push({ property: "og:url", content: frontmatter.canonicalUrl });
