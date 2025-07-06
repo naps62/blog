@@ -6,8 +6,8 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactNode } from "react";
+import appCss from "@/app.css?url";
 import { seo } from "@/utils/seo";
-import appCss from "../app.css?url";
 import { DefaultCatchBoundary } from "../components/DefaultCatchBoundary";
 import { NotFound } from "../components/NotFound";
 

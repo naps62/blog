@@ -1,1 +1,1 @@
-declare module "../app.css?url";
+declare module "@/app.css?url";
