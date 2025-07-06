@@ -30,7 +30,7 @@ I decided it would be fun to explore interop between the two sides: using Rust a
 
 This works better for certain types of games, such as puzzle or turn-based, where everything is deterministic, and we don't have to deal with physics, real-time, and RNG to add noise to our system.
 
-<!-- TODO: images of patrick's parabox and other games -->
+TODO: images of patrick's parabox and other games
 
 But how can we achieve this?
 
@@ -98,7 +98,7 @@ Unity's limitation here is well-known: once it loads a native library, it holds 
 
 My workaround is inspired by several existing solutions, but I took it a step further. The key insight is to generate a new library file with a timestamp for each build, tricking Unity into loading a "new" library each time.
 
-<!-- TODO: Add a diagram showing the library loading process -->
+TODO: Add a diagram showing the library loading process
 
 Here's the core script that handles this:
 
@@ -240,7 +240,7 @@ rustflags = [
 ]
 ```
 
-<!-- TODO: Add a note about Unity's WebAssembly support roadmap -->
+TODO: Add a note about Unity's WebAssembly support roadmap
 
 ## Challenge 4: The glue script
 
@@ -437,5 +437,5 @@ The key is recognizing that you don't have to choose between Rust and Unity. Som
 
 *Have you tried similar hybrid approaches? I'd love to hear about your experiences and improvements to this setup. Feel free to reach out!*
 
-<!-- TODO: Add links to the complete example project on GitHub -->
-<!-- TODO: Add discussion section or comments -->
+TODO: Add links to the complete example project on GitHub
+TODO: Add discussion section or comments 
