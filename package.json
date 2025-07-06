@@ -42,7 +42,6 @@
     "@biomejs/biome": "^2.0.6",
     "@mdx-js/rollup": "^3.1.0",
     "@tailwindcss/postcss": "^4.1.11",
-    "@tailwindcss/vite": "^4.1.11",
     "@tanstack/router-plugin": "^1.125.3",
     "@types/node": "^22.13.9",
     "@types/react": "^19.1.8",

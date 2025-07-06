@@ -1838,19 +1838,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tailwindcss/vite@npm:^4.1.11":
-  version: 4.1.11
-  resolution: "@tailwindcss/vite@npm:4.1.11"
-  dependencies:
-    "@tailwindcss/node": "npm:4.1.11"
-    "@tailwindcss/oxide": "npm:4.1.11"
-    tailwindcss: "npm:4.1.11"
-  peerDependencies:
-    vite: ^5.2.0 || ^6 || ^7
-  checksum: 10c0/32ddf0716d717786bf89c5c079222675d39366ad1c3e431ad139f5d3d89aac5b67e89c3c9421b93b92c466bc0cf4eecc741f0d37771c0f7a100dfcf83cbb4fec
-  languageName: node
-  linkType: hard
-
 "@tanstack/directive-functions-plugin@npm:1.124.1":
   version: 1.124.1
   resolution: "@tanstack/directive-functions-plugin@npm:1.124.1"
@@ -2907,7 +2894,6 @@ __metadata:
     "@mdx-js/rollup": "npm:^3.1.0"
     "@tailwindcss/postcss": "npm:^4.1.11"
     "@tailwindcss/typography": "npm:^0.5.16"
-    "@tailwindcss/vite": "npm:^4.1.11"
     "@tanstack/react-query": "npm:^5.81.5"
     "@tanstack/react-router": "npm:^1.125.3"
     "@tanstack/react-router-devtools": "npm:^1.125.3"
