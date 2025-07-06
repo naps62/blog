@@ -2,6 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 
 const talks = [
   {
+    date: "July 2025",
+    event: "ETHPrague 2025",
+    title: "A local first approach for web3 development",
+    video: "lEAsmgOjLK4",
+    description:
+      "A discussion on how local-friendly development is an important need of many developers, and why a lot of web3-specific tooling breaks that reality. my project, ethui, aims to improve on that.",
+  },
+  {
     date: "May 2023",
     event: "ETHGlobal Lisbon",
     title: "Let's fix our developer experience",
