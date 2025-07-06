@@ -1,0 +1,83 @@
+@import "tailwindcss" source(".");
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-text-primary: #111826; /* gray-900 */
+  --color-text-secondary: #1f2937; /* gray-800 */
+  --color-text-muted: #6b7280; /* gray-500 */
+  --color-text-subtle: #9ca3af; /* gray-400 */
+
+  --color-link-primary: #2563eb; /* blue-600 */
+  --color-link-secondary: #3b82f6; /* blue-500 */
+  --color-link-hover: #1d4ed8; /* blue-700 */
+  --color-link-strong: #1e40af; /* blue-800 */
+
+  --color-bg-primary: #ffffff; /* white */
+  --color-bg-secondary: #f9fafb; /* gray-50 */
+  --color-bg-muted: #f3f4f6; /* gray-100 */
+  --color-bg-dark: #111827; /* gray-900 */
+  --color-bg-code-header: #374151; /* gray-700 */
+  --color-bg-accent: #eff6ff; /* blue-50 */
+
+  --color-border-primary: #e5e7eb; /* gray-200 */
+  --color-border-light: #f3f4f6; /* gray-100 */
+  --color-border-secondary: #d1d5db; /* gray-300 */
+  --color-border-accent: #93c5fd; /* blue-300 */
+
+  --color-nav-text: #4b5563; /* gray-600 */
+  --color-nav-hover: #111827; /* gray-900 */
+  --color-nav-title: #111827; /* gray-900 */
+  --color-nav-title-hover: #374151; /* gray-700 */
+
+  --color-tag-bg: #eff6ff; /* blue-50 */
+  --color-tag-text: #1d4ed8; /* blue-700 */
+}
+
+/* Code title styling (rehype-pretty-code) */
+[data-rehype-pretty-code-title] {
+  background: var(--color-bg-code-header);
+  color: var(--color-bg-primary);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo,
+    monospace;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  margin-bottom: 0;
+}
+
+[data-rehype-pretty-code-title] + pre {
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+code[data-line-numbers] {
+  counter-reset: line;
+}
+
+code[data-line-numbers] > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+
+  /* Other styling */
+  display: inline-block;
+  width: 0.75rem;
+  margin-right: 2rem;
+  text-align: right;
+  color: gray;
+}
+
+code[data-line-numbers-max-digits="2"] > [data-line]::before {
+  width: 1.25rem;
+}
+
+code[data-line-numbers-max-digits="3"] > [data-line]::before {
+  width: 1.75rem;
+}
+
+code[data-line-numbers-max-digits="4"] > [data-line]::before {
+  width: 2.25rem;
+}
