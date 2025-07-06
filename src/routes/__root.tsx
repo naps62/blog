@@ -22,8 +22,8 @@ function RootLayout({ children }: RootLayoutProps) {
         <meta name="robots" content="index, follow" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <title>Miguel Palhas | @naps62</title>
         <link rel="stylesheet" href={appCss} />
+        <title>Miguel Palhas | @naps62</title>
         <HeadContent />
       </head>
       <body>
