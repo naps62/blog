@@ -2,12 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Markdown } from "../../components/markdown";
 import { getPostBySlugEnhanced } from "../../utils/manifest";
 
-const { VERCEL_ENV, VERCEL_URL, VERCEL_BRANCH_URL } = import.meta.env;
+const { VITE_VERCEL_ENV, VITE_VERCEL_URL, VITE_VERCEL_BRANCH_URL } = import.meta
+  .env;
 
-console.log("VERCEL_ENV", VERCEL_ENV);
-console.log("VERCEL_URL", VERCEL_URL);
-console.log("VERCEL_BRANCH_URL", VERCEL_BRANCH_URL);
-const BASE_URL = VERCEL_ENV === "production" ? VERCEL_URL : VERCEL_BRANCH_URL;
+console.log("VERCEL_ENV", VITE_VERCEL_ENV);
+console.log("VERCEL_URL", VITE_VERCEL_URL);
+console.log("VERCEL_BRANCH_URL", VITE_VERCEL_BRANCH_URL);
+const BASE_URL =
+  VITE_VERCEL_ENV === "production" ? VITE_VERCEL_URL : VITE_VERCEL_BRANCH_URL;
 
 export const Route = createFileRoute("/posts/$slug")({
   head: ({ params }) => {
