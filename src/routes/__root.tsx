@@ -6,7 +6,10 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactNode } from "react";
+import { seo } from "@/utils/seo";
 import appCss from "../app.css?url";
+import { DefaultCatchBoundary } from "../components/DefaultCatchBoundary";
+import { NotFound } from "../components/NotFound";
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -16,14 +19,6 @@ function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="Software | Rust | Blockchain | Web" />
-        <meta name="robots" content="index, follow" />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <link rel="stylesheet" href={appCss} />
-        <title>Miguel Palhas | @naps62</title>
         <HeadContent />
       </head>
       <body>
@@ -71,6 +66,34 @@ function RootLayout({ children }: RootLayoutProps) {
 }
 
 export const Route = createRootRoute({
+  head: () => ({
+    meta: [
+      {
+        charSet: "utf-8",
+      },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
+      },
+      ...seo({
+        title: "Miguel Palhas | @naps62",
+        description: "Software | Rust | Blockchain | Web",
+      }),
+    ],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/site.webmanifest", color: "#fffff" },
+    ],
+  }),
+
+  errorComponent: (props) => {
+    return (
+      <RootLayout>
+        <DefaultCatchBoundary {...props} />
+      </RootLayout>
+    );
+  },
+  notFoundComponent: () => <NotFound />,
   component: () => (
     <RootLayout>
       <Outlet />
