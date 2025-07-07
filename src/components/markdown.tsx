@@ -94,7 +94,7 @@ const components = {
 
 export function Markdown({ children, className, ...props }: MarkdownProps) {
   return (
-    <div className={clsx("prose prose-xl max-w-none", className)} {...props}>
+    <div className={clsx("prose prose-lg max-w-none", className)} {...props}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </div>
   );

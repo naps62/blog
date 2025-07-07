@@ -31,6 +31,17 @@
 
   --color-tag-bg: #eff6ff; /* blue-50 */
   --color-tag-text: #1d4ed8; /* blue-700 */
+
+  /* Button colors */
+  --color-button-primary: #4b5563; /* gray-600 */
+  --color-button-primary-dark: #374151; /* gray-700 */
+
+  /* Status/Action colors */
+  --color-success: #10b981; /* emerald-500 */
+  --color-info: #0891b2; /* cyan-600 */
+
+  /* Dark mode text */
+  --color-text-muted-dark: #9ca3af; /* gray-400 */
 }
 
 /* Code title styling (rehype-pretty-code) */
@@ -67,7 +78,7 @@ code[data-line-numbers] > [data-line]::before {
   width: 0.75rem;
   margin-right: 2rem;
   text-align: right;
-  color: gray;
+  color: var(--color-text-muted);
 }
 
 code[data-line-numbers-max-digits="2"] > [data-line]::before {

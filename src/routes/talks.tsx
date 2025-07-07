@@ -57,18 +57,18 @@ export const Route = createFileRoute("/talks")({
       <h1>Talks</h1>
       <ul className="space-y-8">
         {talks.map((talk, i) => (
-          <li key={i} className="border-b border-gray-200 pb-8">
+          <li key={i} className="border-b border-border-primary pb-8">
             <article>
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-text-primary">
                     {talk.title}
                   </h2>
-                  <div className="text-gray-600">
+                  <div className="text-nav-text">
                     {talk.event} ({talk.date})
                   </div>
                 </div>
-                <p className="text-gray-600">{talk.description}</p>
+                <p className="text-nav-text">{talk.description}</p>
                 <div className="aspect-video">
                   <iframe
                     src={`https://www.youtube.com/embed/${talk.video}`}
