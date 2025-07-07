@@ -26,7 +26,7 @@ function RootLayout({ children }: RootLayoutProps) {
           <header className="bg-bg-primary border-b border-border-primary  top-0 z-10">
             <div className="max-w-4xl mx-auto px-6 py-4">
               <nav className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">
+                <h1 className="text-xl font-bold">
                   <Link
                     to="/"
                     className="text-nav-title hover:text-nav-title-hover"
@@ -83,6 +83,9 @@ export const Route = createRootRoute({
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/site.webmanifest", color: "#fffff" },
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
     ],
     scripts: [
       {

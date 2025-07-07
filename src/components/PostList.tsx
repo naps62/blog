@@ -14,7 +14,7 @@ export function PostList({ posts }: PostListProps) {
 
         return (
           <article key={slug} className="pb-0">
-            <h2 className="text-2xl font-bold mb-3 leading-tight">
+            <h2 className="text-xl font-bold mb-1 leading-tight">
               <Link
                 to="/posts/$slug"
                 params={{ slug }}
@@ -23,7 +23,7 @@ export function PostList({ posts }: PostListProps) {
                 {frontmatter.title}
               </Link>
             </h2>
-            <div className="text-nav-text mb-4 flex items-center gap-4 text-sm">
+            <div className="text-nav-text mb-2 flex items-center gap-4 text-sm">
               {frontmatter.date && (
                 <time dateTime={frontmatter.date}>
                   {new Date(frontmatter.date).toLocaleDateString("en-US", {
