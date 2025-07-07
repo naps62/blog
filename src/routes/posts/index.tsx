@@ -7,7 +7,7 @@ export const Route = createFileRoute("/posts/")({
 
     return (
       <div className="prose prose-xl max-w-none">
-        <div className="space-y-10">
+        <div className="space-y-4">
           {posts.map((post) => {
             const frontmatter = post.frontmatter;
             const slug = frontmatter.slug;
@@ -15,18 +15,31 @@ export const Route = createFileRoute("/posts/")({
             return (
               <article
                 key={slug}
-                className="border-b border-border-light pb-8 last:border-b-0"
+                className="border-b border-border-light pb-4 last:border-b-0 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
               >
-                <h2 className="text-2xl font-bold mb-3 leading-tight">
-                  <Link
-                    to="/posts/$slug"
-                    params={{ slug }}
-                    className="text-text-primary hover:text-link-primary no-underline transition-colors"
-                  >
-                    {frontmatter.title}
-                  </Link>
-                </h2>
-                <div className="text-nav-text mb-4 flex items-center gap-4 text-sm">
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold mb-0 leading-tight">
+                    <Link
+                      to="/posts/$slug"
+                      params={{ slug }}
+                      className="text-text-primary hover:text-link-primary no-underline transition-colors"
+                    >
+                      {frontmatter.title}
+                    </Link>
+                  </h2>
+                  {frontmatter.canonicalUrl && (
+                    <p className="text-sm text-text-muted mb-4">
+                      Originally published at{" "}
+                      <a
+                        href={frontmatter.canonicalUrl}
+                        className="text-link-primary hover:underline"
+                      >
+                        {new URL(frontmatter.canonicalUrl).hostname}
+                      </a>
+                    </p>
+                  )}
+                </div>
+                <div className="text-nav-text flex items-center gap-4 text-sm sm:justify-end sm:flex-shrink-0">
                   {frontmatter.date && (
                     <time dateTime={frontmatter.date}>
                       {new Date(frontmatter.date).toLocaleDateString("en-US", {
@@ -49,17 +62,6 @@ export const Route = createFileRoute("/posts/")({
                     </div>
                   )}
                 </div>
-                {frontmatter.canonicalUrl && (
-                  <p className="text-sm text-text-muted mb-4">
-                    Originally published at{" "}
-                    <a
-                      href={frontmatter.canonicalUrl}
-                      className="text-link-primary hover:underline"
-                    >
-                      {new URL(frontmatter.canonicalUrl).hostname}
-                    </a>
-                  </p>
-                )}
               </article>
             );
           })}

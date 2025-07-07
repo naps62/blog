@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
       <div className="prose prose-xl max-w-none">
         <div className="mt-12">
           <h2 className="text-2xl font-bold mb-8">Recent Posts</h2>
-          <ul className="space-y-6 list-none pl-0">
+          <ul className="space-y-2 list-none pl-0">
             {posts.map((post) => {
               const frontmatter = post.frontmatter;
               const slug = frontmatter.slug;
@@ -17,9 +17,9 @@ export const Route = createFileRoute("/")({
               return (
                 <li
                   key={slug}
-                  className="py-6 border-b border-border-light last:border-b-0"
+                  className="py-3 border-b border-border-light last:border-b-0 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2"
                 >
-                  <h3 className="text-xl font-bold mb-2">
+                  <h3 className="text-xl font-bold mb-0">
                     <Link
                       to="/posts/$slug"
                       params={{ slug }}
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
                       {frontmatter.title}
                     </Link>
                   </h3>
-                  <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-4 text-sm sm:justify-end sm:flex-shrink-0">
                     {frontmatter.date && (
                       <time
                         dateTime={frontmatter.date}
