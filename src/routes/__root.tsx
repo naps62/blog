@@ -84,6 +84,20 @@ export const Route = createRootRoute({
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/site.webmanifest", color: "#fffff" },
     ],
+    scripts: [
+      {
+        src: "https://www.googletagmanager.com/gtag/js?id=G-BGZRW8TCGD",
+        async: true,
+      },
+      {
+        children: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-BGZRW8TCGD');
+        `,
+      },
+    ],
   }),
 
   errorComponent: (props) => {
