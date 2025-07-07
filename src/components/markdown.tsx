@@ -30,11 +30,18 @@ const components = {
   p: (props: HTMLAttributes<HTMLParagraphElement>) => (
     <p className="mb-6 leading-relaxed text-text-secondary" {...props} />
   ),
-  a: (props: HTMLAttributes<HTMLAnchorElement> & { href?: string }) => (
-    <ExternalLink href={props.href || ""} showUnderline {...props}>
-      {props.children}
-    </ExternalLink>
-  ),
+  a: (props: HTMLAttributes<HTMLAnchorElement> & { href?: string }) => {
+    // Handle heading anchor links differently
+    if (props.href?.startsWith("#")) {
+      return <a {...props} className="text-text-primary no-underline" />;
+    }
+    
+    return (
+      <ExternalLink href={props.href || ""} showUnderline {...props}>
+        {props.children}
+      </ExternalLink>
+    );
+  },
   ul: (props: HTMLAttributes<HTMLUListElement>) => (
     <ul
       className="list-disc list-inside mb-6 space-y-2 text-text-secondary"
