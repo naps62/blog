@@ -10,21 +10,21 @@ interface MarkdownProps {
 const components = {
   h1: (props: HTMLAttributes<HTMLHeadingElement>) => (
     <h1
-      className="text-3xl font-bold mb-6 mt-12 first:mt-0 text-text-primary"
+      className="text-3xl font-bold mb-6 mt-16 first:mt-0 text-text-primary"
       {...props}
     />
   ),
   h2: (props: HTMLAttributes<HTMLHeadingElement>) => (
     <h2
-      className="text-2xl font-bold mb-5 mt-10 text-text-primary"
+      className="text-2xl font-bold mb-5 mt-14 text-text-primary"
       {...props}
     />
   ),
   h3: (props: HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="text-xl font-bold mb-4 mt-8 text-text-primary" {...props} />
+    <h3 className="text-xl font-bold mb-4 mt-12 text-text-primary" {...props} />
   ),
   h4: (props: HTMLAttributes<HTMLHeadingElement>) => (
-    <h4 className="text-lg font-bold mb-3 mt-6 text-text-primary" {...props} />
+    <h4 className="text-lg font-bold mb-3 mt-10 text-text-primary" {...props} />
   ),
   p: (props: HTMLAttributes<HTMLParagraphElement>) => (
     <p className="mb-6 leading-relaxed text-text-secondary" {...props} />
