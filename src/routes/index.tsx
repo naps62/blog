@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { getAllPosts } from "../utils/manifest";
 import { PostList } from "../components/PostList";
+import { ExternalLink } from "../components/ExternalLink";
 
 export const Route = createFileRoute("/")({
   component: () => {
@@ -20,13 +21,9 @@ export const Route = createFileRoute("/")({
             </p>
             <p className="text-lg text-text-primary">
               I'm currently Head of Research at{" "}
-              <Link
-                className="text-link-primary hover:text-link-strong font-medium"
-                target="_blank"
-                to="https://subvisual.com"
-              >
+              <ExternalLink href="https://subvisual.com">
                 Subvisual
-              </Link>
+              </ExternalLink>
               , a venture-studio based in Portugal.
             </p>
           </div>

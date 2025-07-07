@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { Post } from "../utils/manifest";
+import { PostMeta } from "./PostMeta";
 
 interface PostListProps {
   posts: Post[];
@@ -23,29 +24,7 @@ export function PostList({ posts }: PostListProps) {
                 {frontmatter.title}
               </Link>
             </h2>
-            <div className="text-nav-text mb-2 flex items-center gap-4 text-sm">
-              {frontmatter.date && (
-                <time dateTime={frontmatter.date}>
-                  {new Date(frontmatter.date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
-              )}
-              {frontmatter.tags && frontmatter.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {frontmatter.tags.map((tag: string) => (
-                    <span
-                      key={tag}
-                      className="inline-block bg-tag-bg text-tag-text px-2 py-1 rounded text-xs font-medium"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
+            <PostMeta date={frontmatter.date} tags={frontmatter.tags} />
           </article>
         );
       })}

@@ -4,6 +4,7 @@ import {
   Link,
   Outlet,
 } from "@tanstack/react-router";
+import { NavLink } from "../components/NavLink";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactNode } from "react";
 import appCss from "@/app.css?url";
@@ -35,24 +36,15 @@ function RootLayout({ children }: RootLayoutProps) {
                   </Link>
                 </h1>
                 <div className="flex space-x-4 text-base">
-                  <Link
-                    to="/"
-                    className="text-nav-text hover:text-nav-hover transition-colors"
-                  >
+                  <NavLink to="/">
                     Home
-                  </Link>
-                  <Link
-                    to="/posts"
-                    className="text-nav-text hover:text-nav-hover transition-colors"
-                  >
+                  </NavLink>
+                  <NavLink to="/posts">
                     Posts
-                  </Link>
-                  <Link
-                    to="/talks"
-                    className="text-nav-text hover:text-nav-hover transition-colors"
-                  >
+                  </NavLink>
+                  <NavLink to="/talks">
                     Talks
-                  </Link>
+                  </NavLink>
                 </div>
               </nav>
             </div>

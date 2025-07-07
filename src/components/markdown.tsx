@@ -1,6 +1,7 @@
 import { MDXProvider } from "@mdx-js/react";
 import { clsx } from "clsx";
 import { HTMLAttributes, ReactNode } from "react";
+import { ExternalLink } from "./ExternalLink";
 
 interface MarkdownProps {
   children: ReactNode;
@@ -30,12 +31,9 @@ const components = {
     <p className="mb-6 leading-relaxed text-text-secondary" {...props} />
   ),
   a: (props: HTMLAttributes<HTMLAnchorElement> & { href?: string }) => (
-    <a
-      className="text-link-primary hover:text-link-strong underline font-medium transition-colors"
-      target={props.href?.startsWith("http") ? "_blank" : undefined}
-      rel={props.href?.startsWith("http") ? "noopener noreferrer" : undefined}
-      {...props}
-    />
+    <ExternalLink href={props.href || ""} showUnderline {...props}>
+      {props.children}
+    </ExternalLink>
   ),
   ul: (props: HTMLAttributes<HTMLUListElement>) => (
     <ul
