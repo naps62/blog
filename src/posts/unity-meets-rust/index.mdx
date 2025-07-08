@@ -160,6 +160,32 @@ My build script started as a bash script that quickly grew out of control. It is
 * debug and release builds;
 * includes an incrementing version number for each subsequent build. The `string version` in the C# code is automatically updated as well.
 
+```bash
+$ cargo xtask build
+   Compiling xtask v0.1.0 (/home/naps62/projects/unity-meets-rust/crates/xtask)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.26s
+     Running `target/debug/xtask build`
+🔧 Building Core Libraries
+
+📋 Generating version... v0-1-0-00081
+
+🦀 Building Rust libraries in debug
+
+Building android
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+
+Building native
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+
+Building webgl
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+
+📦 Copying artifacts:
+   android Assets/Plugins/Android/libcore_android_debug_0-1-0-00081.so
+   native Assets/Plugins/libcore_native_debug_0-1-0-00081.so
+   webgl Assets/Plugins/WebGL/core.a
+```
+
 The result is a [single cohesive repo][repo] where I can continuously work on both the Rust core and the Unity side, and get a mostly seamless experience.
 
 Now I just have to actually build something with it!
