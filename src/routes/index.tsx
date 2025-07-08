@@ -1,66 +1,44 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { getAllPosts } from "../utils/manifest";
+import { PostList } from "../components/PostList";
+import { ExternalLink } from "../components/ExternalLink";
 
 export const Route = createFileRoute("/")({
   component: () => {
     const posts = getAllPosts().slice(0, 5);
 
     return (
-      <div className="prose prose-xl max-w-none">
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-8">Recent Posts</h2>
-          <ul className="space-y-6 list-none pl-0">
-            {posts.map((post) => {
-              const frontmatter = post.frontmatter;
-              const slug = frontmatter.slug;
+      <div className="prose prose-lg max-w-none">
+        <div className="flex items-center gap-12 mb-16">
+          <div className="flex-1">
+            <h1 className="text-4xl font-bold text-text-primary mb-4">
+              Hello! I'm Miguel
+            </h1>
+            <p className="text-lg text-text-primary mb-2">
+              I'm a senior engineer who spends his time solving deep technical
+              challenges in various corners of the web, as well as tinkering
+              with both hardware and software side-projects.
+            </p>
+            <p className="text-lg text-text-primary">
+              I'm currently Head of Research at{" "}
+              <ExternalLink href="https://subvisual.com">
+                Subvisual
+              </ExternalLink>
+              , a venture-studio based in Portugal.
+            </p>
+          </div>
+          <div className="flex-shrink-0">
+            <img
+              src="https://github.com/naps62.png"
+              alt="Miguel Palhas"
+              className="w-32 h-32 rounded-full border-4 border-border-light shadow-lg"
+            />
+          </div>
+        </div>
 
-              return (
-                <li
-                  key={slug}
-                  className="py-6 border-b border-border-light last:border-b-0"
-                >
-                  <h3 className="text-xl font-bold mb-2">
-                    <Link
-                      to="/posts/$slug"
-                      params={{ slug }}
-                      className="text-text-primary hover:text-link-primary no-underline transition-colors"
-                    >
-                      {frontmatter.title}
-                    </Link>
-                  </h3>
-                  <div className="flex items-center gap-4 text-sm">
-                    {frontmatter.date && (
-                      <time
-                        dateTime={frontmatter.date}
-                        className="text-text-muted font-medium"
-                      >
-                        {new Date(frontmatter.date).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          },
-                        )}
-                      </time>
-                    )}
-                    {frontmatter.tags && frontmatter.tags.length > 0 && (
-                      <div className="flex gap-3">
-                        {frontmatter.tags.map((tag: string) => (
-                          <span
-                            key={tag}
-                            className="text-link-primary text-sm font-medium uppercase"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-8">Writing</h2>
+          <PostList posts={posts} />
 
           <div className="mt-8">
             <Link

@@ -4,6 +4,7 @@ import {
   Link,
   Outlet,
 } from "@tanstack/react-router";
+import { NavLink } from "../components/NavLink";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactNode } from "react";
 import appCss from "@/app.css?url";
@@ -26,7 +27,7 @@ function RootLayout({ children }: RootLayoutProps) {
           <header className="bg-bg-primary border-b border-border-primary  top-0 z-10">
             <div className="max-w-4xl mx-auto px-6 py-4">
               <nav className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">
+                <h1 className="text-xl font-bold">
                   <Link
                     to="/"
                     className="text-nav-title hover:text-nav-title-hover"
@@ -35,24 +36,15 @@ function RootLayout({ children }: RootLayoutProps) {
                   </Link>
                 </h1>
                 <div className="flex space-x-4 text-base">
-                  <Link
-                    to="/"
-                    className="text-nav-text hover:text-nav-hover transition-colors"
-                  >
+                  <NavLink to="/">
                     Home
-                  </Link>
-                  <Link
-                    to="/posts"
-                    className="text-nav-text hover:text-nav-hover transition-colors"
-                  >
+                  </NavLink>
+                  <NavLink to="/posts">
                     Posts
-                  </Link>
-                  <Link
-                    to="/talks"
-                    className="text-nav-text hover:text-nav-hover transition-colors"
-                  >
+                  </NavLink>
+                  <NavLink to="/talks">
                     Talks
-                  </Link>
+                  </NavLink>
                 </div>
               </nav>
             </div>
@@ -83,6 +75,23 @@ export const Route = createRootRoute({
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/site.webmanifest", color: "#fffff" },
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+    ],
+    scripts: [
+      {
+        src: "https://www.googletagmanager.com/gtag/js?id=G-BGZRW8TCGD",
+        async: true,
+      },
+      {
+        children: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-BGZRW8TCGD');
+        `,
+      },
     ],
   }),
 

@@ -1,6 +1,7 @@
 import { MDXProvider } from "@mdx-js/react";
 import { clsx } from "clsx";
 import { HTMLAttributes, ReactNode } from "react";
+import { ExternalLink } from "./ExternalLink";
 
 interface MarkdownProps {
   children: ReactNode;
@@ -10,33 +11,37 @@ interface MarkdownProps {
 const components = {
   h1: (props: HTMLAttributes<HTMLHeadingElement>) => (
     <h1
-      className="text-3xl font-bold mb-6 mt-12 first:mt-0 text-text-primary"
+      className="text-3xl font-bold mb-6 mt-16 first:mt-0 text-text-primary"
       {...props}
     />
   ),
   h2: (props: HTMLAttributes<HTMLHeadingElement>) => (
     <h2
-      className="text-2xl font-bold mb-5 mt-10 text-text-primary"
+      className="text-2xl font-bold mb-5 mt-14 text-text-primary"
       {...props}
     />
   ),
   h3: (props: HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="text-xl font-bold mb-4 mt-8 text-text-primary" {...props} />
+    <h3 className="text-xl font-bold mb-4 mt-12 text-text-primary" {...props} />
   ),
   h4: (props: HTMLAttributes<HTMLHeadingElement>) => (
-    <h4 className="text-lg font-bold mb-3 mt-6 text-text-primary" {...props} />
+    <h4 className="text-lg font-bold mb-3 mt-10 text-text-primary" {...props} />
   ),
   p: (props: HTMLAttributes<HTMLParagraphElement>) => (
     <p className="mb-6 leading-relaxed text-text-secondary" {...props} />
   ),
-  a: (props: HTMLAttributes<HTMLAnchorElement> & { href?: string }) => (
-    <a
-      className="text-link-primary hover:text-link-strong underline font-medium transition-colors"
-      target={props.href?.startsWith("http") ? "_blank" : undefined}
-      rel={props.href?.startsWith("http") ? "noopener noreferrer" : undefined}
-      {...props}
-    />
-  ),
+  a: (props: HTMLAttributes<HTMLAnchorElement> & { href?: string }) => {
+    // Handle heading anchor links differently
+    if (props.href?.startsWith("#")) {
+      return <a {...props} className="text-text-primary no-underline" />;
+    }
+    
+    return (
+      <ExternalLink href={props.href || ""} showUnderline {...props}>
+        {props.children}
+      </ExternalLink>
+    );
+  },
   ul: (props: HTMLAttributes<HTMLUListElement>) => (
     <ul
       className="list-disc list-inside mb-6 space-y-2 text-text-secondary"
@@ -94,7 +99,7 @@ const components = {
 
 export function Markdown({ children, className, ...props }: MarkdownProps) {
   return (
-    <div className={clsx("prose prose-xl max-w-none", className)} {...props}>
+    <div className={clsx("prose prose-lg max-w-none", className)} {...props}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </div>
   );

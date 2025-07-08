@@ -54,7 +54,7 @@ export const Route = createFileRoute("/posts/$slug")({
     const PostComponent = post.default;
 
     return (
-      <article className="prose prose-xl max-w-none">
+      <article className="prose prose-lg max-w-none">
         <header className="mb-12 text-center">
           {frontmatter.banner && (
             <div className="mb-8">
