@@ -1,126 +1,180 @@
 ---
-title: "Unity meets Rust - The Case for Hybrid Game Development"
+title: "Unity meets Rust - Building the Perfect Development Setup"
 draft: false
 date: 2025-07-04
 tags: ["rust", "unity", "gamedev"]
 ---
 
-Almost 20 years after I first learned programming, I still get the occasional brain worm telling me to go do game development.
+[s1]: https://rjgameiro.medium.com/let-fun-rust-unity-f7f62609ba49
+[s2]: https://www.youtube.com/watch?v=L7M_vbo1N2g&t=315s
+[s3]: https://testdouble.com/insights/integrating-rust-with-unity-for-better-performance
+[s4]: https://www.resolutiongames.com/blog/calling-rust-from-c-in-unity
+[repo]: https://github.com/naps62/unity-meets-rust
+[wasm-features]: https://doc.rust-lang.org/rustc/platform-support/wasm32-unknown-unknown.html#enabled-webassembly-features
+[xtask]: https://github.com/matklad/cargo-xtask 
 
-So every once in a while I dabble in some unknown framework, not with the intent of actually shipping something (maybe someday, or at least that's what I tell myself), but at least with the goal of learning something new.
 
-I did a couple of 2-day sprints recently to learn Svelte and three.js by making a [snake-like game](http://snake.naps62.com). Later I finally learned Bevy by making [Space Invaders](https://space-invaders.naps62.com).
+I spend a huge amount of time *not* building games. This includes time spent in my actual work (not games), as well as all those times I try to sneak into gamedev as a hobby, only to be quickly sidetracked to bikeshed the most niche of issues anyone could come up with.
 
-But it's been a few years since I touched Unity or any other more appropriate framework for actually shipping games.
+This time, I decided I wanted to *not* build a game, not just in a framework, but in two completely different stacks at the same time.
 
-TODO: Add screenshots of the snake game and Space Invaders
+There are actually some high-level reasons why someone might want to do that, but I'll leave those for a future post. This one is for the misguided and purely technical timesinks.
 
-## The eternal gamedev dilemma
+**TODO: screenshots of Patrick's Parabox**
 
-Here's the thing: I don't actually know what it takes to ship a game (I haven't published one), but I see a lot of discussion online in the gamedev world about how Bevy and full-on ECS for gamedev might be a bit misguided.
+The good news is that while I don't have anything resembling a finished game, I do have a working development environment that gives me the best of both worlds: the rapid iteration of Rust development with the visual power of Unity.
 
-The argument, mainly from people like Casey Muratori and Jonathan Blow, is that game development requires the ability to be creative and quickly iterate on new ideas – something that Rust fundamentally does not allow for.
+<Embed url="https://github.com/naps62/unity-meets-rust" />
 
-So I'm conflicted. I want to build games. Do I want to actually ship a game, and therefore should I go full-on Unity, even though:
-- Unity's editor feels sluggish compared to my usual development workflow
-- Script changes require waiting for the UI to reload
-- Unity doesn't play well with Wayland on Linux, meaning I have to compromise on my setup
+## The setup
 
-Or do I want the enjoyment of building a never-to-be-finished game, and play with all the cool toys the Bevy and Rust communities are building?
+I was conflicted between Unity, where I'd have to deal with C# and a GUI-driven workflow, or Rust and Bevy, where I'd be in much more familiar territory, but without the prototyping flexiblity you typically want while trying to figure out what you're building.
 
-Well, this is a story of how I spent way too much free time not doing either, but giving myself the possibility of someday doing both... someday.
+So naturally I picked both.
 
-## The best of both worlds
+I decided it would be fun to explore interop between the two sides: using Rust and Bevy to build the core game logic, completely abstracted away from any rendering and input devices, and plug that into Unity where I'd handle those details, which are the part I actually prever a GUI editor for.
 
-Let's break down what attracts me to each approach:
+This works better for certain types of games, such as puzzle or turn-based, where everything is deterministic, and we don't have to deal with physics, real-time, and RNG to add noise to our system.
 
-### Unity's strengths:
-- Mature ecosystem with tons of resources
-- Visual editor that's actually useful for layouts, animations, and assets
-- Large community of developers who've actually shipped games
-- Established workflows that have proven to work at scale
+TODO: images of patrick's parabox and other games
 
-### Rust/Bevy's strengths:
-- The development experience I'm used to: fast feedback loops, great tooling, strong type system
-- Unit tests that run instantly and tell me what I broke
-- No waiting for editor reloads or hitting play buttons to debug
-- Modern architecture patterns that make sense to me
+But how can we achieve this?
 
-### The problem with each:
-- **Unity**: Editor-driven development feels like a slog. I'm used to near-instant feedback from LSPs, and the Unity workflow breaks that flow.
-- **Bevy**: It moves the needle from "building a game" to "building a game framework." In my Space Invaders project, I struggled with mechanics that would be trivial in Unity.
+## FFI
 
-TODO: Add a comparison table or infographic here
+To get two languages to talk to each other, Foreign Function Interface (FFI) is the usual approach. For Rust -> Unity C#, this looks like this:
 
-## What if we could have both?
+```rust title="lib.rs"
+#[unsafe(no_mangle)]
+pub extern "C" fn add(u32 x, u32 y) -> u32 {
+    x + y
+}
+```
 
-More concretely, what if I could build the core logic of a game in Rust, completely decoupled from any rendering engine, where I could test everything thoroughly, while leaving Unity to handle only what it's actually good at: visuals, inputs, animations, and asset management?
+```csharp title="Core.cs"
+using System.Runtime.InteropServices;
 
-This leads us to a simple but powerful concept.
+[DllImport("game_core")]
+private static extern int add(int x, int y);
+```
 
-## The game core concept
+On C#'s side, we already get cross-platform for free (almost). Depending on which system we target, `DllImport` will look for the correct library type.
 
-I'm obviously not the first to think about this. I found several `runity` GitHub repos attempting Unity + Rust integration. Most aimed to reimplement every Unity function via Rust (admittedly, both projects appear abandoned – perhaps because this is neither easy nor in high demand).
+On Rust's side, we need a more elaborate setup. Depending on the target we need to build the rust library with different target triplets, and crate type:
 
-But we can attempt something much simpler. And from that simplicity, some interesting ideas emerge.
+| Platform | Target | Crate type |
+| ---      | ---    | ---        |
+| Linux (x86) | x86_64-unknown-linux-gnu | cdylib |
+| Android (ARM64) | aarch64-linux-android | cdylib |
+| Windows | x86_64-pc-windows-gnu | cdylib |
+| macOS* | universal-apple-darwin | cdylib |
+| iOS* | aarch64-apple-ios | staticlib |
+| WebGL | wasm32-unknown-unknown | staticlib |
 
-Think about it like a web developer: imagine our game as two components:
-- **The backend**: where all the state and business logic lives
-- **The frontend**: where inputs come from, and where we draw pretty things
+* I'm not an Apple user, so I haven't fully tested the setup for this.
 
-While this isn't unheard of, it's not as popular in gamedev as it is in web development. Even multiplayer games, where there's literally a client-server architecture, blur the lines for performance reasons.
+While the target triplet is well supported, it's actually tricky to compile the same crate for different combinations of target and crate type. `cargo build` does not support that, so we need to go down one level of abstraction:
 
-TODO: Add a simple architecture diagram showing the separation
+```bash
+cargo rustc --target x86_64-unknown-linux-gnu --crate-type cdylib
+```
 
-## Interface agnostic development
+# Rust and Wasm Features
 
-This idea actually crystallized when I was playing Patrick's Parabox recently. The game has an ASCII mode that works surprisingly well – same gameplay, completely different presentation.
+There are additional quirks to deal with regarding WebGL. Rust 1.87 [introduced Wasm features][wasm-features] that, apparently, Unity's built-in compiler cannot yet handle. I had problems with `bulk-memory` in particular.
 
-TODO: Add screenshots of Patrick's Parabox in both visual and ASCII modes 
+The workaround is to add additional compilation options to disable those features:
 
-If we achieve complete decoupling of game logic and rendering, we can hot-swap rendering engines, potentially making the same gameplay available across multiple mediums. Terminal version, anyone?
+```bash
+export RUSTFLAGS=-Ctarget-cpu=mvp
+cargo +nightly build -Zbuild-std=panic_abort,std --target wasm32-unknown-unknown
+```
 
-This approach works particularly well for certain types of games:
-- **Puzzle games**: Rules are clearly defined and deterministic
-- **Turn-based games**: No real-time pressure, everything can be computed step by step
-- **Strategy games**: Complex logic that benefits from thorough testing
+Additionally, importing the Wasm module into Unity is a special edge case
 
-These genres benefit from:
-- Clear, testable game rules
-- Deterministic behavior
-- Less reliance on timing-critical events
-- Logic that can be complex enough to warrant the separation
+## Cross-platform C# wrapper
 
-## Unexpected benefits
+Since we now have a mix of dynamic and static libraries, depending on architecture, the process of loading it into Unity is a bit more complex:
 
-Once you have a clean game core, some interesting possibilities emerge:
+```csharp
+#if !UNITY_EDITOR && (UNITY_IOS || UNITY_WEBGL)
+  public static string libName = "__Internal";
+#else
+  public static string libName = "core";
+#endif
 
-### AI-powered testing
-I can plug AI agents directly into the game core, have them learn to play, and then use those models as unit tests. Imagine statically guaranteeing that all your levels are beatable, or that your game balance is within expected parameters.
+[DllImport(libName)]
+private static extern int add(int x, int y);
+```
 
-### Deterministic replay systems
-With all state changes flowing through a clean API, implementing replay systems becomes trivial. Perfect for debugging, testing, and even creating demo content.
+## Live-reloading
 
-### Cross-platform consistency
-The same core logic can power a mobile version, a desktop version, and even a web version, all with platform-specific UIs but identical game behavior.
+While Unity's workflow is not the fastest, live-reload is still a thing: Whenever you change one of it's resources or scripts, it detects and auto loads the new resource in the editor. This is not the case for external libraries though.
 
-TODO: Add examples of games that do this well
+They're meant to be developed outside of the game development process, placed in `Assets/Plugins` and. Unity isn't expecting us to actively change them over time.
 
-## Where do we go from here?
+But we can trick it into doing so by dynamically changing the library name (perhaps with an incrementing version number), effectively treating it as a brand new resource to load.
+Most likely, over a long work session, old versions of the library will linger in memory. but given their small size, this shouldn't realistically be a problem anytime soon. And it's still a win over having to restart the editor on every single library change.
 
-This is clearly just the beginning of the conversation. The real question is: how do we actually build this setup?
+Ultimately, this is what I ended up with as the C# library loading logic:
 
-In the next post, I'll dive into the technical details of creating a hybrid Unity + Rust development environment that actually works. We'll cover:
+```csharp
+public class Core {
 
-- Setting up automatic DLL reloading in Unity
-- Building Rust libraries for multiple platforms (including the WebAssembly gotchas)
-- Creating a development workflow that gives you the best of both worlds
-- Real code examples and configuration files
+    public const string version = "0-1-0-00078";
 
-But for now, I'm curious: does this approach resonate with you? Are you also frustrated with the current state of game development tooling? Have you tried similar hybrid approaches?
+#if UNITY_WEBGL
+    public const string libName = "__Internal";
+#else
+    #if UNITY_ANDROID
+        public const string target = "android";
+    #elif UNITY_IOS
+        public const string target = "ios";
+    #elif UNITY_STANDALONE_OSX
+        public const string target = "macos";
+    #elif UNITY_STANDALONE_WIN
+        public const string target = "windows";
+    #else
+        public const string target = "native";
+    #endif
 
-TODO: Add a call-to-action for feedback and discussion 
+    #if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public const string mode = "debug";
+    #else
+        public const string mode = "release";
+    #endif
+
+    public const string libName = "core_" + target + "_" + mode + "_" + version;
+#endif
+
+    [DllImport(libName)]
+    public static extern int add(int left, int right);
+}
+```
+
+## Putting it all together
+
+My build script started as a bash script that quickly grew out of control. It is now built in Rust itself, using [`cargo-xtask`][xtask], and handles:
+* building my computer's native target by default (for Unity Editor development);
+* building all other targets when asked explicitly, for testing on WebGL or on my phone;
+* debug and release builds;
+* includes an incrementing version number for each subsequent build. The `string version` in the C# code is automatically updated as well.
+
+The result is a [single cohesive repo][repo] where I can continuously work on both the Rust core and the Unity side, and get a mostly seamless experience.
+
+Now I just have to actually build something with it!
+
+**TODO: gif of the working prototype**
+
+## Final thoughts
+
+Is this overkill for most games? Probably. But for certain types of games – especially those with complex logic that benefits from thorough testing – this hybrid approach offers compelling advantages.
+
+The key is recognizing that you don't have to choose between Rust and Unity. Sometimes the best solution is to use both tools for what they're best at.
 
 ---
 
-*This is Part 1 of a 2-part series on hybrid game development. Part 2 will focus on the technical implementation details and actual code examples.*
+*Have you tried similar hybrid approaches? I'd love to hear about your experiences and improvements to this setup. Feel free to reach out!*
+
+TODO: Add links to the complete example project on GitHub
+TODO: Add discussion section or comments 

@@ -2324,6 +2324,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash-es@npm:^4":
+  version: 4.17.12
+  resolution: "@types/lodash-es@npm:4.17.12"
+  dependencies:
+    "@types/lodash": "npm:*"
+  checksum: 10c0/5d12d2cede07f07ab067541371ed1b838a33edb3c35cb81b73284e93c6fd0c4bbeaefee984e69294bffb53f62d7272c5d679fdba8e595ff71e11d00f2601dde0
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.17.20
+  resolution: "@types/lodash@npm:4.17.20"
+  checksum: 10c0/98cdd0faae22cbb8079a01a3bb65aa8f8c41143367486c1cbf5adc83f16c9272a2a5d2c1f541f61d0d73da543c16ee1d21cf2ef86cb93cd0cc0ac3bced6dd88f
+  languageName: node
+  linkType: hard
+
 "@types/mdast@npm:^4.0.0":
   version: 4.0.4
   resolution: "@types/mdast@npm:4.0.4"
@@ -2921,18 +2937,23 @@ __metadata:
     "@tanstack/react-router-devtools": "npm:1.125.4"
     "@tanstack/react-start": "npm:1.125.5"
     "@tanstack/router-plugin": "npm:1.125.5"
+    "@types/lodash-es": "npm:^4"
     "@types/node": "npm:^22.13.9"
     "@types/react": "npm:^19.1.8"
     "@types/react-dom": "npm:^19.1.6"
     "@vitejs/plugin-react": "npm:^4.6.0"
     autoprefixer: "npm:^10.4.21"
+    cheerio: "npm:^1.1.0"
     clsx: "npm:^2.1.1"
     glob: "npm:^11.0.3"
     gray-matter: "npm:^4.0.3"
+    lodash-es: "npm:^4.17.21"
+    lru-cache: "npm:^11.1.0"
     lucide-react: "npm:^0.525.0"
     postcss: "npm:^8.5.6"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
+    redaxios: "npm:^0.5.1"
     rehype-autolink-headings: "npm:^7.1.0"
     rehype-class-names: "npm:^2.0.0"
     rehype-external-links: "npm:^3.0.0"
@@ -3156,7 +3177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cheerio@npm:^1.0.0":
+"cheerio@npm:^1.0.0, cheerio@npm:^1.1.0":
   version: 1.1.0
   resolution: "cheerio@npm:1.1.0"
   dependencies:
@@ -5914,7 +5935,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^11.0.0":
+"lru-cache@npm:^11.0.0, lru-cache@npm:^11.1.0":
   version: 11.1.0
   resolution: "lru-cache@npm:11.1.0"
   checksum: 10c0/85c312f7113f65fae6a62de7985348649937eb34fb3d212811acbf6704dc322a421788aca253b62838f1f07049a84cc513d88f494e373d3756514ad263670a64
@@ -7771,6 +7792,13 @@ __metadata:
     unified: "npm:^11.0.0"
     vfile: "npm:^6.0.0"
   checksum: 10c0/c2ed4c0e8cf8a09aedcd47c5d016d47f6e1ff6c2d4b220e2abaf1b77713bf404756af2ea3ea7999aec5862e8825aff035edceb370c7fd8603a7e9da03bd6987e
+  languageName: node
+  linkType: hard
+
+"redaxios@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "redaxios@npm:0.5.1"
+  checksum: 10c0/544b2cddc77ac3b98b201f6224788cc42156a238e64519914c50ed09b5acda73fcadc6ba01000d26d65af8dc4cbb2335a37063681e08e821147a18268a808039
   languageName: node
   linkType: hard
 
