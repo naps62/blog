@@ -5,6 +5,9 @@ date: 2025-07-04
 tags: ["rust", "unity", "gamedev"]
 ---
 
+import comparison from "./comparison.png";
+import video from "./video.webm";
+
 [s1]: https://rjgameiro.medium.com/let-fun-rust-unity-f7f62609ba49
 [s2]: https://www.youtube.com/watch?v=L7M_vbo1N2g&t=315s
 [s3]: https://testdouble.com/insights/integrating-rust-with-unity-for-better-performance
@@ -20,7 +23,6 @@ This time, I decided I wanted to *not* build a game, not just in a framework, bu
 
 There are actually some high-level reasons why someone might want to do that, but I'll leave those for a future post. This one is for the misguided and purely technical timesinks.
 
-**TODO: screenshots of Patrick's Parabox**
 
 The good news is that while I don't have anything resembling a finished game, I do have a working development environment that gives me the best of both worlds: the rapid iteration of Rust development with the visual power of Unity.
 
@@ -32,11 +34,15 @@ I was conflicted between Unity, where I'd have to deal with C# and a GUI-driven 
 
 So naturally I picked both.
 
-I decided it would be fun to explore interop between the two sides: using Rust and Bevy to build the core game logic, completely abstracted away from any rendering and input devices, and plug that into Unity where I'd handle those details, which are the part I actually prever a GUI editor for.
+I decided it would be fun to explore interop between the two sides: using Rust and Bevy to build the core game logic, completely decoupled from any rendering and input devices, and plug that into Unity where I'd handle those details, which are the part I actually prever a GUI editor for.
 
 This works better for certain types of games, such as puzzle or turn-based, where everything is deterministic, and we don't have to deal with physics, real-time, and RNG to add noise to our system.
 
-TODO: images of patrick's parabox and other games
+<Figure
+  src={comparison}
+  alt="Patrick's Parabox two rendering styles"
+  caption="Patric's Parabox is a great example of this decoupling, with two different rendering styles: the regular 2D one, and an ASCII one"
+/>
 
 But how can we achieve this?
 
@@ -160,7 +166,7 @@ My build script started as a bash script that quickly grew out of control. It is
 * debug and release builds;
 * includes an incrementing version number for each subsequent build. The `string version` in the C# code is automatically updated as well.
 
-```bash
+```
 $ cargo xtask build
    Compiling xtask v0.1.0 (/home/naps62/projects/unity-meets-rust/crates/xtask)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.26s
@@ -190,4 +196,4 @@ The result is a [single cohesive repo][repo] where I can continuously work on bo
 
 Now I just have to actually build something with it!
 
-**TODO: gif of the working prototype**
+<Video src={video} muted autoPlay loop />

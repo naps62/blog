@@ -70,7 +70,7 @@ const components = {
   table: (props: HTMLAttributes<HTMLTableElement>) => (
     <div className="overflow-x-auto mb-6">
       <table
-        className="min-w-full border border-border-secondary rounded-lg"
+        className="min-w-full border border-border-secondary rounded-lg border-collapse"
         {...props}
       />
     </div>
@@ -88,7 +88,20 @@ const components = {
     />
   ),
   img: (props: HTMLAttributes<HTMLImageElement>) => (
-    <img className="max-w-full h-auto rounded-lg mb-6 shadow-sm" {...props} />
+    <>
+      <img className="max-w-full h-auto rounded-lg mb-6 shadow-sm" {...props} />
+    </>
+  ),
+  Video: (props: HTMLAttributes<HTMLVideoElement>) => (
+    <picture className="flex w-full justify-center">
+      <video className="max-w-[600px]" {...props} />
+    </picture>
+  ),
+  Figure: ({ src, alt, caption, ...props }: { src: string; alt?: string; caption?: string } & HTMLAttributes<HTMLElement>) => (
+    <figure className="mb-6" {...props}>
+      <img src={src} alt={alt} className="max-w-full h-auto rounded-lg shadow-sm" />
+      {caption && <figcaption className="mt-2 text-sm text-text-secondary text-center italic">{caption}</figcaption>}
+    </figure>
   ),
   hr: (props: HTMLAttributes<HTMLHRElement>) => (
     <hr className="my-12 border-border-secondary" {...props} />
