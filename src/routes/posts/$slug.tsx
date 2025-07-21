@@ -16,6 +16,7 @@ export const Route = createFileRoute("/posts/$slug")({
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },
     ];
+    const links = [];
 
     if (frontmatter.banner && VITE_VERCEL_URL) {
       const absoluteImageUrl = new URL(
@@ -30,10 +31,12 @@ export const Route = createFileRoute("/posts/$slug")({
 
     if (frontmatter.canonicalUrl) {
       meta.push({ property: "og:url", content: frontmatter.canonicalUrl });
+      links.push({ rel: "canonical", content: frontmatter.canonicalUrl });
     }
 
     return {
       meta,
+      links,
       title: frontmatter.title,
     };
   },
