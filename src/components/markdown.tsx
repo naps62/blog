@@ -1,7 +1,10 @@
 import { MDXProvider } from "@mdx-js/react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { clsx } from "clsx";
-import { HTMLAttributes, ReactNode } from "react";
+import { Link as LinkIcon, LoaderCircle } from "lucide-react";
+import { HTMLAttributes, ReactNode, Suspense } from "react";
 import { ExternalLink } from "./ExternalLink";
+import { getOpengraphEmbedData } from "../server/embed";
 
 interface MarkdownProps {
   children: ReactNode;
@@ -9,6 +12,7 @@ interface MarkdownProps {
 }
 
 const components = {
+  Embed: SuspendedEmbed,
   h1: (props: HTMLAttributes<HTMLHeadingElement>) => (
     <h1
       className="text-3xl font-bold mb-6 mt-16 first:mt-0 text-text-primary"
@@ -35,7 +39,7 @@ const components = {
     if (props.href?.startsWith("#")) {
       return <a {...props} className="text-text-primary no-underline" />;
     }
-    
+
     return (
       <ExternalLink href={props.href || ""} showUnderline {...props}>
         {props.children}
@@ -66,7 +70,7 @@ const components = {
   table: (props: HTMLAttributes<HTMLTableElement>) => (
     <div className="overflow-x-auto mb-6">
       <table
-        className="min-w-full border border-border-secondary rounded-lg"
+        className="min-w-full border border-border-secondary rounded-lg border-collapse"
         {...props}
       />
     </div>
@@ -84,7 +88,20 @@ const components = {
     />
   ),
   img: (props: HTMLAttributes<HTMLImageElement>) => (
-    <img className="max-w-full h-auto rounded-lg mb-6 shadow-sm" {...props} />
+    <>
+      <img className="max-w-full h-auto rounded-lg mb-6 shadow-sm" {...props} />
+    </>
+  ),
+  Video: (props: HTMLAttributes<HTMLVideoElement>) => (
+    <picture className="flex w-full justify-center">
+      <video className="max-w-[600px]" {...props} />
+    </picture>
+  ),
+  Figure: ({ src, alt, caption, ...props }: { src: string; alt?: string; caption?: string } & HTMLAttributes<HTMLElement>) => (
+    <figure className="mb-6" {...props}>
+      <img src={src} alt={alt} className="max-w-full h-auto rounded-lg shadow-sm" />
+      {caption && <figcaption className="mt-2 text-sm text-text-secondary text-center italic">{caption}</figcaption>}
+    </figure>
   ),
   hr: (props: HTMLAttributes<HTMLHRElement>) => (
     <hr className="my-12 border-border-secondary" {...props} />
@@ -101,6 +118,61 @@ export function Markdown({ children, className, ...props }: MarkdownProps) {
   return (
     <div className={clsx("prose prose-lg max-w-none", className)} {...props}>
       <MDXProvider components={components}>{children}</MDXProvider>
+    </div>
+  );
+}
+
+function SuspendedEmbed({ url }: { url: string }) {
+  return (
+    <a
+      href={url}
+      rel="noopener noreferrer"
+      target="_blank"
+      className="not-prose my-8 block overflow-hidden rounded-xl border border-border-secondary bg-bg-primary no-underline hover:bg-bg-secondary transition-colors"
+    >
+      <Suspense
+        fallback={
+          <div className="flex h-32 w-full items-center justify-center gap-2 border">
+            <LoaderCircle className="animate-spin" />
+            <span className="text-text-secondary">{url}</span>
+          </div>
+        }
+      >
+        <Embed url={url} />
+      </Suspense>
+    </a>
+  );
+}
+
+function Embed({ url: urlStr }: { url: string }) {
+  const {
+    data: { image, title, description, url },
+  } = useSuspenseQuery({
+    queryKey: ["embed", urlStr],
+    queryFn: () => getOpengraphEmbedData({ data: { url: urlStr } }),
+  });
+
+  return (
+    <div className="flex flex-col items-stretch md:flex-row-reverse">
+      <div className="aspect-video shrink-0 md:w-64">
+        <img
+          src={image}
+          className="mt-0 mb-0 h-full w-full object-cover"
+          alt={title}
+        />
+      </div>
+      <div className="hidden grow flex-col items-stretch justify-between gap-2 overflow-hidden p-4 md:flex">
+        <h3 className="font-bold text-base text-text-primary line-clamp-2">
+          {title}
+        </h3>
+        <p className="line-clamp-3 font-light text-sm text-text-secondary">
+          {description}
+        </p>
+        <p className="flex items-center gap-2 text-text-secondary">
+          <LinkIcon size="14" />
+          {url.host}
+        </p>
+      </div>
     </div>
   );
 }
