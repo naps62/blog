@@ -11,7 +11,7 @@ export function Tag({ children, className }: TagProps) {
     <span
       className={clsx(
         "inline-block bg-tag-bg text-tag-text px-2 py-1 rounded text-xs font-medium",
-        className
+        className,
       )}
     >
       {children}
@@ -26,7 +26,7 @@ interface TagListProps {
 
 export function TagList({ tags, className }: TagListProps) {
   if (!tags || tags.length === 0) return null;
-  
+
   return (
     <div className={clsx("flex flex-wrap gap-2", className)}>
       {tags.map((tag) => (

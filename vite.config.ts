@@ -1,4 +1,5 @@
 import mdx from "@mdx-js/rollup";
+import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeAddClasses from "rehype-class-names";
@@ -11,8 +12,6 @@ import remarkGfm from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
-
-import tailwindcss from "@tailwindcss/vite";
 
 const classes = {
   "h1>a, h2>a, h3>a": "no-underline font-bold",

@@ -1,10 +1,6 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(mv:*)",
-      "WebFetch(domain:naps62.com)",
-      "Bash(ffmpeg:*)"
-    ],
+    "allow": ["Bash(mv:*)", "WebFetch(domain:naps62.com)", "Bash(ffmpeg:*)"],
     "deny": []
   }
 }

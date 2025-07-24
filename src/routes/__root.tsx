@@ -1,16 +1,16 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   createRootRoute,
   HeadContent,
   Link,
   Outlet,
 } from "@tanstack/react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { NavLink } from "../components/NavLink";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactNode } from "react";
 import appCss from "@/app.css?url";
 import { seo } from "@/utils/seo";
 import { DefaultCatchBoundary } from "../components/DefaultCatchBoundary";
+import { NavLink } from "../components/NavLink";
 import { NotFound } from "../components/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,15 +40,9 @@ function RootLayout({ children }: RootLayoutProps) {
                     </Link>
                   </h1>
                   <div className="flex space-x-4 text-base">
-                    <NavLink to="/">
-                      Home
-                    </NavLink>
-                    <NavLink to="/posts">
-                      Posts
-                    </NavLink>
-                    <NavLink to="/talks">
-                      Talks
-                    </NavLink>
+                    <NavLink to="/">Home</NavLink>
+                    <NavLink to="/posts">Posts</NavLink>
+                    <NavLink to="/talks">Talks</NavLink>
                   </div>
                 </nav>
               </div>
@@ -81,8 +75,18 @@ export const Route = createRootRoute({
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/site.webmanifest", color: "#fffff" },
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
-      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "16x16",
+        href: "/favicon-16x16.png",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        href: "/favicon-32x32.png",
+      },
     ],
     scripts: [
       {

@@ -3,8 +3,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { clsx } from "clsx";
 import { Link as LinkIcon, LoaderCircle } from "lucide-react";
 import { HTMLAttributes, ReactNode, Suspense } from "react";
-import { ExternalLink } from "./ExternalLink";
 import { getOpengraphEmbedData } from "../server/embed";
+import { ExternalLink } from "./ExternalLink";
 
 interface MarkdownProps {
   children: ReactNode;
@@ -94,13 +94,30 @@ const components = {
   ),
   Video: (props: HTMLAttributes<HTMLVideoElement>) => (
     <picture className="flex w-full justify-center">
-      <video className="max-w-[600px]" {...props} />
+      <video className="w-full max-w-[600px]" {...props} />
     </picture>
   ),
-  Figure: ({ src, alt, caption, ...props }: { src: string; alt?: string; caption?: string } & HTMLAttributes<HTMLElement>) => (
+  Figure: ({
+    src,
+    alt,
+    caption,
+    ...props
+  }: {
+    src: string;
+    alt?: string;
+    caption?: string;
+  } & HTMLAttributes<HTMLElement>) => (
     <figure className="mb-6" {...props}>
-      <img src={src} alt={alt} className="max-w-full h-auto rounded-lg shadow-sm" />
-      {caption && <figcaption className="mt-2 text-sm text-text-secondary text-center italic">{caption}</figcaption>}
+      <img
+        src={src}
+        alt={alt}
+        className="max-w-full h-auto rounded-lg shadow-sm"
+      />
+      {caption && (
+        <figcaption className="mt-2 text-sm text-text-secondary text-center italic">
+          {caption}
+        </figcaption>
+      )}
     </figure>
   ),
   hr: (props: HTMLAttributes<HTMLHRElement>) => (

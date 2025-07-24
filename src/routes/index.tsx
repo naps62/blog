@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { getAllPosts } from "../utils/manifest";
-import { PostList } from "../components/PostList";
 import { ExternalLink } from "../components/ExternalLink";
+import { PostList } from "../components/PostList";
+import { getAllPosts } from "../utils/manifest";
 
 export const Route = createFileRoute("/")({
   component: () => {

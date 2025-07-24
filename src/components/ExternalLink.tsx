@@ -8,16 +8,17 @@ interface ExternalLinkProps {
   showUnderline?: boolean;
 }
 
-export function ExternalLink({ 
-  href, 
-  children, 
-  className, 
-  showUnderline = false 
+export function ExternalLink({
+  href,
+  children,
+  className,
+  showUnderline = false,
 }: ExternalLinkProps) {
   const isExternal = href.startsWith("http");
-  const baseClasses = "text-link-primary hover:text-link-strong font-medium transition-colors";
+  const baseClasses =
+    "text-link-primary hover:text-link-strong font-medium transition-colors";
   const underlineClass = showUnderline ? "underline" : "";
-  
+
   return (
     <a
       href={href}
