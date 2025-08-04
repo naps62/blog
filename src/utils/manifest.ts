@@ -16,6 +16,7 @@ import * as tutorialDeploying from "../posts/tutorial-deploying-elixir-applicati
 import * as typespecs from "../posts/typespecs-and-behaviours-in-elixir/index.mdx";
 import * as understandingGenstage from "../posts/understanding-elixirs-genstage/index.mdx";
 import * as unityMeetsRust from "../posts/unity-meets-rust/index.mdx";
+import * as howIBuildFullstackEthereumApps from "../posts/how-i-build-fullstack-ethereum-apps/index.mdx";
 
 // Auto-import all banner images using Vite's import.meta.glob
 const bannerImages = import.meta.glob("../posts/*/banner.{png,jpg,jpeg}", {
@@ -40,6 +41,7 @@ export const blogManifest = [
   typespecs,
   understandingGenstage,
   unityMeetsRust,
+  howIBuildFullstackEthereumApps,
 ];
 
 // Create slug from filename
@@ -61,6 +63,7 @@ const slugs = [
   "typespecs-and-behaviours-in-elixir",
   "understanding-elixirs-genstage",
   "unity-meets-rust",
+  "how-i-build-fullstack-ethereum-apps",
 ];
 
 // Create a slug-based lookup for posts
