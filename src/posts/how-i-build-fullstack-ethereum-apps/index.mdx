@@ -1,0 +1,277 @@
+---
+title: "How I build fullstack Ethereum apps"
+draft: false
+date: 2025-08-04
+tags: ["ethereum", "ethui", "typescript"]
+---
+
+import metamaskNan from "./metamask-nan.png";
+import mprocs from "./mprocs.png";
+import ethui from "./ethui.png";
+
+[subvisual]: https://subvisual.com/
+[thougthbot]: https://thoughtbot.com/
+[ethui]: https://ethui.dev/
+
+I've spent my fair share of time working on Ethereum projects, at all ends of
+the stack. 
+
+When I see how other teams, and often new members within my own teams, work or
+set up projects, I'm always struck by how little thought is often put into creating a
+cohesive project setup and, as a consequence, how much time is spent
+laboriously setting up local environments, performing manual restarts after
+every small change, setting up a UI for local testing, and generally running the same commands over and over.
+
+I come from a Ruby on Rails background, where developer
+experience was king. There was a heavy focus on ensuring anyone coming into a
+project could get up and running with a couple of single commands.
+
+In fact, we at [Subvisual][subvisual] had this internal guideline (inspired by thoughtbot, I believe):
+
+```bash
+# this must install whatever is needed
+./bin/setup
+
+# this must starts the local server, database, and other needed services
+./bin/dev
+```
+
+This simplicity was great. Beginners didn't have to sift through Postgres
+installation docs, and seniors didn't have to read through a readme to see what
+specifics were needed for this project. Things were suposed to just work. Did
+we lose that culture? Or did the Ethereum ecosystem never got enough people
+that would bring that culture in the first place?
+
+PS: Although often hard to ensure, I will grant this was sometimes a pain to
+maintain, especially since we needed to support both macOS and various Linux
+distros.
+
+## Ethereum is painful to build on
+
+First, there's the bane of my existence: **nonces** Nonces must be sequential
+per transaction. In a normal user flow, this is fine (and of course, brings
+very useful properties). For development though, the problem is that dev chains
+are actually reversible (e.g., through `cast rpc anvil_revert`).
+
+Wallets are mainly made for users, and thus assume this sequential property
+always holds. They don't expect me to all of a sudden call `cast rpc
+anvil_revert` to go back to a prior state and, by consequence, a prior nonce.
+Metamask in particular handles this by simply failing to submit any subsequent
+transactions with an ironic `NaN` error
+
+<Figure src={metamaskNan} alt="Metamask NaN error" />
+
+Testnets also don't really help. They're often unreliable due to lack of
+maintenance, faucets are a joke, and interoperability goes down the drain since
+every protocol creates their own instance of `mockUSDC`. So we often need to
+spin up our own private testnet, which has its own challenges, and is an
+unfortunate time sink as well..
+
+## We don't do ourselves any favors either
+
+Since last year, I've been involved in writing and advising a few [Liquity V2,
+Bold](https://github.com/liquity/bold) friendly forks, which of course
+inherited a lot of their codebase. While very high-quality regarding the core
+protocol, the wiring of the project left a lot to be desired, and we ended up
+inheriting a lot of that ourselves. I'll use this one as a point of comparison,
+because it's made by one of the most experienced teams I know, and because I
+have first-hand experience with the codebase.
+
+The instructions for [setting up Bold
+locally](https://github.com/liquity/bold/blob/main/INSTRUCTIONS.md) go through
+the usual steps. There's nothing extremely weird about these steps.
+
+But their structure strongly suggests that Smart contracts and frontend were
+thought of as two separate projects, likely with a lot of separation between
+developers as well. If you're working on one side, it wasn't trivial to perform
+minor tweaks on the other and see how those changes impacted the final product.
+
+To get the system running, you need to do a lot of steps:
+- ensure your .env is up-to-date
+- launch anvil
+- deploy contracts (through a custom script which is itself fairly complex, as
+well as time consuming)
+- run an additional script to convert the generated manifest into environment
+variables in your .env
+- finally run the frontend
+
+And this doesn't even include the whole separate [subgraph
+setup](https://github.com/liquity/bold/tree/main/subgraph), which has its own
+instructions for running locally. It depends on the usual docker-compose setup
+that is typical for subgraphs, but also includes custom scripts.
+
+I lost count how many hours I lost bughunting only to realize I needed to
+re-run some step, or clear some cache for things to take effect (e.g.: apply
+the manifest after deploying contracts again, or resetting subgraph-data after
+a chain restart).
+
+We can do better than this. So let's
+
+## My setup
+
+This will be a collection of tools and scripts that I use whenever given the
+chance, and that greatly speeds up feedback loops in ethereum applications. Fee
+freel to jump around the list below instead of reading the whole thing.
+
+Now, I'll also tell you right away, one of the main tools here is
+[ethui][ethui], built by yours truly. This is not an ad though, just a rather
+biased opinion.
+
+1. [mprocs](#mprocs)
+2. [Hot-reloaded contracts](#hot-reloaded-contracts)
+3. [Hot-reloaded UI](#hot-reloaded-ui)
+3. [ethui](#ethui)
+
+### mprocs
+
+<Embed url="https://github.com/pvolok/mprocs" />
+
+I can't believe this is more ubiquitous, given how simple it is:
+
+```bash title="mprocs.yaml"
+procs:
+  contracts:
+    cmd: ["./scripts/eth-watch.sh"]
+  anvil:
+    cmd: ["anvil", "--host", "0.0.0.0"]
+  frontend:
+    cmd: ["npm", "run", "dev", "--workspace=frontend"]
+```
+
+That's it. Running `mprocs` on a project now gives me the whole stack: an
+anvil-chain, and Ethereum script that auto-deploys contracts (we'll look at
+that one in a bit), and my development react server. If other components (e.g.:
+liquidation bot, subgraph) are needed, they can easily be added as well.
+
+I can easily restart individual components, or the whole thing, with a single
+click, and all logs are still available without having to sift through multiple
+terminal windows.
+
+### Hot-reloaded contracts
+
+Here's the script hinted at above:
+
+```bash title="scripts/eth-watch.sh"
+#!/usr/bin/env bash
+
+set -ue
+
+exec watchexec \
+  --watch contracts \
+  --restart \
+  --wrap-process=none \
+  --exts sol,toml ./scripts/eth-deploy.sh
+```
+
+This script by itself just watches for changes on any `*.sol` or `*.toml` files
+(as in, solidity code, or `foundry.toml`), and calls a second script in
+response:
+
+```bash title="scripts/eth-deploy.sh"
+#!/usr/bin/env bash
+
+# custom profile to speed up compilation
+export FOUNDRY_PROFILE=deploy
+export MNEMONIC="test test test test test test test test test test test junk"
+export DEPLOYER="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+
+# reset chain to clean up, and to keep contract addresses consistent
+cast rpc anvil_reset
+
+# sleep is required at first because anvil takes a moment to start
+forge build
+sleep 0.2
+forge script Deploy \
+  --rpc-url http://localhost:8545 \
+  --broadcast \
+  --mnemonics "$MNEMONIC" \
+  --sender "$DEPLOYER" \
+  --color always
+result=$?
+
+# artificially increase next block timestamp to simulate time passing when first using the UI
+cast rpc evm_increaseTime $((7 * 24 * 3600)) > /dev/null
+cast rpc evm_mine > /dev/null
+
+# regen wagmi hooks
+cd frontend
+npx wagmi generate
+
+# if deploy was a success, clear the screen to keep contract addresses in focus
+if [ $result -eq 0 ]; then
+  clear
+fi
+cat src/lib/contracts/31337.ts
+```
+
+And here's an accompanying `foundry.toml` detail:
+
+```toml title="foundry.toml"
+[profile.deploy]
+skip = ['contracts/test/*']
+```
+
+Combined, these scripts give me essentially hot-reload of Solidity contracts
+whenever I make a change to them. Resetting the anvil state is important to
+keep memory usage low, and to keep contract names constant across similar runs
+(which helps visually identify them)
+
+The custom foundry profile speeds up compilation by skipping tests entirely,
+which can often be a big bottleneck in compilation time. This assumes you
+ensure your test suite is green somewhere else, of course, such as in CI/CD.
+
+### Hot-reloaded UI
+
+Instead of using `console.log` within the script to log contract addresses to
+the terminal, I instead write them to a typescript file directly on the
+frontend codebase, which enables this:
+
+```typescript title="src/lib/contracts/index.ts"
+import type { Address } from "viem";
+import anvil from "./31337";
+import mainnet from "./1";
+import sepolia from "./11155111";
+
+interface Contracts {
+  myContract: Address;
+  usdc: Address;
+  uniswapRouter: Address;
+  oracle: Address;
+};
+
+const Addresses: Record<number, Contracts> = {
+  31337: anvil,
+  1: mainnet,
+  11155111: sepolia,
+};
+
+// hook for automatically switching between contracts based on current chainId
+export function useContracts(): Contracts {
+  const chainId = useChainId();
+  return Addresses[chainId] || Addresses[1];
+}
+```
+
+Now, the hot-reload that was put in place on my contracts ends up triggering
+hot-reload at the frontend as well. All this while keeping tabs on the
+type-safety of my contracts manifests. If a contract is expected by the type,
+but not provided by the deploy script, I'll quickly notice that in my LSP or,
+at the very least, on a CI/CD pipeline.
+
+### ethui
+
+<Embed url="https://github.com/ethui/ethui" />
+
+I built [ethui][ethui] originally to speed up my workflow, and because I wasn't
+happy with existing wallets at the time. Now, years later, things haven't
+changed that much, and honestly ethui is the best thing I've ever built.
+
+Three things stand out here:
+
+- Instant anvil sync, including across rollbacks & restarts;
+- Sane nonce-tracking;
+- Fast mode, which allows me to use a plaintext wallet for development, and skipping dialogs to instantly sign transactions.
+
+Combining all of this gives me a workflow that almost completely hides the fact
+that, behind the scenes, contracts are being compiled and re-deployed, and an
+entire chain's state is being rewritten, multiple times a minute.
