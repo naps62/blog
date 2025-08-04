@@ -111,7 +111,7 @@ const components = {
       <img
         src={src}
         alt={alt}
-        className="max-w-full h-auto rounded-lg shadow-sm"
+        className="max-w-full h-auto rounded-lg shadow-sm m-auto"
       />
       {caption && (
         <figcaption className="mt-2 text-sm text-text-secondary text-center italic">
