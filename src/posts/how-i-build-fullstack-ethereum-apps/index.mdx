@@ -7,11 +7,13 @@ tags: ["ethereum", "ethui", "typescript"]
 
 import metamaskNan from "./metamask-nan.png";
 import mprocs from "./mprocs.png";
-import ethui from "./ethui.png";
 
 [subvisual]: https://subvisual.com/
-[thougthbot]: https://thoughtbot.com/
+[thoughtbot]: https://thoughtbot.com/
 [ethui]: https://ethui.dev/
+[foundry]: https://github.com/foundry-rs/foundry
+[viem]: https://viem.sh/
+[wagmi]: https://wagmi.sh/
 
 I've spent my fair share of time working on Ethereum projects, at all ends of
 the stack. 
@@ -26,7 +28,8 @@ I come from a Ruby on Rails background, where developer
 experience was king. There was a heavy focus on ensuring anyone coming into a
 project could get up and running with a couple of single commands.
 
-In fact, we at [Subvisual][subvisual] had this internal guideline (inspired by thoughtbot, I believe):
+In fact, we at [Subvisual][subvisual] had this internal guideline (inspired by
+[thoughtbot][thoughtbot], I believe):
 
 ```bash
 # this must install whatever is needed
@@ -38,7 +41,7 @@ In fact, we at [Subvisual][subvisual] had this internal guideline (inspired by t
 
 This simplicity was great. Beginners didn't have to sift through Postgres
 installation docs, and seniors didn't have to read through a readme to see what
-specifics were needed for this project. Things were suposed to just work. Did
+specifics were needed for this project. Things were supposed to just work. Did
 we lose that culture? Or did the Ethereum ecosystem never got enough people
 that would bring that culture in the first place?
 
@@ -109,13 +112,14 @@ We can do better than this. So let's
 
 ## My setup
 
-This will be a collection of tools and scripts that I use whenever given the
-chance, and that greatly speeds up feedback loops in ethereum applications. Fee
-freel to jump around the list below instead of reading the whole thing.
+My stack is often the usual suspects:
 
-Now, I'll also tell you right away, one of the main tools here is
-[ethui][ethui], built by yours truly. This is not an ad though, just a rather
-biased opinion.
+- [foundry][foundry] for smart contract development and testing;
+- React & Typescript for the frontend;
+- [viem][viem] and [wagmi][wagmi] for Ethereum calls within the frontend;
+
+Besides that, I also have some additional tools & tricks I use whenever
+possible, and those are the real juice I want to talk about:
 
 1. [mprocs](#mprocs)
 2. [Hot-reloaded contracts](#hot-reloaded-contracts)
