@@ -60,7 +60,7 @@ Wallets are mainly made for users, and thus assume this sequential property
 always holds. They don't expect me to all of a sudden call `cast rpc
 anvil_revert` to go back to a prior state and, by consequence, a prior nonce.
 Metamask in particular handles this by simply failing to submit any subsequent
-transactions with an ironic `NaN` error
+transactions with an ironic `NaN` error.
 
 <Figure src={metamaskNan} alt="Metamask NaN error" />
 
