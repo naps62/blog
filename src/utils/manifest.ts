@@ -3,6 +3,7 @@ import * as continuousStuff from "../posts/continuous-stuff-with-github-actions/
 import * as easilyMerging from "../posts/easily-merging-pull-requests/index.mdx";
 import * as ethereumNode from "../posts/ethereum-node-setup-reth-systemd/index.mdx";
 import * as flagsSeeds from "../posts/flags-seeds-and-idempotency-elixir/index.mdx";
+import * as howIBuildFullstackEthereumApps from "../posts/how-i-build-fullstack-ethereum-apps/index.mdx";
 import * as knowledgeBase from "../posts/knowledge-base/index.mdx";
 import * as metaprogramming from "../posts/metaprogramming-from-c-to-elixir/index.mdx";
 import * as perfectingCss from "../posts/perfecting-a-css-3d-animation/index.mdx";
@@ -16,10 +17,9 @@ import * as tutorialDeploying from "../posts/tutorial-deploying-elixir-applicati
 import * as typespecs from "../posts/typespecs-and-behaviours-in-elixir/index.mdx";
 import * as understandingGenstage from "../posts/understanding-elixirs-genstage/index.mdx";
 import * as unityMeetsRust from "../posts/unity-meets-rust/index.mdx";
-import * as howIBuildFullstackEthereumApps from "../posts/how-i-build-fullstack-ethereum-apps/index.mdx";
 
-// Auto-import all banner images using Vite's import.meta.glob
-const bannerImages = import.meta.glob("../posts/*/banner.{png,jpg,jpeg}", {
+// Auto-import all metaImg images using Vite's import.meta.glob
+const metaImages = import.meta.glob("../posts/*/metaImg.{png,jpg,jpeg}", {
   eager: true,
 });
 
@@ -73,13 +73,14 @@ export const getPostBySlug = (slug: string) => {
   return blogManifest[index];
 };
 
-// Create banner image mapping from glob imports
-const getBannerForSlug = (slug: string): string | undefined => {
-  const bannerPath = `../posts/${slug}/banner.png`;
-  const bannerModule = bannerImages[bannerPath] as
+// Create metaImg image mapping from glob imports
+const getMetaImgForSlug = (slug: string): string | undefined => {
+  const imgPath = `../posts/${slug}/meta.png`;
+  const autoImgPath = `../posts/${slug}/auto-meta.png`;
+  const metaImgModule = (metaImages[imgPath] || metaImages[autoImgPath]) as
     | { default: string }
     | undefined;
-  return bannerModule?.default;
+  return metaImgModule?.default;
 };
 
 // Get all posts sorted by date (newest first)
@@ -90,7 +91,7 @@ export const getAllPosts = () => {
       frontmatter: {
         ...post.frontmatter,
         slug: slugs[index],
-        banner: getBannerForSlug(slugs[index]),
+        metaImg: getMetaImgForSlug(slugs[index]),
       },
     }))
     .filter((post) => !post.frontmatter.draft)
@@ -101,7 +102,7 @@ export const getAllPosts = () => {
     });
 };
 
-// Enhanced getPostBySlug to include banner image
+// Enhanced getPostBySlug to include metaImg image
 export const getPostBySlugEnhanced = (slug: string) => {
   const post = getPostBySlug(slug);
   if (!post) return null;
@@ -110,7 +111,7 @@ export const getPostBySlugEnhanced = (slug: string) => {
     ...post,
     frontmatter: {
       ...post.frontmatter,
-      banner: getBannerForSlug(slug),
+      metaImg: getMetaImgForSlug(slug),
     },
   };
 };

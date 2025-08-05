@@ -17,10 +17,10 @@ export interface Post {
 
 export function getAllPosts(): Post[] {
   const postsDirectory = path.join(process.cwd(), "src/posts");
-  const fileNames = globSync("*.mdx", { cwd: postsDirectory });
+  const fileNames = globSync("*/index.mdx", { cwd: postsDirectory });
 
   const posts = fileNames.map((fileName) => {
-    const slug = fileName.replace(/\.mdx$/, "");
+    const slug = fileName.replace(/\/index\.mdx$/, "");
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);
