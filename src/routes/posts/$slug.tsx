@@ -15,6 +15,7 @@ export const Route = createFileRoute("/posts/$slug")({
       { property: "og:title", content: frontmatter.title },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },
+      { title: `${frontmatter.title} | Miguel Palhas | @naps62` },
     ];
     const links = [];
 
@@ -37,7 +38,6 @@ export const Route = createFileRoute("/posts/$slug")({
     return {
       meta,
       links,
-      title: frontmatter.title,
     };
   },
   component: () => {
