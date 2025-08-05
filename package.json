@@ -4,12 +4,14 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite dev --port 3000",
-    "build": "vite build",
+    "build": "yarn generate:meta-images && vite build",
     "start": "node .output/server/index.mjs",
     "lint": "yarn lint:biome && yarn lint:tsc",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
-    "fix": "biome check --write ."
+    "fix": "biome check --write .",
+    "generate:meta-images": "tsx scripts/generate-meta-images.ts",
+    "generate:meta-images:force": "tsx scripts/generate-meta-images.ts --force"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",
@@ -55,8 +57,10 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "autoprefixer": "^10.4.21",
+    "canvas": "^3.1.2",
     "postcss": "^8.5.6",
     "rollup": "^4.44.2",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "vite": "^7.0.2",
     "vite-tsconfig-paths": "^5.1.4"

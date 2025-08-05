@@ -1,7 +1,16 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
   "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
-  "files": { "ignoreUnknown": false, "includes": ["**", "!**/*.gen.ts"] },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/*.gen.ts",
+      "!node_modules/*",
+      "!.vercel/*",
+      "!.tanstack/*"
+    ]
+  },
   "formatter": { "enabled": true, "indentStyle": "space" },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {

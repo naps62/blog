@@ -19,9 +19,9 @@ export const Route = createFileRoute("/posts/$slug")({
     ];
     const links = [];
 
-    if (frontmatter.banner && VITE_VERCEL_URL) {
+    if (frontmatter.metaImg && VITE_VERCEL_URL) {
       const absoluteImageUrl = new URL(
-        frontmatter.banner,
+        frontmatter.metaImg,
         `https://${VITE_VERCEL_URL}`,
       ).href;
       meta.push(
