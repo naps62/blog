@@ -10,8 +10,8 @@
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "fix": "biome check --write .",
-    "generate:meta-images": "tsx scripts/generate-meta-images.ts",
-    "generate:meta-images:force": "tsx scripts/generate-meta-images.ts --force"
+    "gen:meta-images": "tsx scripts/generate-meta-images.ts",
+    "gen:meta-images:force": "tsx scripts/generate-meta-images.ts --force"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",
