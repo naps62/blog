@@ -5,6 +5,7 @@ import { Link as LinkIcon, LoaderCircle } from "lucide-react";
 import { HTMLAttributes, ReactNode, Suspense } from "react";
 import { getOpengraphEmbedData } from "../server/embed";
 import { ExternalLink } from "./ExternalLink";
+import { cn } from "../utils";
 
 interface MarkdownProps {
   children: ReactNode;
@@ -47,19 +48,13 @@ const components = {
     );
   },
   ul: (props: HTMLAttributes<HTMLUListElement>) => (
-    <ul
-      className="list-disc list-inside mb-6 space-y-2 text-text-secondary"
-      {...props}
-    />
+    <ul className="text-secondary" {...props} />
   ),
   ol: (props: HTMLAttributes<HTMLOListElement>) => (
-    <ol
-      className="list-decimal list-inside mb-6 space-y-2 text-text-secondary"
-      {...props}
-    />
+    <ol className="text-secondary" {...props} />
   ),
   li: (props: HTMLAttributes<HTMLLIElement>) => (
-    <li className="leading-relaxed" {...props} />
+    <li className="leading-relaxed !m-1" {...props} />
   ),
   blockquote: (props: HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
@@ -101,17 +96,19 @@ const components = {
     src,
     alt,
     caption,
+    imgClassName = "",
     ...props
   }: {
     src: string;
     alt?: string;
     caption?: string;
+    imgClassName?: string;
   } & HTMLAttributes<HTMLElement>) => (
     <figure className="mb-6" {...props}>
       <img
         src={src}
         alt={alt}
-        className="max-w-full h-auto rounded-lg shadow-sm m-auto"
+        className={cn("max-w-full rounded-lg shadow-sm m-auto", imgClassName)}
       />
       {caption && (
         <figcaption className="mt-2 text-sm text-text-secondary text-center italic">
@@ -121,7 +118,7 @@ const components = {
     </figure>
   ),
   hr: (props: HTMLAttributes<HTMLHRElement>) => (
-    <hr className="my-12 border-border-secondary" {...props} />
+    <hr className="!my-8 border-border-secondary" {...props} />
   ),
   em: (props: HTMLAttributes<HTMLElement>) => (
     <em className="italic text-nav-text" {...props} />
