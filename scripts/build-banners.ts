@@ -3,15 +3,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-
-import { getAllPosts } from "../src/utils/posts.js";
 import type { Post } from "../src/utils/posts.js";
+import { getAllPosts } from "../src/utils/posts.js";
 
 const POSTS_DIR = path.join(process.cwd(), "src", "posts");
 const OUTPUT_ROOT = path.join(process.cwd(), "public", "posts");
 const LEGACY_GENERATED_DIR = path.join(process.cwd(), "public", "generated");
-const MANIFEST_DIR = path.join(process.cwd(), "src", "generated");
-const MANIFEST_PATH = path.join(MANIFEST_DIR, "banner-manifest.ts");
 
 const CUSTOM_IMAGE_NAME = "banner.png";
 const META_IMAGE_NAME = "meta.png";
@@ -39,7 +36,12 @@ function fileIfExists(...segments: string[]): string | null {
 }
 
 function removeLegacyBanner(slug: string) {
-  const legacyBannerPath = path.join(process.cwd(), "public", slug, "banner.png");
+  const legacyBannerPath = path.join(
+    process.cwd(),
+    "public",
+    slug,
+    "banner.png",
+  );
   if (fs.existsSync(legacyBannerPath)) {
     fs.rmSync(legacyBannerPath, { force: true });
     const legacyDir = path.dirname(legacyBannerPath);
@@ -99,20 +101,6 @@ async function processPost(post: Post): Promise<ProcessResult | null> {
   };
 }
 
-function writeManifest(records: BannerRecord[]) {
-  ensureDir(MANIFEST_DIR);
-  const manifestObject = records.reduce<Record<string, string>>((acc, record) => {
-    acc[record.slug] = record.relativePath;
-    return acc;
-  }, {});
-
-  const source =
-    `export const bannerManifest = ${JSON.stringify(manifestObject, null, 2)} as const;\n\n` +
-    `export type BannerManifest = typeof bannerManifest;\n`;
-
-  fs.writeFileSync(MANIFEST_PATH, source);
-}
-
 async function main() {
   if (fs.existsSync(LEGACY_GENERATED_DIR)) {
     fs.rmSync(LEGACY_GENERATED_DIR, { recursive: true, force: true });
@@ -136,8 +124,6 @@ async function main() {
       skipped++;
     }
   }
-
-  writeManifest(results);
 
   console.log(
     `Banners ready: ${results.length} mapped, ${copied} ensured, ${skipped} skipped.`,

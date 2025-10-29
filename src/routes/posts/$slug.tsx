@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Markdown } from "../../components/markdown";
-import { bannerManifest } from "../../generated/banner-manifest";
 import { getPostBySlugEnhanced } from "../../utils/manifest";
 
 const { VITE_VERCEL_URL } = import.meta.env;
@@ -11,8 +10,7 @@ export const Route = createFileRoute("/posts/$slug")({
     if (!post) return {};
 
     const { frontmatter } = post;
-    console.log(bannerManifest);
-    const bannerPath = bannerManifest[params.slug];
+    const bannerPath = `posts/${params.slug}/banner.png`;
     const customBanner = frontmatter.banner;
     const metaImagePath = frontmatter.metaImg ?? customBanner ?? bannerPath;
     const metaImageUrl =
