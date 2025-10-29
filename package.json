@@ -10,9 +10,7 @@
     "lint:biome": "biome check .",
     "lint:tsc": "yarn banners && tsc --noEmit",
     "fix": "biome check --write .",
-    "banners": "tsx scripts/build-banners.ts",
-    "gen:meta-images": "tsx scripts/generate-meta-images.ts",
-    "gen:meta-images:force": "tsx scripts/generate-meta-images.ts --force"
+    "banners": "tsx scripts/build-banners.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",
