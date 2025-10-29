@@ -19,7 +19,7 @@ import * as understandingGenstage from "../posts/understanding-elixirs-genstage/
 import * as unityMeetsRust from "../posts/unity-meets-rust/index.mdx";
 
 // Auto-import all metaImg images using Vite's import.meta.glob
-const metaImages = import.meta.glob("../posts/*/metaImg.{png,jpg,jpeg}", {
+const metaImages = import.meta.glob("../posts/*/metaImg.png", {
   eager: true,
 });
 
