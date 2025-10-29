@@ -1,8 +1,8 @@
-import { createRouter as createTanStackRouter } from "@tanstack/react-router";
+import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 
-export function createRouter() {
-  const router = createTanStackRouter({
+export function getRouter() {
+  const router = createRouter({
     routeTree,
     defaultPreload: "intent",
   });
