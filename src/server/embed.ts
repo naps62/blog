@@ -6,7 +6,7 @@ import { fetchCached } from "./cache";
 const oneWeek = 1000 * 60 * 60 * 24 * 7;
 
 export const getOpengraphEmbedData = createServerFn({ method: "GET" })
-  .validator(z.object({ url: z.string().url() }))
+  .inputValidator(z.object({ url: z.string().url() }))
   .handler(async (ctx) => {
     return await fetchCached({
       key: `embed-${ctx.data.url}`,
