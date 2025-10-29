@@ -1,5 +1,6 @@
 import mdx from "@mdx-js/rollup";
 import tailwindcss from "@tailwindcss/vite";
+import { nitroV2Plugin } from "@tanstack/nitro-v2-vite-plugin";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeAddClasses from "rehype-class-names";
@@ -40,8 +41,9 @@ export default defineConfig({
         rehypeMdxImportMedia,
       ],
     }),
-    tanstackStart({
-      target: "vercel",
+    tanstackStart(),
+    nitroV2Plugin({
+      compatibilityDate: "2025-09-25",
     }),
     tailwindcss(),
   ],
