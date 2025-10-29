@@ -47,6 +47,10 @@
   --color-success: #10b981; /* emerald-500 */
   --color-info: #0891b2; /* cyan-600 */
 
+  --color-notice-info: #38bdf8; /* sky-400 */
+  --color-notice-success: #34d399; /* emerald-400 */
+  --color-notice-error: #fb7185; /* rose-400 */
+
   /* Dark mode text */
   --color-text-muted-dark: #9ca3af; /* gray-400 */
 }

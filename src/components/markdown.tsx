@@ -1,8 +1,14 @@
 import { MDXProvider } from "@mdx-js/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { clsx } from "clsx";
-import { Link as LinkIcon, LoaderCircle } from "lucide-react";
-import { HTMLAttributes, ReactNode, Suspense } from "react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Info,
+  Link as LinkIcon,
+  LoaderCircle,
+} from "lucide-react";
+import { ComponentType, HTMLAttributes, ReactNode, Suspense } from "react";
 import { getOpengraphEmbedData } from "../server/embed";
 import { ExternalLink } from "./ExternalLink";
 import { cn } from "../utils";
@@ -14,6 +20,7 @@ interface MarkdownProps {
 
 const components = {
   Embed: SuspendedEmbed,
+  Notice,
   h1: (props: HTMLAttributes<HTMLHeadingElement>) => (
     <h1
       className="text-3xl font-bold mb-6 mt-16 first:mt-0 text-text-primary"
@@ -127,6 +134,62 @@ const components = {
     <strong className="font-bold text-text-primary" {...props} />
   ),
 };
+
+type NoticeVariant = "info" | "success" | "error";
+
+interface NoticeProps {
+  type?: NoticeVariant;
+  title?: string;
+  children: ReactNode;
+}
+
+type NoticeVariantConfig = {
+  Icon: ComponentType<{ className?: string }>;
+  className: string;
+  iconClassName: string;
+};
+
+const NOTICE_VARIANTS: Record<NoticeVariant, NoticeVariantConfig> = {
+  info: {
+    Icon: Info,
+    className: "border-notice-info bg-notice-info/10",
+    iconClassName: "text-[var(--color-notice-info)]",
+  },
+  success: {
+    Icon: CheckCircle2,
+    className: "border-notice-success bg-notice-success/10",
+    iconClassName: "text-[var(--color-notice-success)]",
+  },
+  error: {
+    Icon: AlertCircle,
+    className: "border-notice-error bg-notice-error/10",
+    iconClassName: "text-[var(--color-notice-error)]",
+  },
+};
+
+function Notice({ type = "info", title, children }: NoticeProps) {
+  const variant = NOTICE_VARIANTS[type];
+
+  return (
+    <section
+      className={cn(
+        "m-auto not-prose my-4 flex gap-2 rounded-xl border px-4 py-2 text-text-primary shadow-sm transition-colors",
+        variant.className,
+      )}
+      role="note"
+      aria-label={title ?? `${type} notice`}
+    >
+      <variant.Icon
+        aria-hidden="true"
+        className={cn("mt-2 h-4 w-4 shrink-0", variant.iconClassName)}
+      />
+      <div className="w-full">
+        {title && <p className="font-semibold">{title}</p>}
+        <div className="prose prose-sm text-current max-w-full">{children}</div>
+      </div>
+    </section>
+  );
+}
 
 export function Markdown({ children, className, ...props }: MarkdownProps) {
   return (
