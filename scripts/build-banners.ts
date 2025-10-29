@@ -1,18 +1,16 @@
 #!/usr/bin/env node
 
-import { createCanvas, loadImage, registerFont } from "canvas";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-
-import { getAllPosts } from "../src/utils/posts.js";
+import { createCanvas, loadImage, registerFont } from "canvas";
 import type { Post } from "../src/utils/posts.js";
+import { getAllPosts } from "../src/utils/posts.js";
 
 const WIDTH = 1200;
 const HEIGHT = 630;
 const POSTS_DIR = path.join(process.cwd(), "src", "posts");
 const OUTPUT_ROOT = path.join(process.cwd(), "public", "posts");
-const LEGACY_GENERATED_DIR = path.join(process.cwd(), "public", "generated");
 const MANIFEST_DIR = path.join(process.cwd(), "src", "generated");
 const MANIFEST_PATH = path.join(MANIFEST_DIR, "banner-manifest.ts");
 
@@ -25,7 +23,7 @@ type BannerRecord = {
   relativePath: string;
 };
 
-function ensureDir(dir: string, empty: boolean = false) {
+function ensureDir(dir: string, empty = false) {
   if (empty && fs.existsSync(dir)) {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -64,7 +62,13 @@ async function generateBannerImage(post: Post): Promise<Buffer> {
   ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
   try {
-    const avatarPath = path.join(process.cwd(), "public", "static", "images", "photo.png");
+    const avatarPath = path.join(
+      process.cwd(),
+      "public",
+      "static",
+      "images",
+      "photo.png",
+    );
     const avatar = await loadImage(avatarPath);
     const size = 80;
     ctx.drawImage(avatar, WIDTH - 120, 40, size, size);
@@ -166,7 +170,12 @@ async function processPost(post: Post): Promise<BannerRecord | null> {
   }
   fs.writeFileSync(bannerPath, buffer);
 
-  const legacyBannerPath = path.join(process.cwd(), "public", slug, "banner.png");
+  const legacyBannerPath = path.join(
+    process.cwd(),
+    "public",
+    slug,
+    "banner.png",
+  );
   if (fs.existsSync(legacyBannerPath)) {
     fs.rmSync(legacyBannerPath);
     const legacyDir = path.dirname(legacyBannerPath);
@@ -184,10 +193,13 @@ async function processPost(post: Post): Promise<BannerRecord | null> {
 
 function writeManifest(records: BannerRecord[]) {
   ensureDir(MANIFEST_DIR);
-  const manifestObject = records.reduce<Record<string, string>>((acc, record) => {
-    acc[record.slug] = record.relativePath;
-    return acc;
-  }, {});
+  const manifestObject = records.reduce<Record<string, string>>(
+    (acc, record) => {
+      acc[record.slug] = record.relativePath;
+      return acc;
+    },
+    {},
+  );
 
   const source =
     `export const bannerManifest = ${JSON.stringify(manifestObject, null, 2)} as const;\n\n` +
@@ -199,9 +211,6 @@ function writeManifest(records: BannerRecord[]) {
 async function main() {
   await registerFonts();
 
-  if (fs.existsSync(LEGACY_GENERATED_DIR)) {
-    fs.rmSync(LEGACY_GENERATED_DIR, { recursive: true, force: true });
-  }
   ensureDir(OUTPUT_ROOT);
 
   const posts = getAllPosts();
