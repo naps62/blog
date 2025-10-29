@@ -2,3 +2,5 @@ node_modules
 .nitro
 .vercel
 dist
+src/generated
+public/posts/*/banner.png

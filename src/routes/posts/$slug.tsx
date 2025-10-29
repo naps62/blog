@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Markdown } from "../../components/markdown";
-import { getPostBySlugEnhanced } from "../../utils/manifest";
+import { Markdown } from "../../../components/markdown";
+import { getPostBySlugEnhanced } from "../../../utils/manifest";
 
 const { VITE_VERCEL_URL } = import.meta.env;
 
