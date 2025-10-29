@@ -10,6 +10,15 @@ export const Route = createFileRoute("/posts/$slug")({
     if (!post) return {};
 
     const { frontmatter } = post;
+    const bannerPath = `posts/${params.slug}/banner.png`;
+    const customBanner = frontmatter.banner;
+    const metaImagePath = frontmatter.metaImg ?? customBanner ?? bannerPath;
+    const metaImageUrl =
+      metaImagePath && /^https?:\/\//i.test(metaImagePath)
+        ? metaImagePath
+        : metaImagePath && VITE_VERCEL_URL
+          ? new URL(metaImagePath, `https://${VITE_VERCEL_URL}`).href
+          : metaImagePath;
     const meta = [
       { name: "description", content: frontmatter.title },
       { property: "og:title", content: frontmatter.title },
@@ -19,15 +28,12 @@ export const Route = createFileRoute("/posts/$slug")({
     ];
     const links = [];
 
-    if (frontmatter.banner && VITE_VERCEL_URL) {
-      const absoluteImageUrl = new URL(
-        frontmatter.banner,
-        `https://${VITE_VERCEL_URL}`,
-      ).href;
+    if (metaImageUrl) {
       meta.push(
-        { property: "og:image", content: absoluteImageUrl },
-        { name: "twitter:image", content: absoluteImageUrl },
+        { property: "og:image", content: metaImageUrl },
+        { name: "twitter:image", content: metaImageUrl },
       );
+      meta.push({ name: "twitter:image:alt", content: frontmatter.title });
     }
 
     if (frontmatter.canonicalUrl) {
@@ -55,14 +61,15 @@ export const Route = createFileRoute("/posts/$slug")({
 
     const frontmatter = post.frontmatter;
     const PostComponent = post.default;
+    const customBanner = frontmatter.banner;
 
     return (
       <article className="prose prose-lg max-w-none">
         <header className="mb-12 text-center">
-          {frontmatter.banner && (
+          {customBanner && (
             <div className="mb-8">
               <img
-                src={frontmatter.banner}
+                src={customBanner}
                 alt={frontmatter.title}
                 className="w-full max-w-4xl mx-auto rounded-lg shadow-lg"
               />
