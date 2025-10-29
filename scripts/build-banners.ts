@@ -61,7 +61,7 @@ function removeAutoMeta(postDir: string) {
 
 async function processPost(post: Post): Promise<ProcessResult | null> {
   const slug = post.slug;
-  const postDir = path.join(POSTS_DIR, slug);
+  const postDir = path.join(POSTS_DIR, post.directory);
   removeAutoMeta(postDir);
 
   const slugDir = path.join(OUTPUT_ROOT, slug);

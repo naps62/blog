@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import path from "path";
 
 export interface Post {
+  directory: string;
   slug: string;
   title: string;
   date: string;
@@ -20,12 +21,16 @@ export function getAllPosts(): Post[] {
   const fileNames = globSync("*/index.mdx", { cwd: postsDirectory });
 
   const posts = fileNames.map((fileName) => {
-    const slug = fileName.replace(/\/index\.mdx$/, "");
+    const directory = fileName.replace(/\/index\.mdx$/, "");
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);
+    const slug =
+      data.slug ||
+      directory.replace(/^\d{4}-\d{2}-/, "");
 
     return {
+      directory,
       slug,
       title: data.title,
       date: data.date,
