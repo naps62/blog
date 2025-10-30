@@ -71,14 +71,14 @@ export const Route = createFileRoute("/posts/$slug")({
               <img
                 src={customBanner}
                 alt={frontmatter.title}
-                className="w-full max-w-4xl mx-auto rounded-lg shadow-lg"
+                className="mx-auto w-full max-w-4xl rounded-lg shadow-lg"
               />
             </div>
           )}
-          <h1 className="text-4xl font-bold mb-6 leading-tight text-text-primary">
+          <h1 className="mb-6 font-bold text-4xl text-text-primary leading-tight">
             {frontmatter.title}
           </h1>
-          <div className="text-nav-text mb-6 flex items-center justify-center gap-4 text-sm">
+          <div className="mb-6 flex items-center justify-center gap-4 text-nav-text text-sm">
             {frontmatter.date && (
               <time dateTime={frontmatter.date}>
                 {new Date(frontmatter.date).toLocaleDateString("en-US", {
@@ -89,11 +89,11 @@ export const Route = createFileRoute("/posts/$slug")({
               </time>
             )}
             {frontmatter.tags && frontmatter.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex flex-wrap justify-center gap-2">
                 {frontmatter.tags.map((tag: string) => (
                   <span
                     key={tag}
-                    className="inline-block bg-tag-bg text-tag-text px-2 py-1 rounded text-xs font-medium"
+                    className="inline-block rounded bg-tag-bg px-2 py-1 font-medium text-tag-text text-xs"
                   >
                     {tag}
                   </span>
@@ -102,7 +102,7 @@ export const Route = createFileRoute("/posts/$slug")({
             )}
           </div>
           {frontmatter.canonicalUrl && (
-            <p className="text-sm text-text-muted mb-4">
+            <p className="mb-4 text-sm text-text-muted">
               Originally published at{" "}
               <a
                 href={frontmatter.canonicalUrl}

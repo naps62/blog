@@ -1,4 +1,4 @@
-@import "tailwindcss" source(".");
+@import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @import "@fontsource/inter/400.css";
 @import "@fontsource/inter/500.css";
@@ -43,6 +43,10 @@
   --button-primary: #4b5563; /* gray-600 */
   --button-primary-dark: #374151; /* gray-700 */
 
+  --notice-info: #0284c7; /* sky-600 */
+  --notice-success: #059669; /* emerald-600 */
+  --notice-error: #dc2626; /* red-600 */
+
   --success: #10b981; /* emerald-500 */
   --info: #0891b2; /* cyan-600 */
 }
@@ -54,34 +58,38 @@
   --text-muted: #9ca3af; /* gray-400 */
   --text-subtle: #6b7280; /* gray-500 */
 
-  --link-primary: #60a5fa; /* blue-400 */
-  --link-secondary: #3b82f6; /* blue-500 */
-  --link-hover: #93c5fd; /* blue-300 */
-  --link-strong: #60a5fa; /* blue-400 */
+  --link-primary: #fb923c; /* orange-400 */
+  --link-secondary: #f97316; /* orange-500 */
+  --link-hover: #fdba74; /* orange-300 */
+  --link-strong: #fb923c; /* orange-400 */
 
-  --bg-primary: #111827; /* gray-900 */
-  --bg-secondary: #1f2937; /* gray-800 */
-  --bg-muted: #374151; /* gray-700 */
-  --bg-dark: #030712; /* gray-950 */
-  --bg-code: #1f2937; /* gray-800 - lighter than primary for code blocks */
-  --bg-code-header: #4b5563; /* gray-600 */
+  --bg-primary: #1a1a1a; /* neutral dark gray */
+  --bg-secondary: #262626; /* neutral gray */
+  --bg-muted: #404040; /* neutral lighter gray */
+  --bg-dark: #0a0a0a; /* near black */
+  --bg-code: #262626; /* neutral gray - lighter than primary for code blocks */
+  --bg-code-header: #525252; /* neutral medium gray */
   --bg-accent: #1e3a8a; /* blue-900 */
 
-  --border-primary: #374151; /* gray-700 */
-  --border-light: #4b5563; /* gray-600 */
-  --border-secondary: #4b5563; /* gray-600 */
-  --border-accent: #3b82f6; /* blue-500 */
+  --border-primary: #404040; /* neutral gray */
+  --border-light: #525252; /* neutral medium gray */
+  --border-secondary: #525252; /* neutral medium gray */
+  --border-accent: #f97316; /* orange-500 */
 
   --nav-text: #9ca3af; /* gray-400 */
   --nav-hover: #f3f4f6; /* gray-100 */
   --nav-title: #f3f4f6; /* gray-100 */
   --nav-title-hover: #d1d5db; /* gray-300 */
 
-  --tag-bg: #1e3a8a; /* blue-900 */
-  --tag-text: #93c5fd; /* blue-300 */
+  --tag-bg: #78350f; /* amber-900 */
+  --tag-text: #fbbf24; /* amber-400 */
 
   --button-primary: #6b7280; /* gray-500 */
   --button-primary-dark: #4b5563; /* gray-600 */
+
+  --notice-info: #38bdf8; /* sky-400 */
+  --notice-success: #34d399; /* emerald-400 */
+  --notice-error: #fb7185; /* rose-400 */
 
   --success: #34d399; /* emerald-400 */
   --info: #22d3ee; /* cyan-400 */
@@ -89,7 +97,9 @@
 
 @theme inline {
   /* Font families */
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   /* Colors - referencing CSS variables */
   --color-text-primary: var(--text-primary);
@@ -126,13 +136,13 @@
   --color-button-primary: var(--button-primary);
   --color-button-primary-dark: var(--button-primary-dark);
 
+  --color-notice-info: var(--notice-info);
+  --color-notice-success: var(--notice-success);
+  --color-notice-error: var(--notice-error);
+
   --color-success: var(--success);
   --color-info: var(--info);
 }
-
-/* .prose pre { */
-/*   background: var(--color-bg-code) !important; */
-/* } */
 
 /* Code title styling (rehype-pretty-code) */
 [data-rehype-pretty-code-title] {

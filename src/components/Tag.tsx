@@ -10,7 +10,7 @@ export function Tag({ children, className }: TagProps) {
   return (
     <span
       className={clsx(
-        "inline-block bg-tag-bg text-tag-text px-2 py-1 rounded text-xs font-medium",
+        "inline-block rounded bg-tag-bg px-2 py-1 font-medium text-tag-text text-xs",
         className,
       )}
     >

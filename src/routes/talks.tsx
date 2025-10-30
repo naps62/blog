@@ -57,11 +57,11 @@ export const Route = createFileRoute("/talks")({
       <h1>Talks</h1>
       <ul className="space-y-8">
         {talks.map((talk, i) => (
-          <li key={i} className="border-b border-border-primary pb-8">
+          <li key={i} className="border-border-primary border-b pb-8">
             <article>
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-text-primary">
+                  <h2 className="font-bold text-2xl text-text-primary">
                     {talk.title}
                   </h2>
                   <div className="text-nav-text">
@@ -76,7 +76,7 @@ export const Route = createFileRoute("/talks")({
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     title="Embedded youtube"
-                    className="w-full h-full"
+                    className="h-full w-full"
                   />
                 </div>
               </div>

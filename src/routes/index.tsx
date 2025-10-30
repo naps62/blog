@@ -9,13 +9,13 @@ export const Route = createFileRoute("/")({
 
     return (
       <div className="prose prose-lg max-w-none">
-        <div className="flex items-center gap-12 mb-16">
+        <div className="mb-16 flex items-center gap-12">
           <div className="flex-1">
-            <h1 className="text-4xl font-bold text-text-primary mb-4">
+            <h1 className="mb-4 font-bold text-4xl text-text-primary">
               Hello! I'm Miguel
             </h1>
-            <p className="text-lg text-text-primary mb-2">
-              I'm a senior engineer who spends his time solving deep technical
+            <p className="mb-2 text-lg text-text-primary">
+              A senior engineer who spends his time solving deep technical
               challenges in various corners of the web, as well as tinkering
               with both hardware and software side-projects.
             </p>
@@ -31,19 +31,19 @@ export const Route = createFileRoute("/")({
             <img
               src="https://github.com/naps62.png"
               alt="Miguel Palhas"
-              className="w-32 h-32 rounded-full border-4 border-border-light shadow-lg"
+              className="h-32 w-32 rounded-full border-4 border-border-light shadow-lg"
             />
           </div>
         </div>
 
         <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-8 text-text-primary">Writing</h2>
+          <h2 className="mb-8 font-bold text-2xl text-text-primary">Writing</h2>
           <PostList posts={posts} />
 
           <div className="mt-8">
             <Link
               to="/posts"
-              className="text-link-primary hover:text-link-strong font-medium"
+              className="font-medium text-link-primary hover:text-link-strong"
             >
               All Posts →
             </Link>
