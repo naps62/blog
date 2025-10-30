@@ -107,6 +107,7 @@ export const Route = createFileRoute("/posts/$slug")({
               <a
                 href={frontmatter.canonicalUrl}
                 className="text-link-primary hover:underline"
+                target="_blank"
               >
                 {new URL(frontmatter.canonicalUrl).hostname}
               </a>

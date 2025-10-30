@@ -4,11 +4,13 @@ import {
   HeadContent,
   Link,
   Outlet,
+  Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactNode } from "react";
 import appCss from "@/app.css?url";
 import { seo } from "@/utils/seo";
+import { DarkModeToggle } from "../components/DarkModeToggle";
 import { DefaultCatchBoundary } from "../components/DefaultCatchBoundary";
 import { NavLink } from "../components/NavLink";
 import { NotFound } from "../components/NotFound";
@@ -24,6 +26,18 @@ function RootLayout({ children }: RootLayoutProps) {
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const stored = localStorage.getItem('theme');
+                if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                }
+              })();
+            `,
+          }}
+        />
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
@@ -39,10 +53,13 @@ function RootLayout({ children }: RootLayoutProps) {
                       Miguel Palhas | @naps62
                     </Link>
                   </h1>
-                  <div className="flex space-x-4 text-base">
-                    <NavLink to="/">Home</NavLink>
-                    <NavLink to="/posts">Posts</NavLink>
-                    <NavLink to="/talks">Talks</NavLink>
+                  <div className="flex items-center gap-6">
+                    <div className="flex space-x-4 text-base">
+                      <NavLink to="/">Home</NavLink>
+                      <NavLink to="/posts">Posts</NavLink>
+                      <NavLink to="/talks">Talks</NavLink>
+                    </div>
+                    <DarkModeToggle />
                   </div>
                 </nav>
               </div>
@@ -51,6 +68,7 @@ function RootLayout({ children }: RootLayoutProps) {
           </div>
           <TanStackRouterDevtools />
         </QueryClientProvider>
+        <Scripts />
       </body>
     </html>
   );
@@ -86,20 +104,6 @@ export const Route = createRootRoute({
         type: "image/png",
         sizes: "32x32",
         href: "/favicon-32x32.png",
-      },
-    ],
-    scripts: [
-      {
-        src: "https://www.googletagmanager.com/gtag/js?id=G-BGZRW8TCGD",
-        async: true,
-      },
-      {
-        children: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-BGZRW8TCGD');
-        `,
       },
     ],
   }),

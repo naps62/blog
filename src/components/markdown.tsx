@@ -1,8 +1,9 @@
 import { MDXProvider } from "@mdx-js/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { clsx } from "clsx";
-import { Link as LinkIcon, LoaderCircle } from "lucide-react";
-import { HTMLAttributes, ReactNode, Suspense } from "react";
+import { Check, Copy, Link as LinkIcon, LoaderCircle } from "lucide-react";
+import { HTMLAttributes, ReactNode, Suspense, useRef, useState } from "react";
+import { cn } from "@/utils";
 import { getOpengraphEmbedData } from "../server/embed";
 import { ExternalLink } from "./ExternalLink";
 
@@ -120,6 +121,13 @@ const components = {
       )}
     </figure>
   ),
+  figure: ({ ...props }) => {
+    if (props["data-rehype-pretty-code-figure"] !== undefined) {
+      return <CodeBlock {...props} />;
+    }
+
+    return <figure {...props} />;
+  },
   hr: (props: HTMLAttributes<HTMLHRElement>) => (
     <hr className="my-12 border-border-secondary" {...props} />
   ),
@@ -133,7 +141,10 @@ const components = {
 
 export function Markdown({ children, className, ...props }: MarkdownProps) {
   return (
-    <div className={clsx("prose prose-lg max-w-none", className)} {...props}>
+    <div
+      className={clsx("prose dark:prose-invert prose-lg max-w-none", className)}
+      {...props}
+    >
       <MDXProvider components={components}>{children}</MDXProvider>
     </div>
   );
@@ -145,7 +156,7 @@ function SuspendedEmbed({ url }: { url: string }) {
       href={url}
       rel="noopener noreferrer"
       target="_blank"
-      className="not-prose my-8 block overflow-hidden rounded-xl border border-border-secondary bg-bg-primary no-underline hover:bg-bg-secondary transition-colors"
+      className="not-prose md:mx-20 my-8 block overflow-hidden rounded-xl border border-border-secondary bg-bg-primary no-underline hover:bg-bg-secondary transition-colors"
     >
       <Suspense
         fallback={
@@ -191,5 +202,37 @@ function Embed({ url: urlStr }: { url: string }) {
         </p>
       </div>
     </div>
+  );
+}
+
+function CodeBlock({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLElement>) {
+  const [copied, setCopied] = useState(false);
+  const figRef = useRef<HTMLPreElement>(null);
+
+  const onClick = () => {
+    const code = figRef.current?.getElementsByTagName("code")[0]?.textContent;
+    navigator.clipboard.writeText(code || "");
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 3000);
+  };
+
+  const Icon = copied ? Check : Copy;
+
+  return (
+    <figure ref={figRef} className={cn(className, "group relative")} {...props}>
+      <button
+        onClick={onClick}
+        className="absolute transition-opacity cursor-pointer opacity-0 group-hover:opacity-100 top-0 right-0 p-2 text-text-secondary"
+      >
+        <Icon size="20" className="stroke-text-subtle" />
+      </button>
+      {children}
+    </figure>
   );
 }

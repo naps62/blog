@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
         </div>
 
         <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-8">Writing</h2>
+          <h2 className="text-2xl font-bold mb-8 text-text-primary">Writing</h2>
           <PostList posts={posts} />
 
           <div className="mt-8">

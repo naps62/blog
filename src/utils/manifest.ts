@@ -1,20 +1,21 @@
 // Import all MDX posts
-import * as continuousStuff from "../posts/2020-03-continuous-stuff-with-github-actions/index.mdx";
+
 import * as easilyMerging from "../posts/2014-11-easily-merging-pull-requests/index.mdx";
-import * as ethereumNode from "../posts/2023-11-ethereum-node-setup-reth-systemd/index.mdx";
-import * as flagsSeeds from "../posts/2019-02-flags-seeds-and-idempotency-elixir/index.mdx";
-import * as knowledgeBase from "../posts/2020-07-knowledge-base/index.mdx";
-import * as metaprogramming from "../posts/2019-02-metaprogramming-from-c-to-elixir/index.mdx";
 import * as perfectingCss from "../posts/2015-07-perfecting-a-css-3d-animation/index.mdx";
-import * as pouringProtocols from "../posts/2019-02-pouring-protocols-in-elixir/index.mdx";
-import * as routingPhoenix from "../posts/2019-04-routing-in-phoenix-umbrella-apps/index.mdx";
 import * as smarterHeredoc from "../posts/2016-06-smarter-heredoc-syntax-in-vim/index.mdx";
 import * as superPoweredVim1 from "../posts/2017-04-super-powered-vim-i-projections/index.mdx";
 import * as superPoweredVim2 from "../posts/2017-04-super-powered-vim-ii-snippets/index.mdx";
 import * as superPoweredVim3 from "../posts/2017-04-super-powered-vim-iii-skeletons/index.mdx";
 import * as tutorialDeploying from "../posts/2017-05-tutorial-deploying-elixir-applications/index.mdx";
-import * as typespecs from "../posts/2019-10-typespecs-and-behaviours-in-elixir/index.mdx";
 import * as understandingGenstage from "../posts/2018-11-understanding-elixirs-genstage/index.mdx";
+import * as flagsSeeds from "../posts/2019-02-flags-seeds-and-idempotency-elixir/index.mdx";
+import * as metaprogramming from "../posts/2019-02-metaprogramming-from-c-to-elixir/index.mdx";
+import * as pouringProtocols from "../posts/2019-02-pouring-protocols-in-elixir/index.mdx";
+import * as routingPhoenix from "../posts/2019-04-routing-in-phoenix-umbrella-apps/index.mdx";
+import * as typespecs from "../posts/2019-10-typespecs-and-behaviours-in-elixir/index.mdx";
+import * as continuousStuff from "../posts/2020-03-continuous-stuff-with-github-actions/index.mdx";
+import * as knowledgeBase from "../posts/2020-07-knowledge-base/index.mdx";
+import * as ethereumNode from "../posts/2023-11-ethereum-node-setup-reth-systemd/index.mdx";
 import * as unityMeetsRust from "../posts/2025-07-unity-meets-rust/index.mdx";
 import * as howIBuildFullstackEthereumApps from "../posts/2025-08-how-i-build-fullstack-ethereum-apps/index.mdx";
 
