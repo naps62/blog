@@ -152,6 +152,8 @@ const getMetaImgForSlug = (slug: string): string | undefined => {
 
 // Get all posts sorted by date (newest first)
 export const getAllPosts = () => {
+  const isDev = import.meta.env.DEV;
+
   return postEntries
     .map(({ module, slug }) => ({
       ...module,
@@ -161,7 +163,7 @@ export const getAllPosts = () => {
         metaImg: getMetaImgForSlug(slug),
       },
     }))
-    .filter((post) => !post.frontmatter.draft)
+    .filter((post) => isDev || !post.frontmatter.draft)
     .sort((a, b) => {
       const dateA = new Date(a.frontmatter.date || 0);
       const dateB = new Date(b.frontmatter.date || 0);

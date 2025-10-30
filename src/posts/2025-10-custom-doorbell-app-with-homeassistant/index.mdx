@@ -220,7 +220,17 @@ This signed URL allows me to establish a WebRTC connection with a given camera e
 
 ## Signaling
 
-TODO
+TODO: review this section
+
+One tricky aspect of WebRTC is connection establishment. WebRTC uses peer-to-peer connections, but peers first need to discover each other and negotiate how to connect. This is where STUN and TURN servers come in.
+
+**STUN** (Session Traversal Utilities for NAT) helps devices behind NAT routers discover their public IP address and port. When you're on a local network, your device has a private IP (like `192.168.1.x`), but to communicate with the outside world, it needs to know its public-facing address. STUN servers provide this information during the WebRTC handshake.
+
+**TURN** (Traversal Using Relays around NAT) is a fallback for when direct peer-to-peer connection fails. Some networks have strict firewalls or symmetric NAT that prevent direct connections. In these cases, TURN acts as a relay server, forwarding all traffic between peers. This adds latency and bandwidth costs, but ensures connectivity works even in restrictive network environments.
+
+For my setup, since everything runs on my local network (Home Assistant, go2rtc, and the mobile app all connect via the local network or VPN), STUN/TURN servers aren't strictly necessary. The WebRTC connection can be established directly. However, if I wanted to answer the doorbell while away from home without a VPN, I'd need to configure TURN servers to relay the connection.
+
+## Improving call quality
 
 In the end, I was also able to, with the help of an LLM, write some audio analysis code that renders a real-time visualization of incoming audio and mic frequency bands. This makes it clear to the user that audio is indeed being streamed, and is also a nice visual addition.
 

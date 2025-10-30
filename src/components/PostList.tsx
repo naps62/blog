@@ -21,6 +21,11 @@ export function PostList({ posts }: PostListProps) {
                 params={{ slug }}
                 className="text-text-primary hover:text-link-primary no-underline transition-colors"
               >
+                {frontmatter.draft && (
+                  <span className="mr-2 text-sm font-normal text-yellow-700 dark:text-yellow-500">
+                    [DRAFT]
+                  </span>
+                )}
                 {frontmatter.title}
               </Link>
             </h2>
