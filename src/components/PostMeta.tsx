@@ -20,7 +20,7 @@ export function PostMeta({
   return (
     <div
       className={clsx(
-        "text-nav-text mb-2 flex items-center gap-4 text-sm",
+        "mb-2 flex items-center gap-4 text-nav-text text-sm",
         justifyClass,
         className,
       )}

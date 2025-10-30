@@ -1474,6 +1474,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rehype-pretty/transformers@npm:^0.13.2":
+  version: 0.13.2
+  resolution: "@rehype-pretty/transformers@npm:0.13.2"
+  checksum: 10c0/4b9e8b21c7ea2ff90c17b9968744d730a362f6fe501230e983fdcd95fcee37b639c2604b73196edebcea771f641e7a0c66fcc2728dd641cdaefcfa10d2f18226
+  languageName: node
+  linkType: hard
+
 "@rolldown/pluginutils@npm:1.0.0-beta.40":
   version: 1.0.0-beta.40
   resolution: "@rolldown/pluginutils@npm:1.0.0-beta.40"
@@ -2920,6 +2927,7 @@ __metadata:
     "@mdx-js/mdx": "npm:^3.1.1"
     "@mdx-js/react": "npm:^3.1.1"
     "@mdx-js/rollup": "npm:^3.1.1"
+    "@rehype-pretty/transformers": "npm:^0.13.2"
     "@tailwindcss/postcss": "npm:^4.1.16"
     "@tailwindcss/typography": "npm:^0.5.19"
     "@tailwindcss/vite": "npm:^4.1.16"

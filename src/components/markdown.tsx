@@ -3,15 +3,24 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { clsx } from "clsx";
 import {
   AlertCircle,
+  Check,
   CheckCircle2,
+  Copy,
   Info,
   Link as LinkIcon,
   LoaderCircle,
 } from "lucide-react";
-import { ComponentType, HTMLAttributes, ReactNode, Suspense } from "react";
+import {
+  ComponentType,
+  HTMLAttributes,
+  ReactNode,
+  Suspense,
+  useRef,
+  useState,
+} from "react";
+import { cn } from "@/utils";
 import { getOpengraphEmbedData } from "../server/embed";
 import { ExternalLink } from "./ExternalLink";
-import { cn } from "../utils";
 
 interface MarkdownProps {
   children: ReactNode;
@@ -23,24 +32,24 @@ const components = {
   Notice,
   h1: (props: HTMLAttributes<HTMLHeadingElement>) => (
     <h1
-      className="text-3xl font-bold mb-6 mt-16 first:mt-0 text-text-primary"
+      className="mt-16 mb-6 font-bold text-3xl text-text-primary first:mt-0"
       {...props}
     />
   ),
   h2: (props: HTMLAttributes<HTMLHeadingElement>) => (
     <h2
-      className="text-2xl font-bold mb-5 mt-14 text-text-primary"
+      className="mt-14 mb-5 font-bold text-2xl text-text-primary"
       {...props}
     />
   ),
   h3: (props: HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="text-xl font-bold mb-4 mt-12 text-text-primary" {...props} />
+    <h3 className="mt-12 mb-4 font-bold text-text-primary text-xl" {...props} />
   ),
   h4: (props: HTMLAttributes<HTMLHeadingElement>) => (
-    <h4 className="text-lg font-bold mb-3 mt-10 text-text-primary" {...props} />
+    <h4 className="mt-10 mb-3 font-bold text-lg text-text-primary" {...props} />
   ),
   p: (props: HTMLAttributes<HTMLParagraphElement>) => (
-    <p className="mb-6 leading-relaxed text-text-secondary" {...props} />
+    <p className="mb-6 text-text-secondary leading-relaxed" {...props} />
   ),
   a: (props: HTMLAttributes<HTMLAnchorElement> & { href?: string }) => {
     // Handle heading anchor links differently
@@ -61,25 +70,25 @@ const components = {
     <ol className="text-secondary" {...props} />
   ),
   li: (props: HTMLAttributes<HTMLLIElement>) => (
-    <li className="leading-relaxed !m-1" {...props} />
+    <li className="!m-1 leading-relaxed" {...props} />
   ),
   blockquote: (props: HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
-      className="border-l-4 border-border-accent pl-6 italic mb-6 text-nav-text bg-bg-accent py-4 rounded-r-lg"
+      className="mb-6 rounded-r-lg border-border-accent border-l-4 bg-bg-accent py-4 pl-6 text-nav-text italic"
       {...props}
     />
   ),
   table: (props: HTMLAttributes<HTMLTableElement>) => (
-    <div className="overflow-x-auto mb-6">
+    <div className="mb-6 overflow-x-auto">
       <table
-        className="min-w-full border border-border-secondary rounded-lg border-collapse"
+        className="min-w-full border-collapse rounded-lg border border-border-secondary"
         {...props}
       />
     </div>
   ),
   th: (props: HTMLAttributes<HTMLTableCellElement>) => (
     <th
-      className="border border-border-secondary px-4 py-3 bg-bg-secondary font-bold text-left text-text-primary"
+      className="border border-border-secondary bg-bg-secondary px-4 py-3 text-left font-bold text-text-primary"
       {...props}
     />
   ),
@@ -91,7 +100,7 @@ const components = {
   ),
   img: (props: HTMLAttributes<HTMLImageElement>) => (
     <>
-      <img className="max-w-full h-auto rounded-lg mb-6 shadow-sm" {...props} />
+      <img className="mb-6 h-auto max-w-full rounded-lg shadow-sm" {...props} />
     </>
   ),
   Video: (props: HTMLAttributes<HTMLVideoElement>) => (
@@ -115,20 +124,27 @@ const components = {
       <img
         src={src}
         alt={alt}
-        className={cn("max-w-full rounded-lg shadow-sm m-auto", imgClassName)}
+        className={cn("m-auto max-w-full rounded-lg shadow-sm", imgClassName)}
       />
       {caption && (
-        <figcaption className="mt-2 text-sm text-text-secondary text-center italic">
+        <figcaption className="mt-2 text-center text-sm text-text-secondary italic">
           {caption}
         </figcaption>
       )}
     </figure>
   ),
+  figure: ({ ...props }) => {
+    if (props["data-rehype-pretty-code-figure"] !== undefined) {
+      return <CodeBlock {...props} />;
+    }
+
+    return <figure {...props} />;
+  },
   hr: (props: HTMLAttributes<HTMLHRElement>) => (
     <hr className="!my-8 border-border-secondary" {...props} />
   ),
   em: (props: HTMLAttributes<HTMLElement>) => (
-    <em className="italic text-nav-text" {...props} />
+    <em className="text-nav-text italic" {...props} />
   ),
   strong: (props: HTMLAttributes<HTMLElement>) => (
     <strong className="font-bold text-text-primary" {...props} />
@@ -173,7 +189,7 @@ function Notice({ type = "info", title, children }: NoticeProps) {
   return (
     <section
       className={cn(
-        "m-auto not-prose my-4 flex gap-2 rounded-xl border px-4 py-2 text-text-primary shadow-sm transition-colors",
+        "not-prose m-auto my-4 flex gap-2 rounded-xl border px-4 py-2 text-text-primary shadow-sm transition-colors",
         variant.className,
       )}
       role="note"
@@ -185,7 +201,7 @@ function Notice({ type = "info", title, children }: NoticeProps) {
       />
       <div className="w-full">
         {title && <p className="font-semibold">{title}</p>}
-        <div className="prose prose-sm text-current max-w-full">{children}</div>
+        <div className="prose prose-sm max-w-full text-current">{children}</div>
       </div>
     </section>
   );
@@ -193,7 +209,10 @@ function Notice({ type = "info", title, children }: NoticeProps) {
 
 export function Markdown({ children, className, ...props }: MarkdownProps) {
   return (
-    <div className={clsx("prose prose-lg max-w-none", className)} {...props}>
+    <div
+      className={clsx("prose dark:prose-invert prose-lg max-w-none", className)}
+      {...props}
+    >
       <MDXProvider components={components}>{children}</MDXProvider>
     </div>
   );
@@ -205,7 +224,7 @@ function SuspendedEmbed({ url }: { url: string }) {
       href={url}
       rel="noopener noreferrer"
       target="_blank"
-      className="not-prose my-8 block overflow-hidden rounded-xl border border-border-secondary bg-bg-primary no-underline hover:bg-bg-secondary transition-colors"
+      className="not-prose my-8 block overflow-hidden rounded-xl border border-border-secondary bg-bg-primary no-underline transition-colors hover:bg-bg-secondary md:mx-20"
     >
       <Suspense
         fallback={
@@ -239,7 +258,7 @@ function Embed({ url: urlStr }: { url: string }) {
         />
       </div>
       <div className="hidden grow flex-col items-stretch justify-between gap-2 overflow-hidden p-4 md:flex">
-        <h3 className="font-bold text-base text-text-primary line-clamp-2">
+        <h3 className="line-clamp-2 font-bold text-base text-text-primary">
           {title}
         </h3>
         <p className="line-clamp-3 font-light text-sm text-text-secondary">
@@ -251,5 +270,37 @@ function Embed({ url: urlStr }: { url: string }) {
         </p>
       </div>
     </div>
+  );
+}
+
+function CodeBlock({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLElement>) {
+  const [copied, setCopied] = useState(false);
+  const figRef = useRef<HTMLPreElement>(null);
+
+  const onClick = () => {
+    const code = figRef.current?.getElementsByTagName("code")[0]?.textContent;
+    navigator.clipboard.writeText(code || "");
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 3000);
+  };
+
+  const Icon = copied ? Check : Copy;
+
+  return (
+    <figure ref={figRef} className={cn(className, "group relative")} {...props}>
+      <button
+        onClick={onClick}
+        className="absolute top-0 right-0 cursor-pointer p-2 text-text-secondary opacity-0 transition-opacity group-hover:opacity-100"
+      >
+        <Icon size="20" className="stroke-text-subtle" />
+      </button>
+      {children}
+    </figure>
   );
 }

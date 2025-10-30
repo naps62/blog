@@ -25,9 +25,7 @@ export function getAllPosts(): Post[] {
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);
-    const slug =
-      data.slug ||
-      directory.replace(/^\d{4}-\d{2}-/, "");
+    const slug = data.slug || directory.replace(/^\d{4}-\d{2}-/, "");
 
     return {
       directory,

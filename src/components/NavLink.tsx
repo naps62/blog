@@ -13,7 +13,7 @@ export function NavLink({ to, children, className }: NavLinkProps) {
     <Link
       to={to}
       className={clsx(
-        "text-nav-text hover:text-nav-hover transition-colors",
+        "text-nav-text transition-colors hover:text-nav-hover",
         className,
       )}
     >
