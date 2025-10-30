@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
               Hello! I'm Miguel
             </h1>
             <p className="mb-2 text-lg text-text-primary">
-              I'm a senior engineer who spends his time solving deep technical
+              A senior engineer who spends his time solving deep technical
               challenges in various corners of the web, as well as tinkering
               with both hardware and software side-projects.
             </p>

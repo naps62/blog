@@ -21,6 +21,55 @@ interface RootLayoutProps {
   children: ReactNode;
 }
 
+export const Route = createRootRoute({
+  head: () => ({
+    meta: [
+      {
+        charSet: "utf-8",
+      },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
+      },
+      ...seo({
+        title: "Miguel Palhas | @naps62",
+        description: "Software | Rust | Blockchain | Web",
+      }),
+    ],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/site.webmanifest", color: "#fffff" },
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "16x16",
+        href: "/favicon-16x16.png",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        href: "/favicon-32x32.png",
+      },
+    ],
+  }),
+
+  errorComponent: (props) => {
+    return (
+      <RootLayout>
+        <DefaultCatchBoundary {...props} />
+      </RootLayout>
+    );
+  },
+  notFoundComponent: () => <NotFound />,
+  component: () => (
+    <RootLayout>
+      <Outlet />
+    </RootLayout>
+  ),
+});
+
 function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
@@ -73,52 +122,3 @@ function RootLayout({ children }: RootLayoutProps) {
     </html>
   );
 }
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      ...seo({
-        title: "Miguel Palhas | @naps62",
-        description: "Software | Rust | Blockchain | Web",
-      }),
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/site.webmanifest", color: "#fffff" },
-      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-      {
-        rel: "icon",
-        type: "image/png",
-        sizes: "16x16",
-        href: "/favicon-16x16.png",
-      },
-      {
-        rel: "icon",
-        type: "image/png",
-        sizes: "32x32",
-        href: "/favicon-32x32.png",
-      },
-    ],
-  }),
-
-  errorComponent: (props) => {
-    return (
-      <RootLayout>
-        <DefaultCatchBoundary {...props} />
-      </RootLayout>
-    );
-  },
-  notFoundComponent: () => <NotFound />,
-  component: () => (
-    <RootLayout>
-      <Outlet />
-    </RootLayout>
-  ),
-});

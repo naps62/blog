@@ -24,17 +24,15 @@ function ThemeToggleButton() {
     }
   };
 
+  const Icon = theme === "light" ? Moon : Sun;
+
   return (
     <button
       onClick={toggleTheme}
-      className="rounded-lg p-2 transition-colors hover:bg-bg-muted"
+      className="group cursor-pointer rounded-lg p-2 transition-colors"
       aria-label="Toggle dark mode"
     >
-      {theme === "light" ? (
-        <Moon className="h-5 w-5 text-nav-text" />
-      ) : (
-        <Sun className="h-5 w-5 text-nav-text" />
-      )}
+      <Icon className="h-5 w-5 text-nav-text group-hover:stroke-nav-hover" />
     </button>
   );
 }
