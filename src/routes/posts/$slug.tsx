@@ -1,18 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Markdown } from "../../components/markdown";
-import { getPostBySlugEnhanced } from "../../utils/manifest";
+import { getMetaImgForSlug, getPostBySlug } from "../../utils/manifest";
 
 const { VITE_VERCEL_URL } = import.meta.env;
 
 export const Route = createFileRoute("/posts/$slug")({
   head: ({ params }) => {
-    const post = getPostBySlugEnhanced(params.slug);
+    const post = getPostBySlug(params.slug);
+    const metaImg = getMetaImgForSlug(params.slug);
     if (!post) return {};
 
     const { frontmatter } = post;
     const bannerPath = `posts/${params.slug}/banner.png`;
-    const customBanner = frontmatter.banner;
-    const metaImagePath = frontmatter.metaImg ?? customBanner ?? bannerPath;
+    const metaImagePath = metaImg ?? bannerPath;
     const metaImageUrl =
       metaImagePath && /^https?:\/\//i.test(metaImagePath)
         ? metaImagePath
@@ -48,7 +48,8 @@ export const Route = createFileRoute("/posts/$slug")({
   },
   component: () => {
     const { slug } = Route.useParams();
-    const post = getPostBySlugEnhanced(slug);
+    const post = getPostBySlug(slug);
+    const metaImg = getMetaImgForSlug(slug);
 
     if (!post) {
       return (
@@ -61,7 +62,8 @@ export const Route = createFileRoute("/posts/$slug")({
 
     const frontmatter = post.frontmatter;
     const PostComponent = post.default;
-    const customBanner = frontmatter.banner;
+    const customBanner = metaImg;
+    console.log(metaImg);
 
     return (
       <article className="prose prose-lg max-w-none">
@@ -69,7 +71,7 @@ export const Route = createFileRoute("/posts/$slug")({
           {customBanner && (
             <div className="mb-8">
               <img
-                src={customBanner}
+                src={metaImg}
                 alt={frontmatter.title}
                 className="mx-auto w-full max-w-4xl rounded-lg shadow-lg"
               />

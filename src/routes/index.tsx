@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
 
     return (
       <div className="prose prose-lg max-w-none">
-        <div className="mb-16 flex items-center gap-12">
+        <div className="mb-8 flex flex-col-reverse items-center gap-6 md:mb-16 md:flex-row md:gap-12">
           <div className="flex-1">
             <h1 className="mb-4 font-bold text-4xl text-text-primary">
               Hello! I'm Miguel
@@ -27,17 +27,17 @@ export const Route = createFileRoute("/")({
               , a venture-studio based in Portugal.
             </p>
           </div>
-          <div className="flex-shrink-0">
-            <img
-              src="https://github.com/naps62.png"
-              alt="Miguel Palhas"
-              className="h-32 w-32 rounded-full border-4 border-border-light shadow-lg"
-            />
-          </div>
+          <img
+            src="https://github.com/naps62.png"
+            alt="Miguel Palhas"
+            className="not-prose w-30 rounded-full border-4 border-border-light shadow-lg md:w-40"
+          />
         </div>
 
-        <div className="mt-12">
-          <h2 className="mb-8 font-bold text-2xl text-text-primary">Writing</h2>
+        <div className="mt-8 md:mt-12">
+          <h2 className="mb-6 font-bold text-2xl text-text-primary md:mb-8">
+            Writing
+          </h2>
           <PostList posts={posts} />
 
           <div className="mt-8">

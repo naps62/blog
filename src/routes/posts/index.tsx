@@ -8,6 +8,7 @@ export const Route = createFileRoute("/posts/")({
 
     return (
       <div className="prose prose-lg max-w-none">
+        <h1 className="text-text-primary">Posts</h1>
         <PostList posts={posts} />
       </div>
     );
