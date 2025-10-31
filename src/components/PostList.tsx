@@ -10,7 +10,6 @@ export function PostList({ posts }: PostListProps) {
   return (
     <div className="space-y-0">
       {posts.map((post) => {
-        console.log(post);
         const frontmatter = post.frontmatter;
         const slug = post.slug;
 
