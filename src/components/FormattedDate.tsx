@@ -1,11 +1,11 @@
 interface FormattedDateProps {
-  date: string;
+  date: Date;
   className?: string;
 }
 
 export function FormattedDate({ date, className }: FormattedDateProps) {
   return (
-    <time dateTime={date} className={className}>
+    <time dateTime={date.toISOString()} className={className}>
       {new Date(date).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",

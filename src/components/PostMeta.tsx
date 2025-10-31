@@ -3,7 +3,7 @@ import { FormattedDate } from "./FormattedDate";
 import { TagList } from "./Tag";
 
 interface PostMetaProps {
-  date?: string;
+  date?: Date;
   tags?: string[];
   className?: string;
   justify?: "start" | "center";
