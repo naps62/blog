@@ -1,18 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Markdown } from "../../components/markdown";
-import { getMetaImgForSlug, getPostBySlug } from "../../utils/manifest";
+import { getPost } from "../../utils/manifest";
 
 const { VITE_VERCEL_URL } = import.meta.env;
 
 export const Route = createFileRoute("/posts/$slug")({
   head: ({ params }) => {
-    const post = getPostBySlug(params.slug);
-    const metaImg = getMetaImgForSlug(params.slug);
+    const post = getPost(params.slug);
     if (!post) return {};
 
     const { frontmatter } = post;
     const bannerPath = `posts/${params.slug}/banner.png`;
-    const metaImagePath = metaImg ?? bannerPath;
+    const metaImagePath = post.metaImg ?? bannerPath;
     const metaImageUrl =
       metaImagePath && /^https?:\/\//i.test(metaImagePath)
         ? metaImagePath
@@ -48,8 +47,7 @@ export const Route = createFileRoute("/posts/$slug")({
   },
   component: () => {
     const { slug } = Route.useParams();
-    const post = getPostBySlug(slug);
-    const metaImg = getMetaImgForSlug(slug);
+    const post = getPost(slug);
 
     if (!post) {
       return (
@@ -62,16 +60,14 @@ export const Route = createFileRoute("/posts/$slug")({
 
     const frontmatter = post.frontmatter;
     const PostComponent = post.default;
-    const customBanner = metaImg;
-    console.log(metaImg);
 
     return (
       <article className="prose prose-lg max-w-none">
         <header className="mb-12 text-center">
-          {customBanner && (
+          {post.metaImg && (
             <div className="mb-8">
               <img
-                src={metaImg}
+                src={post.metaImg}
                 alt={frontmatter.title}
                 className="mx-auto w-full max-w-4xl rounded-lg shadow-lg"
               />

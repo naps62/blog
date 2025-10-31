@@ -1,12 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ExternalLink } from "../components/ExternalLink";
 import { PostList } from "../components/PostList";
-import { getAllPosts } from "../utils/manifest";
+import { posts } from "../utils/manifest";
 
 export const Route = createFileRoute("/")({
   component: () => {
-    const posts = getAllPosts().slice(0, 5);
-
     return (
       <div className="prose prose-lg max-w-none">
         <div className="mb-8 flex flex-col-reverse items-center gap-6 md:mb-16 md:flex-row md:gap-12">
