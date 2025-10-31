@@ -12,6 +12,7 @@ import appCss from "@/app.css?url";
 import { seo } from "@/utils/seo";
 import { DarkModeToggle } from "../components/DarkModeToggle";
 import { DefaultCatchBoundary } from "../components/DefaultCatchBoundary";
+import { MobileMenu } from "../components/MobileMenu";
 import { NavLink } from "../components/NavLink";
 import { NotFound } from "../components/NotFound";
 
@@ -91,10 +92,10 @@ function RootLayout({ children }: RootLayoutProps) {
       <body>
         <QueryClientProvider client={queryClient}>
           <div className="min-h-screen bg-bg-secondary">
-            <header className="top-0 z-10 border-border-primary border-b bg-bg-primary">
+            <header className="relative top-0 z-10 border-border-primary border-b bg-bg-primary">
               <div className="mx-auto max-w-4xl px-6 py-4">
                 <nav className="flex items-center justify-between">
-                  <h1 className="font-bold text-xl">
+                  <h1 className="font-bold text-lg md:text-xl">
                     <Link
                       to="/"
                       className="text-nav-title hover:text-nav-title-hover"
@@ -102,18 +103,26 @@ function RootLayout({ children }: RootLayoutProps) {
                       Miguel Palhas | @naps62
                     </Link>
                   </h1>
-                  <div className="flex items-center gap-6">
-                    <div className="flex space-x-4 text-base">
-                      <NavLink to="/">Home</NavLink>
-                      <NavLink to="/posts">Posts</NavLink>
-                      <NavLink to="/talks">Talks</NavLink>
+                  <div className="flex items-center gap-4">
+                    <div className="hidden items-center gap-6 md:flex">
+                      <div className="flex space-x-4 text-base">
+                        <NavLink to="/">Home</NavLink>
+                        <NavLink to="/posts">Posts</NavLink>
+                        <NavLink to="/talks">Talks</NavLink>
+                      </div>
+                      <DarkModeToggle />
                     </div>
-                    <DarkModeToggle />
+                    <div className="flex items-center gap-4 md:hidden">
+                      <DarkModeToggle />
+                      <MobileMenu />
+                    </div>
                   </div>
                 </nav>
               </div>
             </header>
-            <main className="mx-auto max-w-4xl px-6 py-12">{children}</main>
+            <main className="mx-auto max-w-4xl px-4 py-6 md:px-6 md:py-12">
+              {children}
+            </main>
           </div>
           <TanStackRouterDevtools />
         </QueryClientProvider>

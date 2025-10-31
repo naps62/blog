@@ -5,7 +5,8 @@
       "WebFetch(domain:naps62.com)",
       "Bash(ffmpeg:*)",
       "Read(//home/naps62/ethui/site/**)",
-      "Read(//home/naps62/ethui/ui/**)"
+      "Read(//home/naps62/ethui/ui/**)",
+      "Bash(npm run build:*)"
     ],
     "deny": []
   }

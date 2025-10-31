@@ -10,6 +10,14 @@ const talks = [
       "A discussion on how local-friendly development is an important need of many developers, and why a lot of web3-specific tooling breaks that reality. my project, ethui, aims to improve on that.",
   },
   {
+    date: "August 2023",
+    event: "Rust x Ethereum Day",
+    title: "Iron - The first Dev-focused Ethereum Wallet",
+    video: "3A-_rgIdIh0",
+    description:
+      "Presenting the reasoning behind creating Iron wallet, a developer focused tool for aiding in building web3 applications. This talk was meant for a live event in San Francisco, but due to some flight delays I ended up missing the majority of the event, and recorded this version as a fallback",
+  },
+  {
     date: "May 2023",
     event: "ETHGlobal Lisbon",
     title: "Let's fix our developer experience",
@@ -54,36 +62,31 @@ const talks = [
 export const Route = createFileRoute("/talks")({
   component: () => (
     <div className="prose prose-lg max-w-none">
-      <h1>Talks</h1>
-      <ul className="space-y-8">
-        {talks.map((talk, i) => (
-          <li key={i} className="border-border-primary border-b pb-8">
-            <article>
-              <div className="space-y-4">
-                <div>
-                  <h2 className="font-bold text-2xl text-text-primary">
-                    {talk.title}
-                  </h2>
-                  <div className="text-nav-text">
-                    {talk.event} ({talk.date})
-                  </div>
-                </div>
-                <p className="text-nav-text">{talk.description}</p>
-                <div className="aspect-video">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${talk.video}`}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title="Embedded youtube"
-                    className="h-full w-full"
-                  />
-                </div>
+      <h1 className="text-text-primary">Talks</h1>
+      {talks.map((talk) => (
+        <article className="mb-10 md:mb-20">
+          <div className="space-y-4">
+            <div>
+              <h2 className="mb-1 font-bold text-2xl text-text-primary">
+                {talk.title}
+              </h2>
+              <div className="text-nav-text">
+                {talk.event} ({talk.date})
               </div>
-            </article>
-          </li>
-        ))}
-      </ul>
+            </div>
+            <p className="text-nav-text">{talk.description}</p>
+            <div className="aspect-video max-w-2xl">
+              <iframe
+                src={`https://www.youtube.com/embed/${talk.video}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title="Embedded youtube"
+                className="h-full w-full"
+              />
+            </div>
+          </div>
+        </article>
+      ))}
     </div>
   ),
 });

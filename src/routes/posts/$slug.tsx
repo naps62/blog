@@ -1,24 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Markdown } from "../../components/markdown";
-import { getPostBySlugEnhanced } from "../../utils/manifest";
+import { getPost } from "../../utils/manifest";
 
 const { VITE_VERCEL_URL } = import.meta.env;
 
 export const Route = createFileRoute("/posts/$slug")({
   head: ({ params }) => {
-    const post = getPostBySlugEnhanced(params.slug);
+    const post = getPost(params.slug);
     if (!post) return {};
 
-    const { frontmatter } = post;
-    const bannerPath = `posts/${params.slug}/banner.png`;
-    const customBanner = frontmatter.banner;
-    const metaImagePath = frontmatter.metaImg ?? customBanner ?? bannerPath;
+    const { frontmatter, metaImg } = post;
+    const metaImagePath = metaImg ?? `posts/${params.slug}/banner.png`;
     const metaImageUrl =
       metaImagePath && /^https?:\/\//i.test(metaImagePath)
         ? metaImagePath
         : metaImagePath && VITE_VERCEL_URL
           ? new URL(metaImagePath, `https://${VITE_VERCEL_URL}`).href
           : metaImagePath;
+
     const meta = [
       { name: "description", content: frontmatter.title },
       { property: "og:title", content: frontmatter.title },
@@ -48,7 +47,7 @@ export const Route = createFileRoute("/posts/$slug")({
   },
   component: () => {
     const { slug } = Route.useParams();
-    const post = getPostBySlugEnhanced(slug);
+    const post = getPost(slug);
 
     if (!post) {
       return (
@@ -59,17 +58,15 @@ export const Route = createFileRoute("/posts/$slug")({
       );
     }
 
-    const frontmatter = post.frontmatter;
-    const PostComponent = post.default;
-    const customBanner = frontmatter.banner;
+    const { frontmatter, Mdx } = post;
 
     return (
       <article className="prose prose-lg max-w-none">
         <header className="mb-12 text-center">
-          {customBanner && (
+          {post.metaImg && (
             <div className="mb-8">
               <img
-                src={customBanner}
+                src={post.metaImg}
                 alt={frontmatter.title}
                 className="mx-auto w-full max-w-4xl rounded-lg shadow-lg"
               />
@@ -115,7 +112,7 @@ export const Route = createFileRoute("/posts/$slug")({
           )}
         </header>
         <Markdown className="mb-16">
-          <PostComponent />
+          <Mdx />
         </Markdown>
       </article>
     );
