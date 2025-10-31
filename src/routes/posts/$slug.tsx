@@ -9,15 +9,15 @@ export const Route = createFileRoute("/posts/$slug")({
     const post = getPost(params.slug);
     if (!post) return {};
 
-    const { frontmatter } = post;
-    const bannerPath = `posts/${params.slug}/banner.png`;
-    const metaImagePath = post.metaImg ?? bannerPath;
+    const { frontmatter, metaImg } = post;
+    const metaImagePath = metaImg ?? `posts/${params.slug}/banner.png`;
     const metaImageUrl =
       metaImagePath && /^https?:\/\//i.test(metaImagePath)
         ? metaImagePath
         : metaImagePath && VITE_VERCEL_URL
           ? new URL(metaImagePath, `https://${VITE_VERCEL_URL}`).href
           : metaImagePath;
+
     const meta = [
       { name: "description", content: frontmatter.title },
       { property: "og:title", content: frontmatter.title },
@@ -58,8 +58,7 @@ export const Route = createFileRoute("/posts/$slug")({
       );
     }
 
-    const frontmatter = post.frontmatter;
-    const PostComponent = post.default;
+    const { frontmatter, Mdx } = post;
 
     return (
       <article className="prose prose-lg max-w-none">
@@ -113,7 +112,7 @@ export const Route = createFileRoute("/posts/$slug")({
           )}
         </header>
         <Markdown className="mb-16">
-          <PostComponent />
+          <Mdx />
         </Markdown>
       </article>
     );

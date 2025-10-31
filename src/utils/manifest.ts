@@ -36,7 +36,8 @@ export const posts = Object.entries(postModules)
     const metaImg = metaImages[imgPath] as { default: string } | undefined;
 
     return {
-      ...module,
+      Mdx: module.default,
+      frontmatter: module.frontmatter,
       metaImg: metaImg?.default,
       slug,
       dir,
