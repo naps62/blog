@@ -10,7 +10,7 @@ export function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="text-nav-text hover:text-nav-hover transition-colors"
+            className="text-nav-text transition-colors hover:text-nav-hover"
           >
             <Github className="h-5 w-5" />
           </a>
@@ -19,14 +19,14 @@ export function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Twitter"
-            className="text-nav-text hover:text-nav-hover transition-colors"
+            className="text-nav-text transition-colors hover:text-nav-hover"
           >
             <Twitter className="h-5 w-5" />
           </a>
           <a
             href="mailto:mpalhas@gmail.com"
             aria-label="Email"
-            className="text-nav-text hover:text-nav-hover transition-colors"
+            className="text-nav-text transition-colors hover:text-nav-hover"
           >
             <Mail className="h-5 w-5" />
           </a>

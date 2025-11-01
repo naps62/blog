@@ -6,13 +6,10 @@ import { NavLink } from "./NavLink";
 export function Navbar() {
   return (
     <header className="relative top-0 z-10 bg-bg-primary">
-      <div className="mx-auto max-w-4xl px-6 py-4 min-h-16">
+      <div className="mx-auto min-h-16 max-w-4xl px-6 py-4">
         <nav className="flex items-center justify-between">
           <h1 className="font-bold text-lg md:text-xl">
-            <Link
-              to="/"
-              className="text-nav-title hover:text-nav-title-hover"
-            >
+            <Link to="/" className="text-nav-title hover:text-nav-title-hover">
               Miguel Palhas | @naps62
             </Link>
           </h1>
