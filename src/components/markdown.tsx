@@ -210,7 +210,7 @@ function Notice({ type = "info", title, children }: NoticeProps) {
 export function Markdown({ children, className, ...props }: MarkdownProps) {
   return (
     <div
-      className={clsx("prose dark:prose-invert prose-lg max-w-none", className)}
+      className={clsx("prose dark:prose-invert prose-lg", className)}
       {...props}
     >
       <MDXProvider components={components}>{children}</MDXProvider>
@@ -224,7 +224,7 @@ function SuspendedEmbed({ url }: { url: string }) {
       href={url}
       rel="noopener noreferrer"
       target="_blank"
-      className="not-prose my-8 block overflow-hidden rounded-xl border border-border-secondary bg-bg-primary no-underline transition-colors hover:bg-bg-secondary md:mx-20"
+      className="not-prose my-8 block overflow-hidden rounded-xl border border-border-secondary bg-bg-primary no-underline transition-colors hover:bg-bg-secondary"
     >
       <Suspense
         fallback={

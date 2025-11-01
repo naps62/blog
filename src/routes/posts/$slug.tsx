@@ -51,7 +51,7 @@ export const Route = createFileRoute("/posts/$slug")({
 
     if (!post) {
       return (
-        <div className="prose prose-lg max-w-none">
+        <div className="prose prose-lg">
           <h1>Post not found</h1>
           <p>The requested post could not be found.</p>
         </div>
@@ -61,7 +61,7 @@ export const Route = createFileRoute("/posts/$slug")({
     const { frontmatter, Mdx } = post;
 
     return (
-      <article className="prose prose-lg max-w-none">
+      <article className="prose prose-lg">
         <header className="mb-12 text-center">
           {post.metaImg && (
             <div className="mb-8">

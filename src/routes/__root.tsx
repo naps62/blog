@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   createRootRoute,
   HeadContent,
-  Link,
   Outlet,
   Scripts,
 } from "@tanstack/react-router";
@@ -10,10 +9,9 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactNode } from "react";
 import appCss from "@/app.css?url";
 import { seo } from "@/utils/seo";
-import { DarkModeToggle } from "../components/DarkModeToggle";
 import { DefaultCatchBoundary } from "../components/DefaultCatchBoundary";
-import { MobileMenu } from "../components/MobileMenu";
-import { NavLink } from "../components/NavLink";
+import { Footer } from "../components/Footer";
+import { Navbar } from "../components/Navbar";
 import { NotFound } from "../components/NotFound";
 
 const queryClient = new QueryClient();
@@ -73,7 +71,7 @@ export const Route = createRootRoute({
 
 function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-bg-primary">
       <head>
         <HeadContent />
         <script
@@ -89,41 +87,13 @@ function RootLayout({ children }: RootLayoutProps) {
           }}
         />
       </head>
-      <body>
+      <body className="min-h-screen bg-bg-secondary">
         <QueryClientProvider client={queryClient}>
-          <div className="min-h-screen bg-bg-secondary">
-            <header className="relative top-0 z-10 border-border-primary border-b bg-bg-primary">
-              <div className="mx-auto max-w-4xl px-6 py-4">
-                <nav className="flex items-center justify-between">
-                  <h1 className="font-bold text-lg md:text-xl">
-                    <Link
-                      to="/"
-                      className="text-nav-title hover:text-nav-title-hover"
-                    >
-                      Miguel Palhas | @naps62
-                    </Link>
-                  </h1>
-                  <div className="flex items-center gap-4">
-                    <div className="hidden items-center gap-6 md:flex">
-                      <div className="flex space-x-4 text-base">
-                        <NavLink to="/">Home</NavLink>
-                        <NavLink to="/posts">Posts</NavLink>
-                        <NavLink to="/talks">Talks</NavLink>
-                      </div>
-                      <DarkModeToggle />
-                    </div>
-                    <div className="flex items-center gap-4 md:hidden">
-                      <DarkModeToggle />
-                      <MobileMenu />
-                    </div>
-                  </div>
-                </nav>
-              </div>
-            </header>
-            <main className="mx-auto max-w-4xl px-4 py-6 md:px-6 md:py-12">
-              {children}
-            </main>
-          </div>
+          <Navbar />
+          <main className="mx-auto max-w-4xl px-4 py-6 md:px-6 md:py-12">
+            {children}
+          </main>
+          <Footer />
           <TanStackRouterDevtools />
         </QueryClientProvider>
         <Scripts />

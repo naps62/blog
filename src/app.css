@@ -63,11 +63,11 @@
   --link-hover: #fdba74; /* orange-300 */
   --link-strong: #fb923c; /* orange-400 */
 
-  --bg-primary: #1a1a1a; /* neutral dark gray */
-  --bg-secondary: #262626; /* neutral gray */
-  --bg-muted: #404040; /* neutral lighter gray */
-  --bg-dark: #0a0a0a; /* near black */
-  --bg-code: #262626; /* neutral gray - lighter than primary for code blocks */
+  --bg-primary: #0a0a0a; /* near black */
+  --bg-secondary: #141414; /* very dark gray */
+  --bg-muted: #262626; /* dark gray */
+  --bg-dark: #000000; /* pure black */
+  --bg-code: #1a1a1a; /* dark gray - lighter than primary for code blocks */
   --bg-code-header: #525252; /* neutral medium gray */
   --bg-accent: #1e3a8a; /* blue-900 */
 

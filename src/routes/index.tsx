@@ -6,7 +6,7 @@ import { posts } from "../utils/manifest";
 export const Route = createFileRoute("/")({
   component: () => {
     return (
-      <div className="prose prose-lg max-w-none">
+      <div className="prose prose-lg">
         <div className="mb-8 flex flex-col-reverse items-center gap-6 md:mb-16 md:flex-row md:gap-12">
           <div className="flex-1">
             <h1 className="mb-4 font-bold text-4xl text-text-primary">

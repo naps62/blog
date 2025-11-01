@@ -61,7 +61,7 @@ const talks = [
 
 export const Route = createFileRoute("/talks")({
   component: () => (
-    <div className="prose prose-lg max-w-none">
+    <div className="prose prose-lg">
       <h1 className="text-text-primary">Talks</h1>
       {talks.map((talk) => (
         <article className="mb-10 md:mb-20">
