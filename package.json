@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "yarn banners && vite dev --port 3000",
-    "build": "yarn banners && vite build",
+    "build": "vite build",
     "start": "node .output/server/index.mjs",
     "lint": "yarn lint:biome && yarn lint:tsc",
     "lint:biome": "biome check .",
@@ -52,13 +52,15 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "autoprefixer": "^10.4.21",
-    "canvas": "^2.11.2",
     "glob": "^11.0.3",
     "gray-matter": "^4.0.3",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
     "vite-tsconfig-paths": "^5.1.4"
+  },
+  "optionalDependencies": {
+    "canvas": "^2.11.2"
   },
   "packageManager": "yarn@4.10.3"
 }
