@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { globSync } from "glob";
 import matter from "gray-matter";
+import { generateMetaImage } from "./generate-meta-images.js";
 
 const POSTS_DIR = path.join(process.cwd(), "src", "posts");
 const OUTPUT_ROOT = path.join(process.cwd(), "public", "posts");
@@ -57,6 +58,7 @@ interface BannerRecord {
 interface ProcessResult {
   record: BannerRecord;
   wroteFile: boolean;
+  generated?: boolean;
 }
 
 function ensureDir(dir: string) {
@@ -117,23 +119,44 @@ async function processPost(post: Post): Promise<ProcessResult | null> {
     fileIfExists(postDir, CUSTOM_IMAGE_NAME) ??
     fileIfExists(postDir, META_IMAGE_NAME);
 
-  if (!sourcePath) {
-    console.warn(`Skipping ${slug}: no banner.png or meta.png found`);
+  if (sourcePath) {
+    ensureDir(slugDir);
+    fs.copyFileSync(sourcePath, bannerPath);
     removeLegacyBanner(slug);
-    return null;
+
+    return {
+      record: {
+        slug,
+        relativePath: `/posts/${slug}/banner.png`,
+      },
+      wroteFile: true,
+    };
   }
 
-  ensureDir(slugDir);
-  fs.copyFileSync(sourcePath, bannerPath);
-  removeLegacyBanner(slug);
+  // No existing banner/meta.png found, generate one
+  try {
+    console.log(`🖼  Generating meta image for: ${post.title}`);
+    const imageBuffer = await generateMetaImage({
+      title: post.title,
+      date: post.date,
+    });
 
-  return {
-    record: {
-      slug,
-      relativePath: `/posts/${slug}/banner.png`,
-    },
-    wroteFile: true,
-  };
+    ensureDir(slugDir);
+    fs.writeFileSync(bannerPath, imageBuffer);
+    removeLegacyBanner(slug);
+
+    return {
+      record: {
+        slug,
+        relativePath: `/posts/${slug}/banner.png`,
+      },
+      wroteFile: true,
+      generated: true,
+    };
+  } catch (error) {
+    console.error(`❌ Error generating image for ${slug}:`, error);
+    return null;
+  }
 }
 
 async function main() {
@@ -146,6 +169,7 @@ async function main() {
   const posts = getAllPosts();
   const results: BannerRecord[] = [];
   let copied = 0;
+  let generated = 0;
   let skipped = 0;
 
   for (const post of posts) {
@@ -153,7 +177,11 @@ async function main() {
     if (outcome) {
       results.push(outcome.record);
       if (outcome.wroteFile) {
-        copied++;
+        if (outcome.generated) {
+          generated++;
+        } else {
+          copied++;
+        }
       }
     } else {
       skipped++;
@@ -161,7 +189,7 @@ async function main() {
   }
 
   console.log(
-    `Banners ready: ${results.length} mapped, ${copied} ensured, ${skipped} skipped.`,
+    `Banners ready: ${results.length} mapped, ${copied} copied, ${generated} generated, ${skipped} skipped.`,
   );
 }
 
