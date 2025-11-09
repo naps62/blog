@@ -1,4 +1,4 @@
-import { Github, Mail, Twitter } from "lucide-react";
+import { Github, Mail, Rss, Twitter } from "lucide-react";
 
 export function Footer() {
   return (
@@ -29,6 +29,13 @@ export function Footer() {
             className="text-nav-text transition-colors hover:text-nav-hover"
           >
             <Mail className="h-5 w-5" />
+          </a>
+          <a
+            href="/feed.xml"
+            aria-label="RSS Feed"
+            className="text-nav-text transition-colors hover:text-nav-hover"
+          >
+            <Rss className="h-5 w-5" />
           </a>
         </div>
       </div>

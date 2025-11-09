@@ -3,14 +3,15 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "yarn banners && vite dev --port 3000",
-    "build": "vite build",
+    "dev": "yarn banners && yarn rss && vite dev --port 3000",
+    "build": "yarn banners && yarn rss && vite build",
     "start": "node .output/server/index.mjs",
     "lint": "yarn lint:biome && yarn lint:tsc",
     "lint:biome": "biome check .",
     "lint:tsc": "yarn banners && tsc --noEmit",
     "fix": "biome check --write .",
-    "banners": "tsx scripts/build-banners.ts"
+    "banners": "tsx scripts/build-banners.ts",
+    "rss": "tsx scripts/generate-rss.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",

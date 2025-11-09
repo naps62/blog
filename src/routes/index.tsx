@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Rss } from "lucide-react";
 import { ExternalLink } from "../components/ExternalLink";
 import { PostList } from "../components/PostList";
 import { posts } from "../utils/manifest";
@@ -33,9 +34,16 @@ export const Route = createFileRoute("/")({
         </div>
 
         <div className="mt-8 md:mt-12">
-          <h2 className="mb-6 font-bold text-2xl text-text-primary md:mb-8">
-            Writing
-          </h2>
+          <div className="mb-6 flex items-center gap-3 md:mb-8">
+            <h2 className="font-bold text-2xl text-text-primary">Writing</h2>
+            <a
+              href="/feed.xml"
+              aria-label="RSS Feed"
+              className="text-nav-text transition-colors hover:text-nav-hover"
+            >
+              <Rss className="h-5 w-5" />
+            </a>
+          </div>
           <PostList posts={posts} />
 
           <div className="mt-8">
