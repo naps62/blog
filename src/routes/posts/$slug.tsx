@@ -15,7 +15,8 @@ export const Route = createFileRoute("/posts/$slug")({
       metaImagePath && /^https?:\/\//i.test(metaImagePath)
         ? metaImagePath
         : metaImagePath && VITE_VERCEL_URL
-          ? new URL(metaImagePath, `https://${VITE_VERCEL_URL}`).href
+          ? // TODO: this shouldn't be fixed to prod, but VITE_VERCEL_URL is not the public one for some reason
+          new URL(metaImagePath, `https://naps62.com`).href
           : metaImagePath;
 
     const meta = [
