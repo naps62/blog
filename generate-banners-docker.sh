@@ -18,3 +18,5 @@ docker run --rm \
   blog-banners
 
 echo "Done! Generated images are in ./public/posts/"
+
+sudo chown -R $USER public/posts
