@@ -1,0 +1,344 @@
+---
+title: "Custom doorbell app with Home Assistant"
+draft: false
+date: 2025-11-09
+tags: ["homeassistant", "webrtc"]
+---
+
+import admin from "./admin.png";
+import tvRemote from "./tv-remote.png";
+import go2rtc from "./go2rtc.png";
+
+[SIP]: https://en.wikipedia.org/wiki/Session_Initiation_Protocol?useskin=vector
+[homeassistant]: https://www.home-assistant.io/
+[frigate]: https://frigate.video/
+[asterisk]: https://www.asterisk.org/
+[dahua-integration]: https://github.com/rroller/dahua
+[gist]: https://gist.github.com/naps62/2b0fd41593b89f74ad512399ff4b55de
+[capacitor]: https://capacitorjs.com/
+[browser_mod]: https://github.com/thomasloven/hass-browser_mod
+[ha-component-kit]: https://shannonhochkins.github.io/ha-component-kit/
+[hass-webrtc]: https://github.com/AlexxIT/WebRTC/
+[live-demo]: https://www.youtube.com/watch?v=K4g7rldCkPk
+
+<Notice type="info" title="TL;DR">I wrote a custom UI for Home Assistant, along with a modern WebRTC local-first integration with my new doorbell. The [full code][gist] and a [live demo][live-demo] are both available.</Notice>
+
+Recently, I upgraded my house's doorbell to a "smart" Dahua doorbell.
+I already run a somewhat robust homelab and [Home Assistant][homeassistant], so I was hoping to integrate the doorbell into my system, giving me some cool additions:
+
+- One more camera I could plug into [frigate][frigate];
+- Ability to answer the doorbell remotely;
+- Silence it when someone's sleeping.
+
+After some research, I ended up going with a [DAHUA VTO2201F-P](https://www.dahuasecurity.com/pt/products/All-Products/Video-Intercoms/IP-Series/Apartment-Door-Station/VTO2201F-P), mainly because it was one of the few options I had that seemed to have some home assistant support (unofficial, but still).
+
+After the initial installation by a technician (wire pulling was tricky in this case for me to do it myself), I quickly found some points of frustration. Long story short, this culminated in me over-engineering a custom solution that turned out far better than all alternatives I found so far.
+
+<Youtube videoId="K4g7rldCkPk" />
+
+Here's what I ended up building:
+- push notifications to a native app
+- edge-to-edge display
+- webrtc connection
+- much faster user flow than any vendor setup I've seen
+- strike gate control
+- audio & mic indicators
+- Picture-in-Picture support (not shown in the video)
+
+
+## How do smart doorbells work?
+
+I can only speak for the few brands I researched, both before the purchase, and afterwards, when researching for support in the home automation community. Dahua and Hikvision for example, are two brands that sell smart doorbells, but their internal details seem to be very similar. I imagine this is also the case for other brands as well.
+
+Previously, I mainly had experience with Reolink security cameras. I considered the Reolink doorbell at first, but had to decide against it because it doesn't support a 24v electric strike gate, which was a must for me.
+
+My house has a front yard. The doorbell units (VTO) sits on the outer wall, connected to the gate's 24v electric strike. The indoor unit (VTH) is a tablet that sits inside the house. Both units are PoE powered and on my isolated IoT VLAN (where I have the most restrictions regarding access to the internet and to other VLANs).
+
+Unintuitively, the outside unit acts as the server, and the inside unit is just a client. I imagine the reason for this is that these devices need to service different use cases, such as apartment buildings where a single doorbell connects to multiple homes. It still feels weird to have a server sit on the outside of my house. There's some alarm and anti-tampering features built-in, but the amount of Dahua reverse engineering I've seen on sites such as ipcamtalk.com while researching for this didn't really boost my confidence.
+
+Both units also have their own separate configurations. It seems it's typical for these devices to be configured with custom tools and undocumented internal protocols. In my case, I had to use a Windows machine to run the [Dahua Config Tool](https://dahuawiki.com/ConfigTool). I later found that this just seems to be a UI wrapping a simple cgi-bin API. So technically even `curl` can be used if you're in a bind.
+
+These devices use the [SIP protocol][SIP] to communicate, which is a telephony protocol used for voice and video calls.
+It's funny how the doorbell acts very much like an old-school telephone, to the point of emitting the typical "leave a message after the beep" when no one answers.
+
+<Figure src={admin} imgClassName="h-auto" caption="The admin interface for my doorbell, showing a single user: my house" />
+
+Since a camera is often included, then some sort of video streaming protocol is usually available, such as RTSP. But from my research, it seems to be common practice for these vendors to slightly tweak the protocol in ways that make it impossible, or at least require some time consuming trial-and-error, to connect it to third party software. Sometimes firmware updates slightly break things in unexpected ways. I can't help but think that this is just to try and force users to stick to their provided mobile apps, to eventually force a subscription out of you. That was a no-go to me from the start, but luckily I managed to get everything working.
+
+For 2025, this all feels a bit dated. And if I'm being honest, I don't intend to use the indoor tablet that much, once the custom automation is in place. I only bought it to get up and running, and to make sure the house can remain functional even without Home Assistant (both during outages, and if I ever want to move out).
+
+## First step: Frigate
+
+Frigate (and go2rtc which is the streaming backend behind it) keeps surprising me with how flexible its configuration is. There's often some trial-and-error to get cameras working, but that's mostly the fault of the camera, since a lot of configuration details vary between them.
+
+The basic setup to get a video feed for my doorbell turned out to be reasonably simple:
+
+```yaml showLineNumbers title="frigate.yml, video only"
+go2rtc:
+  streams:
+    doorbell:
+      - rtsp://<USER>:<PASS>@<IP_ADDRESS>/cam/realmonitor?channel=1&subtype=0#media=video
+    doorbell_sub:
+      - rtsp://<USER>:<PASS>@<IP_ADDRESS>/cam/realmonitor?channel=1&subtype=1
+
+cameras:
+  doorbell:
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/doorbell
+          roles:
+            - record
+        - path: rtsp://127.0.0.1:8554/doorbell_sub
+          roles:
+            - detect
+
+```
+
+But this turned out to be misleading once I got to the next part.
+
+## Notify phones
+
+This is easy. Home assistant has built-in services for notifications:
+
+
+```yaml showLineNumbers title="notifying phones"
+alias: Doorbell ringing
+description: Notifies phones
+triggers:
+  # when the doorbell button is pressed
+  - type: sound
+    device_id: 6bf96d40dbe1ec9c9d499910b828cd85
+    entity_id: f3fb9ec7aeab241cc6e1825c27fc7387
+    domain: binary_sensor
+    trigger: device
+conditions: []
+actions:
+
+  # notify @naps62
+  - action: notify.mobile_app_pixel_7_naps
+    metadata: {}
+    data:
+      data:
+        clickAction: https://<MY_URL>/dashboards/doorbell?kiosk=true&calling=true
+        priority: high
+        importance: high
+         # needs to keep incrementing after every change because the priority settings are fixed per channel
+        channel: doorbell_v13 
+        visibility: public
+        image: https://c.tenor.com/L37BB81BVTsAAAAC/tenor.gif
+        # quick action to open the door without even seeing who's there. For family dinners, I imagine
+        actions:
+          - action: DOORBELL_UNLOCK
+            title: Unlock
+      title: Doorbell
+      message: " "
+
+  # TODO: notify the wife as well
+mode: single
+```
+
+## How to answer from Home Assistant?
+
+A painful amount of reddit and github scrolling led me to believe the solution was to deploy my own SIP server using [Asterisk][asterisk], re-configure the doorbell to be a SIP client rather than a server, and connect Home assistant as a SIP client as well.
+
+In theory, I could program the doorbell to call homeassistant, which could prompt it to notify our mobile apps. Still leaving the question of how to handle audio forwarding from the phone, but at least it was a start.
+However, it was becoming way too complicated to figure out how to connect all these pieces. Asterisk itself is an old-school project, hard to figure out how to configure. And all the options I found to integrate it into home assistant seemed clunky at best.
+
+The closest I got here was to connect my doorbell to Asterisk, only for it to yell out "number not found" when I tried ringing.
+
+---
+
+The best guide I had found so far that was similar to my use case was [this github repo](https://github.com/felipecrs/dahua-vto-on-home-assistant), which the author seems to have created after going on a similar journey of discovery (I also stumbled upon the same github issues he was commenting on as he was figuring this out).
+
+From this I learned a few things:
+
+- SIP was not necessary at all
+- frigate and go2rtc supported 2-way audio! *(this was the key)*
+- devices sharing the same model number and firmware could still require different configs.
+
+After some setbacks following his tutorial, I managed to get it working with this updated frigate config:
+
+```yaml showLineNumbers title="frigate.yml (with 2-way audio)"
+go2rtc:
+  streams:
+    doorbell:
+      # H264
+      - echo:/scripts/fix_vto_codecs.sh 
+        rtsp://<USER>:<PASS>@<IP>/cam/realmonitor?channel=1&subtype=0#media=video
+      # PCMA, 2-way audio
+      # can't call fix_vto_codecs.sh here ONVIF user and admin user have different credentials
+      - rtsp://<USER>:<A_DIFFERENT_PASS>@<IP>/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif#media=audio#backchannel=1
+
+    doorbell_sub:
+      # H264, AAC
+      - echo:/scripts/fix_vto_codecs.sh 
+        rtsp://<USER>:<PASS>@<IP>/cam/realmonitor?channel=1&subtype=1#backchannel=0
+
+cameras:
+  doorbell:
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/doorbell
+          input_args: preset-rtsp-restream-low-latency
+          roles:
+            - record
+        - path: rtsp://127.0.0.1:8554/doorbell_sub
+          input_args: preset-rtsp-restream-low-latency
+          roles:
+            - detect
+      output_args:
+        record: preset-record-generic-audio-copy
+```
+
+I learned along the way that `proto=Onvif` caused the stream to use a different set of credentials, where I had previously changed the password. The `subtype` parameter is also for some reason swapped compared to the original tutorial.
+With this, I'm able to use go2rtc to create a WebRTC stream, plugged to my microphone, and talk to the doorbell in real time. Hooray!
+
+<Figure src={go2rtc} imgClassName="max-h-[200px]" caption="go2rtc has a useful UI where you can inspect streams using different protocols and modes. All I had to do was ask for a camera+microphone WebRTC stream, and connect via a compatible-browser" />
+
+## How to open the door?
+
+This was pleasantly simple. There's already a [Dahua VTO integration][dahua-integration] in Home Assistant, so a simple service call does the trick:
+
+```yaml showLineNumbers title="triggering electric strike door"
+action: dahua.vto_open_door
+data:
+  door_id: 1
+target:
+  device_id: 6bf96d40dbe1ec9c9d499910b828cd85
+```
+
+I set this up both within the app, as a dedicated button, as well as an automation listening to the `DOORBELL_UNLOCK` event, which is available directly on the push notification above.
+
+## User Interface
+
+This is where I wasn't happy with the proposed setups.
+I had previously been frustrated with Home Assistant's UI builder. Not only is yaml-driven programming a huge pain, but I always found the resulting UI sub-par.
+
+I can go on a long rant about the list of what I don't like with Home Assistant's UI builder, Lovelace dashboards, and the whole experience as a user instead of a tinkerer. But I'll leave that for a future post. For now, let's just say that when I first tried out the proposed custom card for the Dahua doorbell, I ended up even more frustrated with the resulting UX.
+
+Besides the usual grievances, I also had to deal with increased latency when answering a call. Home Assistant's app already takes a noticeable time to launch. But I also needed to deal with [browser_mod][browser_mod] callbacks to trigger popups if the app was already opened on specific devices.
+
+Maybe it's because I'm a web developer, but I couldn't stand it and I knew I could do better.
+
+## Messing around with WebRTC
+
+I started building my own custom frontend. My idea was to use the [WebRTC API][hass-webrtc] to replicate the same demo I got from go2rtc. I could slap a couple of home assistant service calls to get access to state, and trigger the gate lock, and this could work.
+I would also end up with a UI that would undoubtedly work more smoothly, since it didn't have all the yaml and administration baggage of the official app.
+
+The only tricky part was to establish a WebRTC connection. It's been a while since I've used the WebRTC API, and thankfully it has improved drastically in recent years. 
+
+There's already an awesome [React wrapper][ha-component-kit] for Home Assistant's websocket API available for React, so I was able to skip over the whole setup and authentication for that.
+To get a WebRTC connection to a frigate camera, I installed the [WebRTC integration][hass-webrtc], which creates additional endpoints I could use to get a signed URL from Home Assistant:
+
+```typescript showLineNumbers title="useWebrtcUrl.tsx"
+function useWebrtcUrl(camera: string) {
+	const conn = useConn();
+
+	return useQuery({
+		queryKey: ["webrtc-stream", camera, conn?.haVersion],
+		enabled: Boolean(conn),
+		gcTime: 0,
+		retry: false,
+		refetchOnReconnect: false,
+		refetchOnWindowFocus: false,
+		queryFn: async () => {
+			if (!conn) {
+				throw new Error("Missing connection for WebRTC query");
+			}
+
+			const signed: { path: string } | undefined =
+				await conn.sendMessagePromise({
+					type: "auth/sign_path",
+					path: "/api/webrtc/ws",
+				});
+
+			if (!signed?.path) {
+				throw new Error("Failed to obtain signed path for WebRTC");
+			}
+
+			return `https://${HASS_HOST}${signed.path}&url=${camera}`;
+		},
+	});
+}
+```
+
+This signed URL allows me to establish a WebRTC connection with a given camera entity. I then wrote the logic to set up the connection, plug in a microphone through `getUserMedia()`, handles the connection negotiation and offer, and ultimately establishes a connection with video and 2-way audio (microphone optional, so this can also be used to render regular camera streams)
+
+<Notice type="info" title="WebRTC">I won't inline the full source code here, since it's rather verbose, but I've compiled everything in a [gist][gist].</Notice>
+
+## Signaling
+
+WebRTC uses peer-to-peer connections, but peers first need to discover each other and negotiate how to connect. This is where STUN and TURN servers come in.
+
+This is an area I don't know enough about to understand all the details. Luckily, it was pretty quick to get a working setup, even with my rather complex setup with an OpnSense firewall, various VLANs requiring UDP broadcast configurations, Wireguard. The doorbell should work under all usage scenarios, since everyone in the family will use it, including remotely.
+
+```yaml showLineNumbers title="frigate.yml, webrtc only"
+go2rtc:
+  webrtc:
+    candidates:
+      - stun:stun.l.google.com:19302
+      - <MY_URL>:8555
+    # restrict connections to a specific port range
+    udp_ports: [50000, 50100]
+```
+
+I then had to open up that port range on my firewall, and forward them to my go2rtc server. While testing this on my laptop. I would run `turnserver -c turnserver.conf` with the following config:
+
+```config title="turnserver.conf"
+listening-port=3478
+realm=local
+user=user:pass
+lt-cred-mech
+no-tls
+no-dtls
+```
+
+This allowed me to bypass the fact that I was running on `localhost:3000` instead of `<MY_URL>`, which is what the production config expects.
+
+## Improving call quality
+
+In the end, I was also able to (admittedly with the help of Claude Code) write some audio analysis code that renders a real-time visualization of incoming audio and mic frequency bands. This makes it clear to the user that audio is indeed being streamed, and is also a nice visual addition.
+
+Lastly, since this will ultimately run on Android phones (in my home at least), I get access to some Chrome-specific features:
+
+```typescript showLineNumbers title="audio constraints"
+const audioConstraints = {
+	echoCancellation: true,
+	noiseSuppression: true,
+	autoGainControl: true,
+	channelCount: 1,
+	advanced: [{ voiceIsolation: true }],
+};
+
+navigator.mediaDevices.getUserMedia({ audio: audioConstraints }).then((stream) => {
+  ...
+})
+```
+
+This set of options enable several improvements to audio quality. Noise suppression is very noticeable in my case, since the house is right beside a busy road. Advanced voice isolation is a chrome-specific feature that uses ML models to better focus on voice. I imagine it's the same technology that Google Meet uses (where I often notice increased audio quality compared to other apps)
+
+# Final note on Dahua issues
+
+A lot of the open source work that targets Dahua cameras apparently relies on reverse engineering their devices, since there's apparently little to no documentation, especially on their proprietary DHIP protocol, which is where commands such as "unlock the door" are sent through.
+
+This means that in practice, these commands change from device to device, and even from firmware version to firmware version. That seems to be the case right now for the `vto_cancel_call` command, which is usually necessary to send before negotiation webrtc audio, as the doorbell will be playing a ringing sound, and won't actually play your audio.
+
+Currently, on my device, and apparently several others, this command does not work, and no one has figured out what (if any) is the alternative. The current workaround, that I had to implement, is to disable this ringing tone altogether in the VTO's web interface, as described [in this issue's comment](https://github.com/myhomeiot/DahuaVTO/issues/45#issuecomment-2813979245).
+
+# Wrapping up
+
+The final app ended up being deployed on my local home server. I also wrapped it in a native app using [Ionic's capacitor][capacitor]. That was the only way to get good support for edge-to-edge display, hiding system bars, and using the notch area of my phone's display.
+It will also allow me to use some more advanced features later on, such as improved Picture-in-Picture.
+
+Since the web app is closed source (even though there are no secret keys, it exposes details of how my private Home Assistant is organized), I compiled the relevant source code in a [gist][gist] for anyone interested in replicating it. I'm also happy to share additional details to anyone who asks.
+
+There's some future work to be done, particularly:
+
+- Add custom features for picture-in-picture;
+- Support multiple peers, so that both me and my wife can join the doorbell call at the same time (useful? probably not, but fun anyway);
+- Play with frigate face detection to provide more info upfront on the push notification, or even automatically open the door for trusted family & friends;
+- use text-to-speech to play custom sounds such as "I'm not home right now", or "The DHL delivery code is XXXX".
+
+Hopefully I'll have time to get back to those in the future.
+
+<Embed url="https://gist.github.com/naps62/2b0fd41593b89f74ad512399ff4b55de" />
