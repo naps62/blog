@@ -62,7 +62,7 @@ export const Route = createFileRoute("/posts/$slug")({
     const { frontmatter, Mdx } = post;
 
     return (
-      <article className="prose prose-lg">
+      <article className="">
         <header className="mb-12 text-center">
           {post.metaImg && (
             <div className="mb-8">
@@ -112,7 +112,7 @@ export const Route = createFileRoute("/posts/$slug")({
             </p>
           )}
         </header>
-        <Markdown className="mb-16">
+        <Markdown className="m-auto mb-16">
           <Mdx />
         </Markdown>
       </article>
