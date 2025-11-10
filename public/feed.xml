@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Miguel Palhas</title>
+    <link>https://naps62.com</link>
+    <description>A senior engineer who spends his time solving deep technical challenges in various corners of the web, as well as tinkering with both hardware and software side-projects.</description>
+    <language>en</language>
+    <atom:link href="https://naps62.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Custom doorbell app with Home Assistant</title>
+      <link>https://naps62.com/posts/custom-doorbell-app-with-homeassistant</link>
+      <guid>https://naps62.com/posts/custom-doorbell-app-with-homeassistant</guid>
+      <pubDate>Sun, 09 Nov 2025 00:00:00 GMT</pubDate>
+      <description>I wrote a custom UI for Home Assistant, along with a modern WebRTC local-first integration with my new Dahua doorbell.</description>
+    </item>
+    <item>
+      <title>How I build fullstack Ethereum apps</title>
+      <link>https://naps62.com/posts/how-i-build-fullstack-ethereum-apps</link>
+      <guid>https://naps62.com/posts/how-i-build-fullstack-ethereum-apps</guid>
+      <pubDate>Mon, 04 Aug 2025 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Unity meets Rust</title>
+      <link>https://naps62.com/posts/unity-meets-rust</link>
+      <guid>https://naps62.com/posts/unity-meets-rust</guid>
+      <pubDate>Fri, 04 Jul 2025 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Ethereum node setup with Reth &amp; Systemd</title>
+      <link>https://naps62.com/posts/ethereum-node-setup-reth-systemd</link>
+      <guid>https://naps62.com/posts/ethereum-node-setup-reth-systemd</guid>
+      <pubDate>Fri, 17 Nov 2023 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>A knowledge base with Vim, Fzf and Ripgrep</title>
+      <link>https://naps62.com/posts/knowledge-base</link>
+      <guid>https://naps62.com/posts/knowledge-base</guid>
+      <pubDate>Mon, 27 Jul 2020 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Continuous Stuff with GitHub Actions</title>
+      <link>https://naps62.com/posts/continuous-stuff-with-github-actions</link>
+      <guid>https://naps62.com/posts/continuous-stuff-with-github-actions</guid>
+      <pubDate>Mon, 30 Mar 2020 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Typespecs and Behaviours in Elixir</title>
+      <link>https://naps62.com/posts/typespecs-and-behaviours-in-elixir</link>
+      <guid>https://naps62.com/posts/typespecs-and-behaviours-in-elixir</guid>
+      <pubDate>Tue, 15 Oct 2019 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Routing in Phoenix Umbrella Apps</title>
+      <link>https://naps62.com/posts/routing-in-phoenix-umbrella-apps</link>
+      <guid>https://naps62.com/posts/routing-in-phoenix-umbrella-apps</guid>
+      <pubDate>Tue, 16 Apr 2019 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Pouring Protocols in Elixir</title>
+      <link>https://naps62.com/posts/pouring-protocols-in-elixir</link>
+      <guid>https://naps62.com/posts/pouring-protocols-in-elixir</guid>
+      <pubDate>Tue, 19 Feb 2019 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Metaprogramming: From C Preprocessing to Elixir Macros</title>
+      <link>https://naps62.com/posts/metaprogramming-from-c-to-elixir</link>
+      <guid>https://naps62.com/posts/metaprogramming-from-c-to-elixir</guid>
+      <pubDate>Tue, 19 Feb 2019 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Flags, Seeds and Idempotency: Database Tooling with Elixir</title>
+      <link>https://naps62.com/posts/flags-seeds-and-idempotency-elixir</link>
+      <guid>https://naps62.com/posts/flags-seeds-and-idempotency-elixir</guid>
+      <pubDate>Tue, 19 Feb 2019 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Understanding Elixir’s GenStages: Querying the Blockchain</title>
+      <link>https://naps62.com/posts/understanding-elixirs-genstage</link>
+      <guid>https://naps62.com/posts/understanding-elixirs-genstage</guid>
+      <pubDate>Tue, 13 Nov 2018 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Tutorial: Deploying Elixir applications with Docker and Digital Ocean</title>
+      <link>https://naps62.com/posts/tutorial-deploying-elixir-applications</link>
+      <guid>https://naps62.com/posts/tutorial-deploying-elixir-applications</guid>
+      <pubDate>Wed, 24 May 2017 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Super-powered Vim, part III: Skeletons</title>
+      <link>https://naps62.com/posts/super-powered-vim-iii-skeletons</link>
+      <guid>https://naps62.com/posts/super-powered-vim-iii-skeletons</guid>
+      <pubDate>Tue, 04 Apr 2017 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Super-powered Vim, part II: Snippets</title>
+      <link>https://naps62.com/posts/super-powered-vim-ii-snippets</link>
+      <guid>https://naps62.com/posts/super-powered-vim-ii-snippets</guid>
+      <pubDate>Tue, 04 Apr 2017 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Super-powered Vim, part I: Projections</title>
+      <link>https://naps62.com/posts/super-powered-vim-i-projections</link>
+      <guid>https://naps62.com/posts/super-powered-vim-i-projections</guid>
+      <pubDate>Tue, 04 Apr 2017 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Smarter heredoc syntax in vim</title>
+      <link>https://naps62.com/posts/smarter-heredoc-syntax-in-vim</link>
+      <guid>https://naps62.com/posts/smarter-heredoc-syntax-in-vim</guid>
+      <pubDate>Mon, 06 Jun 2016 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Perfecting a CSS 3D Animation</title>
+      <link>https://naps62.com/posts/perfecting-a-css-3d-animation</link>
+      <guid>https://naps62.com/posts/perfecting-a-css-3d-animation</guid>
+      <pubDate>Fri, 17 Jul 2015 00:00:00 GMT</pubDate>
+      
+    </item>
+    <item>
+      <title>Easily Merging Pull Requests</title>
+      <link>https://naps62.com/posts/easily-merging-pull-requests</link>
+      <guid>https://naps62.com/posts/easily-merging-pull-requests</guid>
+      <pubDate>Mon, 24 Nov 2014 00:00:00 GMT</pubDate>
+      
+    </item>
+  </channel>
+</rss>

@@ -28,18 +28,8 @@ function getAllPosts(): Post[] {
     const directory = fileName.replace(/\/index\.mdx$/, "");
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, "utf8");
-    const { data, content } = matter(fileContents);
+    const { data } = matter(fileContents);
     const slug = data.slug || directory.replace(/^\d{4}-\d{2}-/, "");
-
-    // Extract first paragraph as description if not provided
-    let description = data.description;
-    if (!description) {
-      const paragraphs = content.split("\n\n");
-      const firstPara = paragraphs.find((p) => p.trim() && !p.startsWith("#"));
-      if (firstPara) {
-        description = firstPara.replace(/\n/g, " ").substring(0, 200);
-      }
-    }
 
     return {
       directory,
@@ -47,7 +37,7 @@ function getAllPosts(): Post[] {
       title: data.title,
       date: data.date,
       draft: data.draft || false,
-      description,
+      description: data.description, // Only use frontmatter description if provided
     };
   });
 

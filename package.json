@@ -61,7 +61,8 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "optionalDependencies": {
-    "canvas": "^2.11.2"
+    "satori": "^0.12.0",
+    "sharp": "^0.33.5"
   },
   "packageManager": "yarn@4.10.3"
 }
