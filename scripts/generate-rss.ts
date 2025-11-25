@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { globSync } from "glob";
 import matter from "gray-matter";
 
-const SITE_URL = "https://naps62.com";
+const SITE_URL = "https://naps.pt";
 const SITE_TITLE = "Miguel Palhas";
 const SITE_DESCRIPTION =
   "A senior engineer who spends his time solving deep technical challenges in various corners of the web, as well as tinkering with both hardware and software side-projects.";

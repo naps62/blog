@@ -24,7 +24,7 @@ export function Footer() {
             <Twitter className="h-5 w-5" />
           </a>
           <a
-            href="mailto:mail@naps62.com"
+            href="mailto:mail@naps.pt"
             aria-label="Email"
             className="text-nav-text transition-colors hover:text-nav-hover"
           >

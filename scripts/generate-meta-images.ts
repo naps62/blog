@@ -24,7 +24,12 @@ interface PostData {
 async function loadFont(
   fontPath: string,
   weight: 400 | 700,
-): Promise<{ name: string; data: ArrayBuffer; weight: 400 | 700; style: "normal" }> {
+): Promise<{
+  name: string;
+  data: ArrayBuffer;
+  weight: 400 | 700;
+  style: "normal";
+}> {
   const data = await fs.promises.readFile(fontPath);
   return {
     name: "Inter",
@@ -141,7 +146,7 @@ export async function generateMetaImage(post: PostData): Promise<Buffer> {
                             color: BRAND_COLOR,
                             fontWeight: 700,
                           },
-                          children: "naps62.com",
+                          children: "naps.pt",
                         },
                       },
                       avatarDataUrl
