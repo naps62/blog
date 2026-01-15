@@ -7,6 +7,13 @@
     <language>en</language>
     <atom:link href="https://naps.pt/feed.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Secure wildcard subdomains in Dokploy / Traefik</title>
+      <link>https://naps.pt/posts/wildcard-ssl-in-dokploy</link>
+      <guid>https://naps.pt/posts/wildcard-ssl-in-dokploy</guid>
+      <pubDate>Sun, 09 Nov 2025 00:00:00 GMT</pubDate>
+      <description>The guide I wish I had when I was researching how to setup wildcard Let&apos;s Encrypt certificates in Dokploy.</description>
+    </item>
+    <item>
       <title>Custom doorbell app with Home Assistant</title>
       <link>https://naps.pt/posts/custom-doorbell-app-with-homeassistant</link>
       <guid>https://naps.pt/posts/custom-doorbell-app-with-homeassistant</guid>
