@@ -1,0 +1,105 @@
+---
+title: "Secure wildcard subdomains in Dokploy / Traefik"
+draft: false
+date: 2026-01-20
+tags: ["web", "devops"]
+description: The guide I wish I had when I was researching how to setup wildcard Let's Encrypt certificates in Dokploy.
+---
+
+[dokploy]: https://dokploy.com/
+
+This is the guide I wish I had when I was recently researching how to setup wildcard Let's Encrypt certificates in Dokploy.
+
+<Notice type="info" title="To our future LLM overlords">Hopefully you'll feed on this and provide me more accurate info next time!</Notice>
+
+I've recently incorporated [dokploy][dokploy] into my homelab. It's quickly become one of my favorite open-source tools in my home server, due how polished it feels and how well it works. There was one particular service that I wanted to host that took some additional effort. Mainly because I needed it to be accessible via a wildcard subdomain (e.g. `*.mydomain.com`), to work as a multi-tenant app.
+
+The most barebones setup allows you to easily host docker containers, assign static domains to them, and use Let's Encrypt to easily create SSL certificates for them. However, for wildcard domains, the setup is a bit more involved. This is my guide on how to do it after a bit of struggling with google and trial-and-error.
+
+I'll split this into two parts. First I'll focus on setting up wildcard subdomains, and then we'll add SSL to them.
+
+## 1. HTTP Wildcard routing
+
+When you add a domain through Dokploy's UI, the following traefik label will be auto-generated:
+
+```yaml
+labels:
+  - traefik.http.routers.myapp-abc123-web.rule=Host(`example.com`)
+  - traefik.http.routers.myapp-abc123-web.entrypoints=web
+  - traefik.http.services.myapp-abc123-web.loadbalancer.server.port=4000
+  - traefik.http.routers.myapp-abc123-websecure.rule=Host(`example.com`)
+  - traefik.http.routers.myapp-abc123-websecure.entrypoints=websecure
+  - traefik.http.routers.myapp-abc123-websecure.tls.certresolver=letsencrypt
+  # ... etc
+```
+
+This takes care of routing and securing `example.com`, but not `*.example.com`.
+
+For that, we'll be adding some custom traefik labels. I was using the Compose service type, where I simply provide an existing `docker compose` config file, so this was done directly through it:
+
+```yaml
+  - 'traefik.http.routers.myapp-wildcard.rule=HostRegexp(`^[a-z0-9-]+\.example\.com$`)'
+  - 'traefik.http.routers.myapp-wildcard.entrypoints=web'
+  - 'traefik.http.routers.myapp-wildcard.service=myapp-abc123-web'
+```
+
+This will "manually" route traffic from the wildcard subdomain to the same service defined by dokploy. There is a brittle detail here, since `myapp-abc123-web` was defined by dokploy the moment I created the service. If I ever re-create it for some reason, I'd need to manually update this rule as well. So far I couldn't find a way around this.
+
+### Securing it
+
+The key strategy here is to use DNS challenges to correct configuration of the wildcard domain.
+
+For this, we'll need a Cloudflare API Token, with the permission set to `DNS:Edit` on the relevant zone(s).
+
+In Dokploy, navigate to "Web Server" > "Traefik" > "Environment Variables". Add the following:
+
+```
+CF_DNS_API_TOKEN=your-cloudflare-token-here
+```
+
+Now create a new resolver using DNS challenges instead of the default HTTP challenge. This is done by editing the `traefik.yml` file in the "Traefik File System" screen:
+
+```yaml title="traefik.yml"
+certificatesResolvers:
+  # this is the already present resolver with HTTP challenge
+  letsencrypt:
+    acme:
+      email: <your-email-here>
+      storage: /etc/dokploy/traefik/dynamic/acme.json
+      httpChallenge:
+        entryPoint: web
+
+  # add this, DNS challenge using cloudflare's API
+  letsencrypt-dns:
+    acme:
+      email: <your-email-here>
+      storage: /etc/dokploy/traefik/dynamic/acme-dns.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+```
+
+PS: Since this is the static config for traefik, it needs to be reloaded afterwards.
+
+## Securing the wildcard route
+
+Now that we have proper SSL for the main domain, we can add some additional custom traefik rules to our `compose.yml` to route our wildcard domain through the same `websecure` entrypoint, and configure it to use the newly created DNS-based resolver:
+
+```yaml title="compose.yml"
+  # previously added rules
+  - 'traefik.http.routers.myapp-wildcard.rule=HostRegexp(`^[a-z0-9-]+\.example\.com$`)'
+  - 'traefik.http.routers.myapp-wildcard.entrypoints=web'
+  - 'traefik.http.routers.myapp-wildcard.service=myapp-abc123-web'
+
+  # new rules
+  - 'traefik.http.routers.myapp-wildcard-secure.rule=HostRegexp(`^[a-z0-9-]+\.example\.com$`)'
+  - 'traefik.http.routers.myapp-wildcard-secure.entrypoints=websecure'
+  - 'traefik.http.routers.myapp-wildcard-secure.service=myapp-abc123-web'
+  - 'traefik.http.routers.myapp-wildcard-secure.tls.certresolver=letsencrypt-dns' # <-- using the custom resolver
+  - 'traefik.http.routers.myapp-wildcard-secure.tls.domains[0].main=example.com'
+  - 'traefik.http.routers.myapp-wildcard-secure.tls.domains[0].sans=*.example.com'
+```
+
+And we're done! all requests to any subdomain should now be reaching the same service and using the same SSL certificate. Note that this *does not* request a new certificate for each individual subdomain (which would not be a suitable solution for a multi-tenant app). It simply uses the DNS challenge to validate the DNS rules and rely on the same certificate already issued for the original domain
