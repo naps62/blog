@@ -1,0 +1,89 @@
+---
+title: "Yet another take on AI-assisted coding"
+draft: true
+date: 2026-01-27
+tags: ["ai", "programming"]
+description:
+---
+
+[coffee-ai]: https://www.theverge.com/tech/853818/bosch-smart-coffee-machine-alexa-plus-upgrade
+[reddit-rust]: https://www.reddit.com/r/rust/
+[reddit-webdev]: https://www.reddit.com/r/webdev/
+
+Just like everyone else on the observable universe, I've been increasingly seeing, reading about, and using AI tools. It seems they're seeping through every aspect our lives, like digital microplastics.
+
+I'm not an LLM expert, and as such this is not in any way a "here's what AI will look like in 5 years!". Hopefully it's the polar opposite of that.
+
+# All the hyperbole...
+
+Let me just get this part out of the way quickly: I can't stand the average marketing pitch of whatever the latest AI novelty is.
+I couldn't care less for the random CEO on twitter who spent a weekend vibe-coding and got a working prototype.
+I'm exhausted that every conversation somehow shifts into AI.
+
+And no, [I don't want my coffee machine to talk to me in the morning][coffee-ai]. I like my coffee as dumb as a rock, thank you very much.
+
+At the same time, I am intensivelly using, and pushing my team to use, coding assistants. Will continue to do so for the foreseeable future. This is the dichotomy that I haven't felt in previous hype cycles.
+
+But despite me and many others finding this so incredibly useful, the industry still feels pressured to tell us this is even more amazing than that.
+It's not enough that we got a tool that is truly revoluionary in so many different ways. We need to convince everyone that utopia is right around the corner, all jobs are deprecated, and money won't be needed. And hey, maybe the next AI-slot video generator will accidentally cure cancer like was originally promised?
+
+# TODO embed tweet
+
+https://x.com/ThePrimeagen/status/1800927988239986965
+
+
+One area where I've seen a lot of variance is in how much success different developers have had with AI tooling. One person will claim great success in complex high-value tasks, while other will appear to be frustrated when trying to get the same model to achieve simpler ones.
+
+To me, there are a couple of factors that may contribute to this that I haven't seen discussed all that much.
+
+### 1. Ego is the enemy
+
+Developers tend to have some degree emotional attachment to their code. I was very guilty of this in my junior years. I Still vividly recall when, during a trip abroad, a colleague started filling in for me in for a client's project, only for me to learn that while I was away, he had apparently rewritten most of the "brilliant architecture I had spent weeks hacking by myself".
+
+I'm by no means an artist, but I imagine this is similar to what movie directors or book writers feel when studio execs or publishers give them notes or demand changes.
+
+In hindsight, it feels almost silly to think I was frustrated by that. Also, my colleague was fully right. What I wrote originally was not a brilliancy, but more of a weird frankenstein that was a result of me being alone with the codebase for too long, with no one to review and discuss ideas with.
+
+I like to think I improved a lot in that front. I still take get that big dopamine hit when I solve a complex problem, or design an elegant architecture. But I've also learned to accept that it can be fully scraped by next week. All it takes is a harmless change in requirements for a brilliant architecture to turn into a horrible one.
+
+Where am I going with this, you ask? I think that success with AI tools is probably highly correlated with one's ability to not get too attached to our code.
+You need a certain level of detachment. Usually the code is just a means to an end.
+
+### 2. Knowing when to care about "quality"
+
+Back in my junior days, we didn't have real-time linters or LSPs. Instead, we argued for days on Github about single versus double quotes, or whether a function was too long or too unreadable according to some arbitrary metrics a book once taught us. Then we finally merged the damn thing, only to never have to look at that code again because the product was scraped. Those were the days.
+
+This is not to say that all code quality discussions are pointless. But it does hint that maybe there are other things we should care less about, and try to avoid pure perfectionism.
+
+And no, we should not vibe code everything (more on that later), but a lot of projects can benefit from a more targeted approach to distinguish what are the core and metrics and design patterns we care about, and what are the areas where we can relax a little.
+
+
+I like to think about code quality in terms of **ossification**.
+When something ossifies (i.e., hardens and becomes central to the entire system, just like your bones) it becomes much more resistant to change. This resistance comes in many forms:
+
+- A database schema bug that is hard to fix without bricking production data
+- A bug in a function that has become expected behavior for many of its callers in the codebase
+- Code relying on global state or side effects that were originally unrelated, but ended up tangled as the codebase grew
+- A cryptographic vulnerability that is trivial for you to fix with a dependency update, except for the fact it invalidates all live user sessions the moment it goes live, causing a DDoS in your auth flow.
+- Your tech stack choice, where a migration in frameworks or even programming languages would force a large rewrite
+- A dependency on a 3rd party API that could shut down or change pricing a few years from now
+
+
+
+
+
+## What is vibe-coding anyway?
+
+I often browser [r/rust][reddit-rust], [r/webdev][reddit-webdev], and other similar communities to hear about new tooling. The most common trend there in past months is the huge increase in new projects being showcased, with varying levels of AI-assistance being visible, and being immediatelly dismised as vibe-coded slop.
+
+While I largely agree with a lot of those assessments (there has indeed been a concerning amount of one-weekend projects being presented as if they were fully fledged OSS products), I find it frustrating that the label "vibe coding" ends up thrown around to all of them with no real distinction.
+
+The term has become the main source of polarization. vibe-coded things are bad. everyone just takes a quick glance, counts up the amount of emojis in the readme, and determines their stance on the repo.
+
+As usual with internet stuff, nuance goes down the drain. I too did what the kids call "vibe coding" on a few personal repos, with success rates all over the spectrum.
+
+To me, vibe coding is when you not only don't care about the code itself, but you also don't care enough about the final result's quality, security, or edge cases. Or you don't know have enough technical background to be able to care in the first place.
+
+Because, as I said in [Ego is the enemy][...], not caring about the code should already be the baseline. This is not to say that code quality and good engineering principles don't matter, though. They absolutely do, and will still mark the difference between an apparently good product and an *actually* good product. Sometimes that only surfaces late in the process (maybe in the form of a security vulnerability a vide-coder failed to notice)
+
+# Survival of the fittest
