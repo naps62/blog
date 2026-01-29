@@ -41,7 +41,7 @@ One area where I've seen a lot of variance is in how much success different deve
 
 To me, there are a couple of factors that may contribute to this that I haven't seen discussed all that much.
 
-### #1. Ego is the enemy
+### Ego
 
 Developers tend to have some degree emotional attachment to their work. I was very guilty of this in my junior years. I still vividly recall when, during a trip abroad, a colleague started filling in for me on a client's project, only for me to learn that while I was away, he had apparently rewritten most of the code I had spent weeks carefully writing.
 
@@ -49,24 +49,32 @@ In hindsight, it feels almost silly to think I was frustrated by that. Especiall
 
 I like to think I improved a lot in that front. I still take get that big dopamine hit when I solve a complex problem, or design an elegant architecture. But I've also learned to accept that it can be fully scraped by next week. All it takes is a harmless change in requirements for a brilliant architecture to turn into a horrible one.
 
-Where am I going with this, you ask? I think that success with AI tools is probably highly correlated with one's ability to not get too attached to our code, or to *our idea* of what the code should look like.
+Where am I going with this, you ask? I think that success with AI tools is probably highly correlated with one's ability to not get too attached to our code, or to our idea of what the code should look like. 
 You need a certain level of detachment. Usually the code is just a means to an end.
 
-Most developers who take pride in their work will probably look at an LLM's output with a very critical eye (and rightfully so). They'll find problems, areas to disagree, or simply places where they could do better themselves, whatever "better" means. The same has always happened 
+Most developers who take pride in their work will probably look at some LLM outputs with a very critical eye (and rightfully so). They'll find problems, areas to disagree, or simply places where they could do better themselves, whatever "better" means. The same has always happened.
 
-### #2. "Quality"
+Being able to now take a step back and accept some things as difference of opinion, or merely as battles not worth my time, had made me a better developer. this was true when working with people, and it still is now that i'm working with machines.
+
+### "Quality"
 
 Back in my junior days, we didn't have real-time linters or LSPs. Instead, we argued for days on Github about single versus double quotes, or whether a function was too long or unreadable according to some arbitrary metrics a book once taught us. Then we finally merged the damn thing, only to never have to look at it again because the product was scraped. Those were the days!
 
-This is not to say that all code quality discussions are pointless. But it does hint that maybe there are other things we should care less about, and try to avoid pure perfectionism.
+This is not to say that all code quality discussions are pointless. But it does hint that maybe there are other things we should care less about, and try to avoid perfectionism.
 
 The industry already made a large jump forward when compilers and linters became more advanced (Typescript and Rust both excel at this) and integrated into CI pipelines. We all collectively stopped having to manually look out for lints that are now fully automated.
 
 And now, with AI tools, we can one layer further, and potentially detach ourselves from portions of our code in the name of speed.
 The extreme end of this is what the internet calls "vibe coding" (more on this later). But there is a middle ground, where you're able to still responsibly offload a lot of, while keeping any potential damage or code smells in check.
 
-I like to think about code quality in terms of **ossification**.
-When something ossifies (i.e., hardens and becomes central to the entire system, just like your bones) it becomes much more resistant to change. This resistance comes in many forms:
+# Ossification
+
+When something hardens, and becomes central to many other systems, whether by design or by accident, it becomes harder to modify.
+This is highly true in code as well,
+ And it's the metric through which i try to gauge if something is worth a deeper look or not.
+
+It turns out that, provided you have the right tools and principles, you can 
+When something ossifies (i.e., hardens and becomes central to the entire system, just like your bones) it becomes much more resistant to change. This resistance to change comes in many forms:
 
 - A database schema bug that is hard to fix without bricking production data
 - A bug in a function that has become expected behavior for many of its callers in the codebase
