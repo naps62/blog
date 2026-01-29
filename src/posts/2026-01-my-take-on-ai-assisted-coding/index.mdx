@@ -6,57 +6,64 @@ tags: ["ai", "programming"]
 description:
 ---
 
+import monkeys from "./monkeys.jpg"
+
 [coffee-ai]: https://www.theverge.com/tech/853818/bosch-smart-coffee-machine-alexa-plus-upgrade
 [reddit-rust]: https://www.reddit.com/r/rust/
 [reddit-webdev]: https://www.reddit.com/r/webdev/
 
-Just like everyone else on the observable universe, I've been increasingly seeing, reading about, and using AI tools. It seems they're seeping through every aspect our lives, like digital microplastics.
+Just like everyone else in the observable universe, I've been increasingly seeing, reading about, and using AI tools. It seems they're seeping through every aspect our lives, like digital microplastics.
 
-I'm not an LLM expert, and as such this is not in any way a "here's what AI will look like in 5 years!". Hopefully it's the polar opposite of that.
+I'm not an LLM expert, and as such this is not in any way a "here's my prediction for this year" kind of post. Hopefully it's the opposite of that.
 
 # All the hyperbole...
 
 Let me just get this part out of the way quickly: I can't stand the average marketing pitch of whatever the latest AI novelty is.
-I couldn't care less for the random CEO on twitter who spent a weekend vibe-coding and got a working prototype.
+I couldn't care less for the typical social media post by a CEO who spent a weekend vibe-coding and is suddendly an expert in 3 new fields.
+
 I'm exhausted that every conversation somehow shifts into AI.
 
 And no, [I don't want my coffee machine to talk to me in the morning][coffee-ai]. I like my coffee as dumb as a rock, thank you very much.
 
-At the same time, I am intensivelly using, and pushing my team to use, coding assistants. Will continue to do so for the foreseeable future. This is the dichotomy that I haven't felt in previous hype cycles.
+At the same time, I am intensivelly using, and pushing others to use coding assistants. I will probably continue to do so for the foreseeable future. This is the dichotomy that I haven't felt in previous hype cycles.
 
-But despite me and many others finding this so incredibly useful, the industry still feels pressured to tell us this is even more amazing than that.
-It's not enough that we got a tool that is truly revoluionary in so many different ways. We need to convince everyone that utopia is right around the corner, all jobs are deprecated, and money won't be needed. And hey, maybe the next AI-slot video generator will accidentally cure cancer like was originally promised?
+Despite me and many others finding this so incredibly useful, the industry still feels pressured to tell us this is much more amazing than what we already see for ourselves.
+It's not enough that we got a truly revoluionary tool in so many different ways. We need to convince everyone that utopia is right around the corner, all jobs are deprecated, and money won't be a thing anymore.
+
+<Figure src={monkeys} caption={<>Maybe with  enough AI slop, we'll <a href="https://en.wikipedia.org/wiki/Infinite_monkey_theorem" target="_blank">accidentally stumble into</a> the cure for cancer?</>} />
 
 # TODO embed tweet
 
 https://x.com/ThePrimeagen/status/1800927988239986965
 
 
-One area where I've seen a lot of variance is in how much success different developers have had with AI tooling. One person will claim great success in complex high-value tasks, while other will appear to be frustrated when trying to get the same model to achieve simpler ones.
+One area where I've seen a lot of variance is in how much success different developers have had with AI tooling. One person will claim great success in complex high-value tasks, while another will just come back frustrated after failing to get the same tool to complete trivial tasks.
 
 To me, there are a couple of factors that may contribute to this that I haven't seen discussed all that much.
 
-### 1. Ego is the enemy
+### #1. Ego is the enemy
 
-Developers tend to have some degree emotional attachment to their code. I was very guilty of this in my junior years. I Still vividly recall when, during a trip abroad, a colleague started filling in for me in for a client's project, only for me to learn that while I was away, he had apparently rewritten most of the "brilliant architecture I had spent weeks hacking by myself".
+Developers tend to have some degree emotional attachment to their work. I was very guilty of this in my junior years. I still vividly recall when, during a trip abroad, a colleague started filling in for me on a client's project, only for me to learn that while I was away, he had apparently rewritten most of the code I had spent weeks carefully writing.
 
-I'm by no means an artist, but I imagine this is similar to what movie directors or book writers feel when studio execs or publishers give them notes or demand changes.
-
-In hindsight, it feels almost silly to think I was frustrated by that. Also, my colleague was fully right. What I wrote originally was not a brilliancy, but more of a weird frankenstein that was a result of me being alone with the codebase for too long, with no one to review and discuss ideas with.
+In hindsight, it feels almost silly to think I was frustrated by that. Especially because my colleague was fully right. What I wrote originally was not a brilliancy, but more of a weird frankenstein that was a result of me being alone with the codebase for too long, with no one to review and discuss ideas with.
 
 I like to think I improved a lot in that front. I still take get that big dopamine hit when I solve a complex problem, or design an elegant architecture. But I've also learned to accept that it can be fully scraped by next week. All it takes is a harmless change in requirements for a brilliant architecture to turn into a horrible one.
 
-Where am I going with this, you ask? I think that success with AI tools is probably highly correlated with one's ability to not get too attached to our code.
+Where am I going with this, you ask? I think that success with AI tools is probably highly correlated with one's ability to not get too attached to our code, or to *our idea* of what the code should look like.
 You need a certain level of detachment. Usually the code is just a means to an end.
 
-### 2. Knowing when to care about "quality"
+Most developers who take pride in their work will probably look at an LLM's output with a very critical eye (and rightfully so). They'll find problems, areas to disagree, or simply places where they could do better themselves, whatever "better" means. The same has always happened 
 
-Back in my junior days, we didn't have real-time linters or LSPs. Instead, we argued for days on Github about single versus double quotes, or whether a function was too long or too unreadable according to some arbitrary metrics a book once taught us. Then we finally merged the damn thing, only to never have to look at that code again because the product was scraped. Those were the days.
+### #2. "Quality"
+
+Back in my junior days, we didn't have real-time linters or LSPs. Instead, we argued for days on Github about single versus double quotes, or whether a function was too long or unreadable according to some arbitrary metrics a book once taught us. Then we finally merged the damn thing, only to never have to look at it again because the product was scraped. Those were the days!
 
 This is not to say that all code quality discussions are pointless. But it does hint that maybe there are other things we should care less about, and try to avoid pure perfectionism.
 
-And no, we should not vibe code everything (more on that later), but a lot of projects can benefit from a more targeted approach to distinguish what are the core and metrics and design patterns we care about, and what are the areas where we can relax a little.
+The industry already made a large jump forward when compilers and linters became more advanced (Typescript and Rust both excel at this) and integrated into CI pipelines. We all collectively stopped having to manually look out for lints that are now fully automated.
 
+And now, with AI tools, we can one layer further, and potentially detach ourselves from portions of our code in the name of speed.
+The extreme end of this is what the internet calls "vibe coding" (more on this later). But there is a middle ground, where you're able to still responsibly offload a lot of, while keeping any potential damage or code smells in check.
 
 I like to think about code quality in terms of **ossification**.
 When something ossifies (i.e., hardens and becomes central to the entire system, just like your bones) it becomes much more resistant to change. This resistance comes in many forms:
@@ -69,7 +76,7 @@ When something ossifies (i.e., hardens and becomes central to the entire system,
 - A dependency on a 3rd party API that could shut down or change pricing a few years from now
 
 
-
+TODO continue
 
 
 ## What is vibe-coding anyway?
