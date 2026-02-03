@@ -69,8 +69,8 @@ The extreme end of this is what the internet calls "vibe coding" (more on this l
 
 ### Ossification
 
-When something hardens, and becomes central to many other systems, whether by design or by accident, it becomes harder to modify.
 This is the main metric through which i try to gauge if something is worth a deeper look, and application of all the subjective patterns i've spent my life learning.
+When something hardens, and becomes central to many other systems, whether by design or by accident, it becomes harder to modify.
 
 Ossification may come in many forms:
 
@@ -82,8 +82,43 @@ Ossification may come in many forms:
 - A dependency on a 3rd party API that could shut down or change pricing a few years from now
 
 
-All of these ...
+All of these are potentially dangerous issues to keep in your code. And they arguably all share the added complexity that they become increasingly harder to fix as the project evolves.
 
+These are just arbitrary examples, but illustrate the kinds of things you *should* think about and look out for when reviewing code.
+This doesn't mean that we can leave a mess everywhere else. Code smells that seem harmless today can also creep up on you later. But you can use your professional judgement to be more targeted in your review efforts.
+
+For example, consider the following Rust code:
+
+```rust
+use std::cmp::max;
+
+pub fn calculate_word_counts(text: &str) -> HashMap<String, usize> {
+  // ...
+}
+
+fn extract_words(text: &str) -> Vec<&str> {
+  // ...
+}
+```
+
+This is the kind of snippet that I'd consider easy to review. I'm mainly interested in a few key aspects that can be quickly analyzed:
+- At first glance, `calculate_word_statistics` seems to be a pure function. That is, given an input, it will always achieve the same output, with no side-effects (not guaranteed without a closer look, but seems likely)
+- Does not import any external state, or functions with side-effects (`cmp::max` is a pure function);
+- Only exposes a single function;
+- Are there any `unsafe` blocks, or macro calls within? Those would make it *not* a pure function;
+- Does it access global state in a more hidden way, such as `crate::state::SOME_GLOBAL` instead of a `use` statement? Again, no longer pure;
+- Does the module itself declare any global state?
+
+All of these can be analyzed in a few seconds (assuming the file is not too long, of course).
+There is also the matter of performance. If this is a critical code path, or if the algorithm looks particularly complex, that will warrant attention as well.
+
+As for code quality: does it really matter if, after concluding these functions are pure, if the logic is slightly inneficient? And going a step further, does it really matter if it's not too easy to understand the algorithm, when the function name is self explanatory, and the code appears to do its job? Is it worth my time iterating on it over style disagreements, or small nitpicks?
+
+These are two extremes on the scale, and there's of course a whole spectrum in between. But as we further automate our work (first with linters, then LSPs, and now coding agents), we can progressively move towards the side of automation, and focus our attention more directly on the things that make our product grow, instead of our ego. And attention is our most valuable resource.
+
+## And of course, security
+
+Now more than ever, security should be a default, not an added feature.
 
 ## What is vibe-coding anyway?
 
